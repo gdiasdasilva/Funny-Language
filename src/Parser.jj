@@ -1,0 +1,127 @@
+PARSER_BEGIN(Parser)
+
+import ast.*;
+import compiler.*;
+public class Parser {
+  
+  /** Main entry point. */
+  public static void main(String args[]) {
+    Parser parser = new Parser(System.in);
+    ASTNode exp;
+    while (true) {
+    try {
+	    exp = parser.Start();
+	    System.out.println(exp.eval());
+	    CodeBlock cb = new CodeBlockClass();
+	    exp.compile(cb);
+	    for (String s : cb.getStringList())	    {
+	      System.out.println(s);
+	    }    }
+    catch (ParseException e) {
+      System.out.println ("Syntax Error!");
+      parser.ReInit(System.in);
+    }
+    }
+  }
+
+}
+
+PARSER_END(Parser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+}
+
+TOKEN :
+{
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+  |
+  < Num: (["0"-"9"]) + >
+  |
+  < LPAR : "(" >
+  |
+  < RPAR : ")" >
+  |
+  < ADD_OP : "+" >
+  |
+  < MINUS : "-" >
+  | 
+  < MUL_OP : "*" >
+  |
+  < DIV_OP : "/" >
+  |
+  < EQ : "==" >
+  |
+  < GREQ : ">=" >
+  |
+  < LSEQ : "<=" >
+  |
+  < NEQ : "!=" >
+  |
+  < AND : "&&" >
+  |
+  < OR : "||" >
+  |
+  < NOT: "!" >
+  |
+  < EL: "\n" >
+}
+
+ASTNode Start():
+{ ASTNode t; }
+{
+  	t=Exp() <EL>
+  	{ return t; } 
+}
+
+ASTNode Exp():
+{ Token op;
+  ASTNode t1, t2; }
+{
+      /*(< ADD_OP > | sign=< MINUS >)?*/  t1=Term() ( ( op=<ADD_OP> | op=<MINUS> ) t2=Term() 
+                 {
+                   /**if (sign != null)
+                     t1 = ( op.kind == ADD_OP ? new ASTPlus( ( new ASTSub( new ASTNum(0) , t1 ) ) , t2 ) : new ASTSub( ( new ASTSub( new ASTNum(0) , t1 ) ) , t2 ) );
+                   else*/
+                     if ( op.kind == ADD_OP )
+                       t1 = new ASTPlus(t1,t2);
+                     else
+                       t1 = new ASTSub(t1,t2);                 }
+      ) *
+ 	{ return t1; }
+}
+
+ASTNode Term():
+{ Token op;
+  ASTNode f1, f2; }
+{
+ 	f1 = Factor() ( (op = <MUL_OP> | op = < DIV_OP >) f2 = Factor()
+ 	{
+ 	  if (op.kind == MUL_OP)
+ 	    f1 = new ASTMul(f1, f2);
+ 	  else
+ 	    f1 = new ASTDiv(f1, f2); 	}
+ 	)*
+ 	{ return f1; }	
+}
+
+/**ASTNode Factor():
+{ Token n; // n.image
+  ASTNode t;
+}
+{
+	n = <Num> | <Id> | <LPAR> Exp() <RPAR>
+}*/
+
+ASTNode Factor():
+{ Token n, expSign; /*n.image*/
+  ASTNode f;
+}
+{
+	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } | (< ADD_OP > | expSign=< MINUS >)? <LPAR> ( f = Exp() ) <RPAR>
+	)
+	{ return f; }
+}
