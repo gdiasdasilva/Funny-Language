@@ -7,22 +7,27 @@ public class Parser implements ParserConstants {
   public static void main(String args[]) {
     Parser parser = new Parser(System.in);
     ASTNode exp;
-    while (true) {
-    try {
-            exp = parser.Start();
-            System.out.println(exp.eval());
-            CodeBlock cb = new CodeBlockClass();
-            exp.compile(cb);
-            for (String s : cb.getStringList())
-            {
-              System.out.println(s);
-            }
-    }
-    catch (ParseException e) {
-      System.out.println ("Syntax Error!");
-      parser.ReInit(System.in);
-    }
-    }
+   // while (true) {
+           // try {
+                        exp = new ASTCond(
+                                new ASTEq(new ASTPlus(new ASTNum(3), new ASTNum(3)), new ASTDiv(new ASTNum(12), new ASTPlus(new ASTNum(-1), new ASTNum(3)))),
+                                new ASTPlus(new ASTNum(1), new ASTNum(2)),
+                                new ASTMul(new ASTNum(2), new ASTNum(7))
+                        );
+                    //exp = parser.Start();
+                    System.out.println(exp.eval());
+                    CodeBlock cb = new CodeBlockClass();
+                    exp.compile(cb);
+                    for (String s : cb.getStringList())
+                    {
+                      System.out.println(s);
+                    }
+           // }
+            /*catch (ParseException e) {
+	      System.out.println ("Syntax Error!");
+	      parser.ReInit(System.in);
+	    }*/
+   // }
   }
 
   static final public ASTNode Start() throws ParseException {
@@ -34,7 +39,7 @@ public class Parser implements ParserConstants {
   }
 
   static final public ASTNode Exp() throws ParseException {
-  Token op, sign=null;
+  Token op;
   ASTNode t1, t2;
     /*(< ADD_OP > | sign=< MINUS >)?*/  t1 = Term();
     label_1:

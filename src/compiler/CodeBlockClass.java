@@ -11,6 +11,8 @@ public class CodeBlockClass implements CodeBlock {
 	private final String SUB_OP = "isub";
 	private final String PUSH_I = "sipush ";
 	
+	private final String EQ_OP = "if_icmpeq ";
+	
 	private List<String> codeBlock;
 
 	public CodeBlockClass() {
@@ -45,5 +47,30 @@ public class CodeBlockClass implements CodeBlock {
 	
 	public List<String> getStringList() {
 		return codeBlock;
+	}
+
+	@Override
+	public void insertCondBranch(Cond cond) {
+		switch (cond) {
+		case EQ: codeBlock.add(EQ_OP + "ThenLabel");
+				  break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void insertGoto() {
+		codeBlock.add("goto FinalLabel");
+	}
+
+	@Override
+	public void insertThenLabel() {
+		codeBlock.add("ThenLabel:");
+	}
+
+	@Override
+	public void insertFinalLabel() {
+		codeBlock.add("FinalLabel:");
 	}
 }

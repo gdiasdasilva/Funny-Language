@@ -1,4 +1,4 @@
-.class public Demo
+.class public Code
 .super java/lang/Object
 
 ;
@@ -22,21 +22,25 @@
        ; place your bytecodes here
        ; START
 
-sipush 9
+
 sipush 3
+sipush 3
+iadd
+sipush 12
+sipush 1
+sipush 3
+iadd
 idiv
-sipush 4
-imul
+if_icmpeq ThenLabel
+sipush 2
 sipush 7
-iadd
-sipush 4
-sipush 2
-idiv
-sipush 3
-iadd
-sipush 2
 imul
-isub
+goto FinalLabel
+ThenLabel:
+sipush 1
+sipush 2
+iadd
+FinalLabel:
 
 
        ; END
