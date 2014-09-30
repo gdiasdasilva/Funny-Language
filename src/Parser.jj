@@ -8,26 +8,26 @@ public class Parser {
   public static void main(String args[]) {
     Parser parser = new Parser(System.in);
     ASTNode exp;
-   // while (true) {
-	   // try {
-			exp = new ASTCond(
+    while (true) {
+	    try {
+			/*exp = new ASTCond(
 				new ASTEq(new ASTPlus(new ASTNum(3), new ASTNum(3)), new ASTDiv(new ASTNum(12), new ASTPlus(new ASTNum(-1), new ASTNum(3)))),
 				new ASTPlus(new ASTNum(1), new ASTNum(2)),
 				new ASTMul(new ASTNum(2), new ASTNum(7))
-			);
-		    //exp = parser.Start();
+			);*/
+		    exp = parser.Start();
 		    System.out.println(exp.eval());
-		    CodeBlock cb = new CodeBlockClass();
+		    /*CodeBlock cb = new CodeBlockClass();
 		    exp.compile(cb);
 		    for (String s : cb.getStringList())		    {
 		      System.out.println(s);
-		    }
-	   // }
-	    /*catch (ParseException e) {
+		    }*/
+	    }
+	    catch (ParseException e) {
 	      System.out.println ("Syntax Error!");
 	      parser.ReInit(System.in);
-	    }*/
-   // }
+	    }
+    }
   }
 
 }
@@ -61,6 +61,10 @@ TOKEN :
   |
   < EQ : "==" >
   |
+  < IF_TOK : "?" >
+  |
+  < ELSE_TOK : ":" >
+  |
   < GREQ : ">=" >
   |
   < LSEQ : "<=" >
@@ -79,24 +83,65 @@ TOKEN :
 ASTNode Start():
 { ASTNode t; }
 {
-  	t=Exp() <EL>
+  	t=LogExp() <EL>
   	{ return t; } 
+}
+
+ASTNode LogExp():{ ASTNode tl1, tl2; Token op; }{
+  tl1 = LogT() ( ( op = < OR >) tl2 = LogT()
+  { tl1 = new ASTOr(tl1, tl2); }
+  )*
+  { return tl1; }}
+
+ASTNode LogT():
+{ ASTNode e1, e2; Token op; }
+{	e1 = CmpExp() ( (op = < AND > ) e2 = CmpExp()
+	{ e1 = new ASTAnd(e1, e2); }
+	)*
+	{ return e1; }
+}
+
+ASTNode CmpExp():
+{ ASTNode e1, e2; Token op; }
+{
+	e1 = CondExp() ( (op = < EQ > | op = < GREQ > | op = < LSEQ > | op = < NEQ >) e2 = CondExp()
+	{
+	  if(op.kind == EQ)
+	  {
+	    e1 = new ASTEq(e1, e2);	  }
+	  else if(op.kind == GREQ)
+	  {
+	    e1 = new ASTGreq(e1, e2);	  }
+	  else if(op.kind == LSEQ)
+	  {
+	    e1 = new ASTLseq(e1, e2);	  }
+	  else
+	  {
+	    e1 = new ASTNeq(e1, e2);	  }
+	}
+	)*
+	{ return e1; }		
+}
+
+ASTNode CondExp():
+{ASTNode e1, e2, e3;}
+{
+	(	  e1 = Exp() ( < IF_TOK > e2 = Exp() < ELSE_TOK > e3 = Exp() { return new ASTCond(e1, e2, e3); } )?
+    )
+    { return e1; }
 }
 
 ASTNode Exp():
 { Token op;
   ASTNode t1, t2; }
 {
-      /*(< ADD_OP > | sign=< MINUS >)?*/  t1=Term() ( ( op=<ADD_OP> | op=<MINUS> ) t2=Term() 
-                 {
-                   /**if (sign != null)
-                     t1 = ( op.kind == ADD_OP ? new ASTPlus( ( new ASTSub( new ASTNum(0) , t1 ) ) , t2 ) : new ASTSub( ( new ASTSub( new ASTNum(0) , t1 ) ) , t2 ) );
-                   else*/
-                     if ( op.kind == ADD_OP )
-                       t1 = new ASTPlus(t1,t2);
-                     else
-                       t1 = new ASTSub(t1,t2);                 }
-      ) *
+      t1 = Term() ( ( op=<ADD_OP> | op=<MINUS> ) t2 = Term() 
+	  {                 
+           if ( op.kind == ADD_OP )
+               t1 = new ASTPlus(t1,t2);
+           else
+               t1 = new ASTSub(t1,t2);      }
+      )*
  	{ return t1; }
 }
 
@@ -114,20 +159,11 @@ ASTNode Term():
  	{ return f1; }	
 }
 
-/**ASTNode Factor():
-{ Token n; // n.image
-  ASTNode t;
-}
-{
-	n = <Num> | <Id> | <LPAR> Exp() <RPAR>
-}*/
-
 ASTNode Factor():
-{ Token n, expSign; /*n.image*/
-  ASTNode f;
+{ Token n; ASTNode f;
 }
 {
-	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } | (< ADD_OP > | expSign=< MINUS >)? <LPAR> ( f = Exp() ) <RPAR>
+	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } | <LPAR> ( f = LogExp() ) <RPAR> | < MINUS > f = Factor()	   { f = new ASTUnMinus(f); }
 	)
 	{ return f; }
 }

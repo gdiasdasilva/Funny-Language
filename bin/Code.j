@@ -27,7 +27,7 @@ sipush 3
 sipush 3
 iadd
 sipush 12
-sipush 1
+sipush -1
 sipush 3
 iadd
 idiv

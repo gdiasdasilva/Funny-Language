@@ -20,7 +20,6 @@ public class ASTEq implements ASTNode {
 	public void compile(CodeBlock c) {
 		l.compile(c);
 		r.compile(c);
-		
 	}
 	
 }
