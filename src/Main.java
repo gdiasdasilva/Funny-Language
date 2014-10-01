@@ -16,7 +16,7 @@ public class Main {
 //		);
 		while (true) {
 			try {
-				ASTNode exp = parser.Start();
+				ASTNode exp = parser.start();
 				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
 				System.out.println("Val: "+exp.accept(new EvalVisitor()));
 			} catch (Error e) {

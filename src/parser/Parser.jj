@@ -3,7 +3,6 @@ PARSER_BEGIN(Parser)
 package parser;
 
 import ast.*;
-import compiler.*;
 import semantics.*;
 
 public class Parser
@@ -23,92 +22,92 @@ SKIP :
 TOKEN :
 {
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-  |
-  < Num: (["0"-"9"]) + >
-  |
-  < LPAR : "(" >
-  |
-  < RPAR : ")" >
-  |
-  < ADD_OP : "+" >
-  |
-  < MINUS : "-" >
-  | 
-  < MUL_OP : "*" >
-  |
-  < DIV_OP : "/" >
-  |
-  < EQ : "==" >
-  |
-  < IF_TOK : "?" >
-  |
-  < ELSE_TOK : ":" >
-  |
-  < GREQ : ">=" >
-  |
-  < LSEQ : "<=" >
-  |
-  < NEQ : "!=" >
-  |
-  < AND : "&&" >
-  |
-  < OR : "||" >
-  |
-  < NOT: "!" >
-  |
-  < EL: "\n" >
+| < Num: (["0"-"9"]) + >
+| < LPAR : "(" >
+| < RPAR : ")" >
+| < ADD_OP : "+" >
+| < MINUS : "-" >
+| < MUL_OP : "*" >
+| < DIV_OP : "/" >
+| < EQ : "==" >
+| < IF_TOK : "?" >
+| < ELSE_TOK : ":" >
+| < GR: ">" >
+| < GREQ : ">=" >
+| < LS: "<" >
+| < LSEQ : "<=" >
+| < NEQ : "!=" >
+| < AND : "&&" >
+| < OR : "||" >
+| < NOT: "!" >
+| < EL: "\n" >
 }
 
-ASTNode Start():
+ASTNode start():
 { ASTNode t; }
 {
-  	t=LogExp() <EL>
+  	//t=LogExp() <EL>
+  	t = CondExp() < EL >
   	{ return t; } 
 }
 
-ASTNode LogExp():{ ASTNode tl1, tl2; Token op; }{
+ASTNode CondExp():
+{ ASTNode e1, e2, e3; }
+{
+	(	  e1 = LogExp() ( < IF_TOK > e2 = LogExp() < ELSE_TOK > e3 = LogExp() { return new ASTCond(e1, e2, e3); } )?
+    )
+    { return e1; }
+}
+ASTNode LogExp():{ ASTNode tl1, tl2; Token op; }
+{
   tl1 = LogT() ( ( op = < OR >) tl2 = LogT()
   { tl1 = new ASTOr(tl1, tl2); }
-  )*
-  { return tl1; }}
+  )*  { return tl1; }
+}
 
 ASTNode LogT():
-{ ASTNode e1, e2; Token op; }
-{	e1 = CmpExp() ( (op = < AND > ) e2 = CmpExp()
+{ ASTNode e1, e2; Token op; }{
+	e1 = CmpExp0() ( (op = < AND > ) e2 = CmpExp0()
 	{ e1 = new ASTAnd(e1, e2); }
 	)*
 	{ return e1; }
 }
 
+ASTNode CmpExp0():
+{ ASTNode e1, e2; Token op; }
+{
+  e1 = CmpExp() ( ( op = < EQ > | op = < NEQ > ) e2 = CmpExp()
+  {
+    if (op.kind == EQ)
+      e1 = new ASTEq(e1, e2);
+    else
+      e1 = new ASTNeq(e1, e2);  }
+  )*
+  { return e1; }
+}
+
 ASTNode CmpExp():
 { ASTNode e1, e2; Token op; }
 {
-	e1 = CondExp() ( (op = < EQ > | op = < GREQ > | op = < LSEQ > | op = < NEQ >) e2 = CondExp()
+	e1 = Exp() ( (op = < GREQ > | op = < LSEQ > | op = < GR > | op = < LS >) e2 = Exp()
 	{
-	  if(op.kind == EQ)
-	  {
-	    e1 = new ASTEq(e1, e2);	  }
-	  else if(op.kind == GREQ)
-	  {
-	    e1 = new ASTGreq(e1, e2);	  }
-	  else if(op.kind == LSEQ)
-	  {
-	    e1 = new ASTLseq(e1, e2);	  }
+	  if (op.kind == GREQ)
+	  {	    e1 = new ASTGreq(e1, e2);
+	  }
+	  else if (op.kind == LSEQ)
+	  {	    e1 = new ASTLseq(e1, e2);
+	  }
+	  else if (op.kind == GR)
+	  {	    e1 = new ASTGr(e1, e2);
+	  }
 	  else
 	  {
-	    e1 = new ASTNeq(e1, e2);	  }
+	    e1 = new ASTLs(e1, e2);	  }
 	}
 	)*
 	{ return e1; }
 }
 
-ASTNode CondExp():
-{ASTNode e1, e2, e3;}
-{
-	(	  e1 = Exp() ( < IF_TOK > e2 = Exp() < ELSE_TOK > e3 = Exp() { return new ASTCond(e1, e2, e3); } )?
-    )
-    { return e1; }
-}
 
 ASTNode Exp():
 { Token op;
