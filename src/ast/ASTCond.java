@@ -1,8 +1,7 @@
 package ast;
 
-import semantics.CodeBlock;
-import semantics.Cond;
 import semantics.Visitor;
+import semantics.compiler.CodeBlock;
 
 public class ASTCond implements ASTNode {
 	
@@ -21,13 +20,13 @@ public class ASTCond implements ASTNode {
 
 	@Override
 	public void compile(CodeBlock c) {
-		condNode.compile(c);
-		c.insertCondBranch(Cond.EQ);
-		elseNode.compile(c);
-		c.insertGoto();
-		c.insertThenLabel();
-		thenNode.compile(c);
-		c.insertFinalLabel();
+//		condNode.compile(c);
+//		c.insertCondBranch(Cond.EQ);
+//		elseNode.compile(c);
+//		c.insertGoto();
+//		c.insertThenLabel();
+//		thenNode.compile(c);
+//		c.insertFinalLabel();
 	}
 
 	@Override

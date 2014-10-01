@@ -54,7 +54,7 @@ ASTNode start():
 ASTNode CondExp():
 { ASTNode e1, e2, e3; }
 {
-	(	  e1 = LogExp() ( < IF_TOK > e2 = LogExp() < ELSE_TOK > e3 = LogExp() { return new ASTCond(e1, e2, e3); } )?
+	(	  e1 = LogExp() ( < IF_TOK > e2 = CondExp() < ELSE_TOK > e3 = CondExp() { return new ASTCond(e1, e2, e3); } )?
     )
     { return e1; }
 }

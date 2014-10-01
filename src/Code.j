@@ -22,27 +22,6 @@
        ; place your bytecodes here
        ; START
 
-
-sipush 3
-sipush 3
-iadd
-sipush 12
-sipush -1
-sipush 3
-iadd
-idiv
-if_icmpeq ThenLabel
-sipush 2
-sipush 7
-imul
-goto FinalLabel
-ThenLabel:
-sipush 1
-sipush 2
-iadd
-FinalLabel:
-
-
        ; END
 
 

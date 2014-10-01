@@ -1,8 +1,8 @@
 package ast;
 
-import semantics.CodeBlock;
-import semantics.Op;
 import semantics.Visitor;
+import semantics.compiler.CodeBlock;
+import semantics.compiler.Op;
 
 public class ASTDiv implements ASTNode {
 	

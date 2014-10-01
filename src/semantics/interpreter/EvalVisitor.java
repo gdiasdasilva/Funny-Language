@@ -121,7 +121,7 @@ public class EvalVisitor implements Visitor<Value> {
 	public Value<Boolean> visit(ASTGr gr) {
 		IValue l = (IValue) gr.l.accept(this);
 		IValue r = (IValue) gr.r.accept(this);
-		return new BValue(l.i >= r.i);
+		return new BValue(l.i > r.i);
 	}
 
 	@Override

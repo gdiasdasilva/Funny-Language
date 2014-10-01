@@ -1,7 +1,11 @@
+import ast.ASTCond;
+import ast.ASTEq;
+import ast.ASTGr;
 import ast.ASTNode;
+import ast.ASTNum;
 import parser.ParseException;
 import parser.Parser;
-import semantics.CodeBlock;
+import semantics.IValue;
 import semantics.UnparseVisitor;
 import semantics.compiler.CompilerVisitor;
 import semantics.interpreter.EvalVisitor;
@@ -16,21 +20,34 @@ public class Main {
 //		new ASTPlus(new ASTNum(IValue.fromInteger(1)), new ASTNum(IValue.fromInteger(2))),
 //		new ASTMul(new ASTNum(IValue.fromInteger(2)), new ASTNum(IValue.fromInteger(7)))
 //		);
-		while (true) {
-			try {
-				ASTNode exp = parser.start();
+		ASTNode exp = new ASTCond(
+				new ASTEq(new ASTNum(IValue.fromInteger(99)), new ASTNum(IValue.fromInteger(100))),
+				new ASTCond
+				(
+						new ASTGr(new ASTNum(IValue.fromInteger(20)), new ASTNum(IValue.fromInteger(15))),
+						new ASTNum(IValue.fromInteger(22)),
+						new ASTNum(IValue.fromInteger(92))
+				),
+				new ASTNum(IValue.fromInteger(-1))
+		);
+		System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
+		System.out.println("Val: "+exp.accept(new EvalVisitor()));
+		System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
+//		while (true) {
+//			try {
+//				ASTNode exp = parser.start();
 //				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
 //				System.out.println("Val: "+exp.accept(new EvalVisitor()));
-				System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
-			} catch (Error e) {
-				System.out.println("Parsing error");
-				System.out.println(e.getMessage());
-				break;
-			} catch (Exception e) {
-				System.out.println("NOK.");
-				e.printStackTrace();
-				break;
-			}
-		}
+//				System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
+//			} catch (Error e) {
+//				System.out.println("Parsing error");
+//				System.out.println(e.getMessage());
+//				break;
+//			} catch (Exception e) {
+//				System.out.println("NOK.");
+//				e.printStackTrace();
+//				break;
+//			}
+//		}
 	}
 }

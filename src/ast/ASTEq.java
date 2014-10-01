@@ -1,7 +1,7 @@
 package ast;
 
-import semantics.CodeBlock;
 import semantics.Visitor;
+import semantics.compiler.CodeBlock;
 
 public class ASTEq implements ASTNode {
 
