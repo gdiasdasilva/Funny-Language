@@ -1,10 +1,11 @@
 package ast;
 
+import semantics.Visitor;
 import compiler.CodeBlock;
 
 public class ASTEq implements ASTNode {
 
-	ASTNode l, r;
+	public final ASTNode l, r;
 	
 	public ASTEq(ASTNode l, ASTNode r) {
 		this.l = l;
@@ -20,6 +21,11 @@ public class ASTEq implements ASTNode {
 	public void compile(CodeBlock c) {
 		l.compile(c);
 		r.compile(c);
+	}
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
 	}
 	
 }

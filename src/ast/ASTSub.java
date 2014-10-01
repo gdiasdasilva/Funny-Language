@@ -1,11 +1,12 @@
 package ast;
 
+import semantics.Visitor;
 import compiler.CodeBlock;
 import compiler.Op;
 
 public class ASTSub implements ASTNode{
 	
-	ASTNode l, r;
+	public final ASTNode l, r;
 
 	public ASTSub(ASTNode l, ASTNode r) {
 		this.l = l;
@@ -22,5 +23,10 @@ public class ASTSub implements ASTNode{
 		l.compile(c);
 		r.compile(c);		
 		c.insertOp(Op.SUB);
+	}
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
 	}
 }

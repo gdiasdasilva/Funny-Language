@@ -1,10 +1,12 @@
 package ast;
 
+import semantics.Visitor;
 import compiler.CodeBlock;
 import compiler.Cond;
 
 public class ASTCond implements ASTNode {
-	ASTNode condNode, thenNode, elseNode;
+	
+	public final ASTNode condNode, thenNode, elseNode;
 
 	public ASTCond (ASTNode condNode, ASTNode thenNode, ASTNode elseNode) {
 		this.condNode = condNode;
@@ -27,6 +29,9 @@ public class ASTCond implements ASTNode {
 		thenNode.compile(c);
 		c.insertFinalLabel();
 	}
-	
-	
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
+	}
 }

@@ -1,11 +1,12 @@
 package ast;
 
+import semantics.Visitor;
 import compiler.CodeBlock;
 import compiler.Op;
 
 public class ASTMul implements ASTNode {
 
-	ASTNode l, r;
+	public final ASTNode l, r;
 	
 	public ASTMul(ASTNode l, ASTNode r) {
 		this.l = l;
@@ -22,6 +23,11 @@ public class ASTMul implements ASTNode {
 		l.compile(c);
 		r.compile(c);
 		c.insertOp(Op.MUL);
+	}
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
 	}
 
 }

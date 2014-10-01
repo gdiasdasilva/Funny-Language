@@ -1,34 +1,13 @@
 PARSER_BEGIN(Parser)
 
+package parser;
+
 import ast.*;
 import compiler.*;
-public class Parser {
-  
-  /** Main entry point. */
-  public static void main(String args[]) {
-    Parser parser = new Parser(System.in);
-    ASTNode exp;
-    while (true) {
-	    try {
-			/*exp = new ASTCond(
-				new ASTEq(new ASTPlus(new ASTNum(3), new ASTNum(3)), new ASTDiv(new ASTNum(12), new ASTPlus(new ASTNum(-1), new ASTNum(3)))),
-				new ASTPlus(new ASTNum(1), new ASTNum(2)),
-				new ASTMul(new ASTNum(2), new ASTNum(7))
-			);*/
-		    exp = parser.Start();
-		    System.out.println(exp.eval());
-		    /*CodeBlock cb = new CodeBlockClass();
-		    exp.compile(cb);
-		    for (String s : cb.getStringList())		    {
-		      System.out.println(s);
-		    }*/
-	    }
-	    catch (ParseException e) {
-	      System.out.println ("Syntax Error!");
-	      parser.ReInit(System.in);
-	    }
-    }
-  }
+import semantics.*;
+
+public class Parser
+{
 
 }
 
@@ -120,7 +99,7 @@ ASTNode CmpExp():
 	    e1 = new ASTNeq(e1, e2);	  }
 	}
 	)*
-	{ return e1; }		
+	{ return e1; }
 }
 
 ASTNode CondExp():
@@ -163,7 +142,7 @@ ASTNode Factor():
 { Token n; ASTNode f;
 }
 {
-	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } | <LPAR> ( f = LogExp() ) <RPAR> | < MINUS > f = Factor()	   { f = new ASTUnMinus(f); }
+	(	   n = <Num> { f = new ASTNum(IValue.fromInteger(Integer.parseInt(n.image))); } | <LPAR> ( f = LogExp() ) <RPAR> | < MINUS > f = Factor()	   { f = new ASTUnMinus(f); }
 	)
 	{ return f; }
 }

@@ -1,10 +1,11 @@
 package ast;
 
+import semantics.Visitor;
 import compiler.CodeBlock;
 
 public class ASTGreq implements ASTNode {
 
-	private ASTNode l, r;
+	public final ASTNode l, r;
 	
 	public ASTGreq(ASTNode l, ASTNode r) {
 		this.l = l;
@@ -20,7 +21,11 @@ public class ASTGreq implements ASTNode {
 	@Override
 	public void compile(CodeBlock c) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
+	}
 }

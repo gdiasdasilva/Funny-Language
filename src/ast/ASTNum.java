@@ -1,21 +1,33 @@
 package ast;
 
+import semantics.Value;
+import semantics.Visitor;
+
 import compiler.CodeBlock;
 
 public class ASTNum implements ASTNode {
-	int val;
 	
-	public ASTNum(int val) {
-		this.val = val;
+	public final Value<Integer> iVal;
+
+	public ASTNum(Value<Integer> iVal) {
+		this.iVal = iVal;
 	}
-	
+
 	@Override
 	public int eval() {
-		return val;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public void compile(CodeBlock c) {
-		c.insertIntArgument(val);
+		// TODO Auto-generated method stub
+
 	}
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
+	}
+
 }

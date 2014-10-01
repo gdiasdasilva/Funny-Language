@@ -1,9 +1,11 @@
 package ast;
 
+import semantics.Visitor;
 import compiler.CodeBlock;
 
 public class ASTAnd implements ASTNode {
-	private ASTNode l, r;
+	
+	public final ASTNode l, r;
 	
 	public ASTAnd(ASTNode l, ASTNode r) {
 		this.l = l;
@@ -20,6 +22,11 @@ public class ASTAnd implements ASTNode {
 	public void compile(CodeBlock c) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
 	}
 
 }

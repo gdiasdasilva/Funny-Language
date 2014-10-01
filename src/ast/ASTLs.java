@@ -3,23 +3,25 @@ package ast;
 import semantics.Visitor;
 import compiler.CodeBlock;
 
-public class ASTUnMinus implements ASTNode {
-
-	public final ASTNode v;
+public class ASTLs implements ASTNode {
 	
-	public ASTUnMinus(ASTNode v) {
-		this.v = v;
+	public final ASTNode l, r;
+
+	public ASTLs(ASTNode l, ASTNode r) {
+		this.l = l;
+		this.r = r;
 	}
 
 	@Override
 	public int eval() {
-		return -v.eval();
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public void compile(CodeBlock c) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
