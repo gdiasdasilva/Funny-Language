@@ -1,8 +1,8 @@
 package ast;
 
+import semantics.CodeBlock;
+import semantics.Op;
 import semantics.Visitor;
-import compiler.CodeBlock;
-import compiler.Op;
 
 public class ASTMul implements ASTNode {
 

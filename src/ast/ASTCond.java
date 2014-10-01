@@ -1,8 +1,8 @@
 package ast;
 
+import semantics.CodeBlock;
+import semantics.Cond;
 import semantics.Visitor;
-import compiler.CodeBlock;
-import compiler.Cond;
 
 public class ASTCond implements ASTNode {
 	

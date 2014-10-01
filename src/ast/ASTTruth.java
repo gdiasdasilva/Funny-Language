@@ -1,9 +1,8 @@
 package ast;
 
+import semantics.CodeBlock;
 import semantics.Value;
 import semantics.Visitor;
-
-import compiler.CodeBlock;
 
 public class ASTTruth implements ASTNode {
 	

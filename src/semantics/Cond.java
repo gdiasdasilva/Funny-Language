@@ -1,4 +1,4 @@
-package compiler;
+package semantics;
 
 public enum Cond {
 	EQ

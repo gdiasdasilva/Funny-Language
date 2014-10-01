@@ -1,10 +1,10 @@
-package compiler;
+package semantics;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CodeBlockClass implements CodeBlock {
+public class CodeBlock {
 	private final String ADD_OP = "iadd";
 	private final String DIV_OP = "idiv";
 	private final String MUL_OP = "imul";
@@ -15,16 +15,14 @@ public class CodeBlockClass implements CodeBlock {
 	
 	private List<String> codeBlock;
 
-	public CodeBlockClass() {
+	public CodeBlock() {
 		codeBlock = new LinkedList<String>();
 	}
 	
-	@Override
 	public void writeToFile(File f) {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void insertOp(Op op) {
 		switch (op) {
 			case ADD: codeBlock.add(ADD_OP);
@@ -40,16 +38,10 @@ public class CodeBlockClass implements CodeBlock {
 			}
 	}
 
-	@Override
 	public void insertIntArgument(int i) {
 		codeBlock.add(PUSH_I + i);
 	}
-	
-	public List<String> getStringList() {
-		return codeBlock;
-	}
 
-	@Override
 	public void insertCondBranch(Cond cond) {
 		switch (cond) {
 		case EQ: codeBlock.add(EQ_OP + "ThenLabel");
@@ -59,18 +51,28 @@ public class CodeBlockClass implements CodeBlock {
 		}
 	}
 
-	@Override
 	public void insertGoto() {
 		codeBlock.add("goto FinalLabel");
 	}
 
-	@Override
 	public void insertThenLabel() {
 		codeBlock.add("ThenLabel:");
 	}
 
-	@Override
 	public void insertFinalLabel() {
 		codeBlock.add("FinalLabel:");
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (String s : codeBlock) {
+			sb.append(s);
+			sb.append(System.lineSeparator());
+		}
+		return sb.toString();
+	}
+
+	public void merge(CodeBlock cb) {
+		this.codeBlock.addAll(cb.codeBlock);
 	}
 }

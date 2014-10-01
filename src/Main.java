@@ -1,8 +1,10 @@
 import ast.ASTNode;
 import parser.ParseException;
 import parser.Parser;
-import semantics.EvalVisitor;
+import semantics.CodeBlock;
 import semantics.UnparseVisitor;
+import semantics.compiler.CompilerVisitor;
+import semantics.interpreter.EvalVisitor;
 
 public class Main {
 
@@ -17,8 +19,9 @@ public class Main {
 		while (true) {
 			try {
 				ASTNode exp = parser.start();
-				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
-				System.out.println("Val: "+exp.accept(new EvalVisitor()));
+//				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
+//				System.out.println("Val: "+exp.accept(new EvalVisitor()));
+				System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
 			} catch (Error e) {
 				System.out.println("Parsing error");
 				System.out.println(e.getMessage());

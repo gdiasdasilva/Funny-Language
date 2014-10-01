@@ -1,7 +1,7 @@
 package ast;
 
+import semantics.CodeBlock;
 import semantics.Visitor;
-import compiler.CodeBlock;
 
 public class ASTLs implements ASTNode {
 	

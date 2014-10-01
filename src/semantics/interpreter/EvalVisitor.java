@@ -1,5 +1,9 @@
-package semantics;
+package semantics.interpreter;
 
+import semantics.BValue;
+import semantics.IValue;
+import semantics.Value;
+import semantics.Visitor;
 import ast.ASTAnd;
 import ast.ASTCond;
 import ast.ASTDiv;
