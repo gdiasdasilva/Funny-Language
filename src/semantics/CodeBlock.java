@@ -73,6 +73,6 @@ public class CodeBlock {
 	}
 
 	public void merge(CodeBlock cb) {
-		this.codeBlock.addAll(cb.codeBlock);
+		codeBlock.addAll(cb.codeBlock);
 	}
 }
