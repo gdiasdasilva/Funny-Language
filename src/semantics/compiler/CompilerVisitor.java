@@ -13,7 +13,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	private int label;
 	
 	public CompilerVisitor() {
-		label = 1;
+		label = 0;
 	}
 
 	@Override
@@ -79,12 +79,12 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	 */
 	private CodeBlock addBI(CodeBlock cb)
 	{
-		cb.insertIntArgument(FALSE);
-		cb.insertGotoContinue(label);
-		cb.insertThenLabel(label);
-		cb.insertIntArgument(TRUE);
-		cb.insertContinueLabel(label);
-		label++;
+//		cb.insertIntArgument(FALSE);
+//		cb.insertGotoContinue(label);
+//		cb.insertThenLabel(label);
+//		cb.insertIntArgument(TRUE);
+//		cb.insertContinueLabel(label);
+//		label++;
 		return cb;
 	}
 
@@ -93,7 +93,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		CodeBlock cb = eq.l.accept(this);
 		cb.merge(eq.r.accept(this));
 		cb.insertCondBranching(Cond.EQ, label);
-		return this.addBI(cb);
+		return cb;
 	}
 
 	@Override
@@ -105,25 +105,16 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 	
 	@Override
-	public CodeBlock visit(ASTCond cond) { // TODO malfunctioning
+	public CodeBlock visit(ASTCond cond) {// TODO malfunctioning
+		int localLabel = ++label;
+		
 		CodeBlock cb = cond.condNode.accept(this);
-		cb.insertIntArgument(FALSE);
-		cb.insertCondBranching(Cond.NEQ, label);
 		cb.merge(cond.elseNode.accept(this));
-		cb.insertGotoContinue(label);
-		cb.insertThenLabel(label);
+		cb.insertGotoContinue(localLabel);
+		cb.insertThenLabel(localLabel);
 		cb.merge(cond.thenNode.accept(this));
-		cb.insertContinueLabel(label);
-		label++;
+		cb.insertContinueLabel(localLabel);
 		return cb;
-	}
-
-	@Override
-	public CodeBlock visit(ASTLs ls) {
-		CodeBlock cb = ls.l.accept(this);
-		cb.merge(ls.r.accept(this));
-		cb.insertCondBranching(Cond.LS, label);
-		return this.addBI(cb);
 	}
 
 	@Override
@@ -131,7 +122,23 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		CodeBlock cb = gr.l.accept(this);
 		cb.merge(gr.r.accept(this));
 		cb.insertCondBranching(Cond.GR, label);
-		return this.addBI(cb);
+		return cb;
+	}
+	
+	@Override
+	public CodeBlock visit(ASTGreq greq) {
+		CodeBlock cb = greq.l.accept(this);
+		cb.merge(greq.r.accept(this));
+		cb.insertCondBranching(Cond.GREQ, label);
+		return cb;
+	}
+	
+	@Override
+	public CodeBlock visit(ASTLs ls) {
+		CodeBlock cb = ls.l.accept(this);
+		cb.merge(ls.r.accept(this));
+		cb.insertCondBranching(Cond.LS, label);
+		return cb;
 	}
 
 	@Override
@@ -139,15 +146,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		CodeBlock cb = lseq.l.accept(this);
 		cb.merge(lseq.r.accept(this));
 		cb.insertCondBranching(Cond.LSEQ, label);
-		return this.addBI(cb);
-	}
-
-	@Override
-	public CodeBlock visit(ASTGreq greq) {
-		CodeBlock cb = greq.l.accept(this);
-		cb.merge(greq.r.accept(this));
-		cb.insertCondBranching(Cond.GREQ, label);
-		return this.addBI(cb);
+		return cb;
 	}
 
 	@Override
