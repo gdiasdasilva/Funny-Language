@@ -77,77 +77,92 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	 * @param cb - the CodeBlock used by caller
 	 * @return - the modified CodeBlock
 	 */
-	private CodeBlock addBI(CodeBlock cb)
+	private CodeBlock addBI(CodeBlock cb, int label)
 	{
 		cb.insertIntArgument(FALSE);
 		cb.insertGotoContinue(label);
 		cb.insertThenLabel(label);
 		cb.insertIntArgument(TRUE);
 		cb.insertContinueLabel(label);
-		label++;
+		this.label++;
 		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTEq eq) {
+		int label = this.label++;
 		CodeBlock cb = eq.l.accept(this);
+		this.label++;
 		cb.merge(eq.r.accept(this));
 		cb.insertCondBranching(Cond.EQ, label);
-		return this.addBI(cb);
+		return this.addBI(cb, label);
 	}
 
 	@Override
 	public CodeBlock visit(ASTNeq neq) {
+		int label = this.label++;
 		CodeBlock cb = neq.l.accept(this);
+		this.label++;
 		cb.merge(neq.r.accept(this));
 		cb.insertCondBranching(Cond.NEQ, label);
-		return this.addBI(cb);
+		return this.addBI(cb, label);
 	}
 	
 	@Override
-	public CodeBlock visit(ASTCond cond) { // TODO malfunctioning
+	public CodeBlock visit(ASTCond cond) {
+		int label = this.label++;
 		CodeBlock cb = cond.condNode.accept(this);
 		cb.insertIntArgument(FALSE);
 		cb.insertCondBranching(Cond.NEQ, label);
+		this.label++;
 		cb.merge(cond.elseNode.accept(this));
 		cb.insertGotoContinue(label);
 		cb.insertThenLabel(label);
+		this.label++;
 		cb.merge(cond.thenNode.accept(this));
 		cb.insertContinueLabel(label);
-		label++;
+		this.label++;
 		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTLs ls) {
+		int label = this.label++;
 		CodeBlock cb = ls.l.accept(this);
+		this.label++;
 		cb.merge(ls.r.accept(this));
 		cb.insertCondBranching(Cond.LS, label);
-		return this.addBI(cb);
+		return this.addBI(cb, label);
 	}
 
 	@Override
 	public CodeBlock visit(ASTGr gr) {
+		int label = this.label++;
 		CodeBlock cb = gr.l.accept(this);
+		this.label++;
 		cb.merge(gr.r.accept(this));
 		cb.insertCondBranching(Cond.GR, label);
-		return this.addBI(cb);
+		return this.addBI(cb, label);
 	}
 
 	@Override
 	public CodeBlock visit(ASTLseq lseq) {
+		int label = this.label++;
 		CodeBlock cb = lseq.l.accept(this);
+		this.label++;
 		cb.merge(lseq.r.accept(this));
 		cb.insertCondBranching(Cond.LSEQ, label);
-		return this.addBI(cb);
+		return this.addBI(cb, label);
 	}
 
 	@Override
 	public CodeBlock visit(ASTGreq greq) {
+		int label = this.label++;
 		CodeBlock cb = greq.l.accept(this);
+		this.label++;
 		cb.merge(greq.r.accept(this));
 		cb.insertCondBranching(Cond.GREQ, label);
-		return this.addBI(cb);
+		return this.addBI(cb, label);
 	}
 
 	@Override

@@ -1,8 +1,4 @@
-import ast.ASTCond;
-import ast.ASTEq;
-import ast.ASTGr;
-import ast.ASTNode;
-import ast.ASTNum;
+import ast.*;
 import parser.ParseException;
 import parser.Parser;
 import semantics.IValue;
@@ -20,16 +16,36 @@ public class Main {
 //		new ASTPlus(new ASTNum(IValue.fromInteger(1)), new ASTNum(IValue.fromInteger(2))),
 //		new ASTMul(new ASTNum(IValue.fromInteger(2)), new ASTNum(IValue.fromInteger(7)))
 //		);
+//		ASTNode exp = new ASTCond(
+//				new ASTEq(new ASTNum(IValue.fromInteger(99)), new ASTNum(IValue.fromInteger(100))),
+//				new ASTCond
+//				(
+//						new ASTGr(new ASTNum(IValue.fromInteger(20)), new ASTNum(IValue.fromInteger(15))),
+//						new ASTNum(IValue.fromInteger(22)),
+//						new ASTNum(IValue.fromInteger(92))
+//				),
+//				new ASTNum(IValue.fromInteger(-1))
+//		);
+		
 		ASTNode exp = new ASTCond(
-				new ASTEq(new ASTNum(IValue.fromInteger(99)), new ASTNum(IValue.fromInteger(100))),
+				new ASTEq(new ASTNum(IValue.fromInteger(100)), new ASTNum(IValue.fromInteger(100))),
 				new ASTCond
 				(
-						new ASTGr(new ASTNum(IValue.fromInteger(20)), new ASTNum(IValue.fromInteger(15))),
+						new ASTGr(
+								new ASTCond(
+										new ASTAnd(
+												new ASTLseq(new ASTNum(IValue.fromInteger(45)), new ASTNum(IValue.fromInteger(45))),
+												new ASTEq(new ASTNum(IValue.fromInteger(99)), new ASTNum(IValue.fromInteger(100)))
+										),
+										new ASTNum(IValue.fromInteger(20)),
+										new ASTNum(IValue.fromInteger(850))),
+								new ASTNum(IValue.fromInteger(15))),
 						new ASTNum(IValue.fromInteger(22)),
 						new ASTNum(IValue.fromInteger(92))
 				),
 				new ASTNum(IValue.fromInteger(-1))
 		);
+		
 		System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
 		System.out.println("Val: "+exp.accept(new EvalVisitor()));
 		System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
