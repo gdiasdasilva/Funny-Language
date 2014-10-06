@@ -180,4 +180,13 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		cb.insertOp(Op.OR);
 		return cb;
 	}
+
+	@Override
+	public CodeBlock visit(ASTNot n) {
+		CodeBlock cb = new CodeBlock();
+		cb.insertIntArgument(1);
+		cb.merge(n.v.accept(this));
+		cb.insertOp(Op.SUB);
+		return cb;
+	}
 }

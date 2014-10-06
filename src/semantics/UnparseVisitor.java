@@ -10,6 +10,7 @@ import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
 import ast.ASTNeq;
+import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
 import ast.ASTPlus;
@@ -97,6 +98,11 @@ public class UnparseVisitor implements Visitor<String> {
 	@Override
 	public String visit(ASTCond cond) {
 		return "ASTCond( " + cond.condNode.accept(this) + " , " + cond.thenNode.accept(this) + " , " + cond.elseNode.accept(this) + " )";
+	}
+
+	@Override
+	public String visit(ASTNot n) {
+		return "ASTUnMinus( " + n.v.accept(this) + " )";
 	}
 
 }

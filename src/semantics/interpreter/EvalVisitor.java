@@ -14,6 +14,7 @@ import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
 import ast.ASTNeq;
+import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
 import ast.ASTPlus;
@@ -130,5 +131,11 @@ public class EvalVisitor implements Visitor<Value> {
 		Value thenV = cond.thenNode.accept(this);
 		Value elseV = cond.elseNode.accept(this);
 		return (c.b ? thenV : elseV);
+	}
+
+	@Override
+	public Value visit(ASTNot n) {
+		BValue v = (BValue) n.v.accept(this);
+		return new BValue(!v.b);
 	}
 }

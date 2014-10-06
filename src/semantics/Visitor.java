@@ -10,6 +10,7 @@ public interface Visitor<T> {
 	T visit(ASTMul mul);
 	T visit(ASTDiv div);
 	T visit(ASTUnMinus um);
+	T visit(ASTNot n);
 	T visit(ASTEq eq);
 	T visit(ASTNeq neq);
 	T visit(ASTLs ls);

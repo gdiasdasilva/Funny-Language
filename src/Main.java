@@ -1,15 +1,21 @@
-import ast.ASTNode;
+import java.io.File;
+
 import parser.ParseException;
 import parser.Parser;
 import semantics.UnparseVisitor;
+import semantics.compiler.CodeBlock;
 import semantics.compiler.CompilerVisitor;
 import semantics.interpreter.EvalVisitor;
+import ast.ASTNode;
 
 public class Main {
 
 	public static void main(String args[]) throws ParseException {
 		Parser parser = new Parser(System.in);
 		System.out.println("Welcome.");
+		
+//		TEXT EXPRESSIONS. COMMENT OUT ONE OF THEM TO USE
+		
 //		ASTNode exp = new ASTCond(
 //		new ASTEq(new ASTPlus(new ASTNum(IValue.fromInteger(3)), new ASTNum(IValue.fromInteger(3))), new ASTDiv(new ASTNum(IValue.fromInteger(12)), new ASTPlus(new ASTNum(IValue.fromInteger(-1)), new ASTNum(IValue.fromInteger(3))))),
 //		new ASTPlus(new ASTNum(IValue.fromInteger(1)), new ASTNum(IValue.fromInteger(2))),
@@ -48,13 +54,16 @@ public class Main {
 //		System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
 //		System.out.println("Val: "+exp.accept(new EvalVisitor()));
 //		System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
-		
+		CodeBlock cb;
 		while (true) {
 			try {
 				ASTNode exp = parser.start();
 				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
 				System.out.println("Val: "+exp.accept(new EvalVisitor()));
-				System.out.println("Code:\n"+exp.accept(new CompilerVisitor()));
+				cb = exp.accept(new CompilerVisitor());
+//				System.out.println("Code:\n"+cb);
+				cb.writeToFile(new File("Code.j"));
+				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
 			} catch (Error e) {
 				System.out.println("Parsing error");
 				System.out.println(e.getMessage());

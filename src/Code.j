@@ -16,7 +16,7 @@
 
        ; setup local variables:
 
-       ;    1 - the PrintStream object held in java.lang.System.out
+       ;    1 - the PrintStream object held in java.lang.System.ou4
        getstatic java/lang/System/out Ljava/io/PrintStream;
 
        ; place your bytecodes here

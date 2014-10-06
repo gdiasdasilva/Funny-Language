@@ -1,6 +1,13 @@
 package semantics.compiler;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,6 +32,8 @@ public class CodeBlock {
 	// zero is 'false', all other integers are 'true'
 	private static final String AND_OP = MUL_OP;
 	private static final String OR_OP = ADD_OP;
+//	private static final String AND_OP = "iand";
+//	private static final String OR_OP = "ior";
 	
 	// comparisons
 	private static final String EQ_OP = "if_icmpeq ";
@@ -40,8 +49,35 @@ public class CodeBlock {
 		codeBlock = new LinkedList<String>();
 	}
 	
-	public void writeToFile(File f) {
-		// TODO Auto-generated method stub
+	public void writeToFile(File f) throws IOException {
+		try {
+			Files.delete(f.toPath());
+		} catch (IOException e) { }
+		BufferedReader[] files = {
+			new BufferedReader(new FileReader(new File("Header.j"))),
+			new BufferedReader(new FileReader(new File("Footer.j")))
+		};
+		
+		List<String> sl = new LinkedList<String>();
+		for (int i = 0; i < 2; i++) {
+			while (files[i].ready()) {
+				sl.add(files[i].readLine());
+			}
+			files[i].close();
+			if (i == 0)
+				sl.addAll(codeBlock);
+		}
+		
+		FileOutputStream fos = new FileOutputStream(f);
+	 
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+	 
+		for (String s : sl) {
+			bw.write(s);
+			bw.newLine();
+		}
+		bw.close();
+		
 	}
 
 	public void insertOp(Op op) {
@@ -64,6 +100,9 @@ public class CodeBlock {
 		case OR:
 			codeBlock.add(OR_OP);
 			break;
+//		case NOT:
+//			codeBlock.add(NOT_OP);
+//			break;
 		default:
 			break;
 		}
