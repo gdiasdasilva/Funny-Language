@@ -22,9 +22,6 @@
        ; place your bytecodes here
 
        ; START
-
-
-
        
        ; END
 
