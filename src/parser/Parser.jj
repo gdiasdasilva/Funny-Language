@@ -21,8 +21,8 @@ SKIP :
 
 TOKEN :
 {
-//  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-  < Num: (["0"-"9"]) + >
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+| < Num: (["0"-"9"]) + >
 | < BOOL_LIT: "true" | "false" >
 | < LPAR : "(" >
 | < RPAR : ")" >
@@ -145,7 +145,8 @@ ASTNode Factor():
 	   n = < BOOL_LIT > { f = new ASTTruth(new BValue(Boolean.parseBoolean(n.image))); } | 
 	   <LPAR> ( f = CondExp() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
-	   < NOT > f = Factor() { f = new ASTNot(f); }
+	   < NOT > f = Factor() { f = new ASTNot(f); } |
+	   n = < Id > { f = new ASTId(n.image); }
 	)
 	{ return f; }
 }
