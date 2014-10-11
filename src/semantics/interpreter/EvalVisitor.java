@@ -148,8 +148,8 @@ public class EvalVisitor implements Visitor<Value> {
 
 	@Override
 	public Value visit(ASTDecl decl) {
-		Value v = decl.def.accept(this); //TODO 
-	//	v = decl.body.accept(this);
+		Value v = decl.def.accept(this); //TODO
+		v = decl.body.accept(this);
 		return v;
 	}
 }
