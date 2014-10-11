@@ -10,7 +10,6 @@ import ast.ASTNode;
 
 public class Main {
 
-	@SuppressWarnings("static-access")
 	public static void main(String args[]) throws ParseException {
 		Parser parser = new Parser(System.in);
 		System.out.println("Welcome.");

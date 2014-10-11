@@ -1,9 +1,27 @@
 package semantics.compiler;
 
-import ast.*;
 import semantics.BValue;
 import semantics.IValue;
 import semantics.Visitor;
+import ast.ASTAnd;
+import ast.ASTCond;
+import ast.ASTDecl;
+import ast.ASTDiv;
+import ast.ASTEq;
+import ast.ASTGr;
+import ast.ASTGreq;
+import ast.ASTId;
+import ast.ASTLs;
+import ast.ASTLseq;
+import ast.ASTMul;
+import ast.ASTNeq;
+import ast.ASTNot;
+import ast.ASTNum;
+import ast.ASTOr;
+import ast.ASTPlus;
+import ast.ASTSub;
+import ast.ASTTruth;
+import ast.ASTUnMinus;
 
 public class CompilerVisitor implements Visitor<CodeBlock> {
 	
@@ -191,13 +209,13 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTDecl decl) {
+	public CodeBlock visit(ASTId id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTId id) {
+	public CodeBlock visit(ASTDecl decl) {
 		// TODO Auto-generated method stub
 		return null;
 	}

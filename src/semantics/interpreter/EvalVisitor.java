@@ -1,6 +1,7 @@
 package semantics.interpreter;
 
 import semantics.BValue;
+import semantics.Env;
 import semantics.IValue;
 import semantics.Value;
 import semantics.Visitor;
@@ -148,8 +149,6 @@ public class EvalVisitor implements Visitor<Value> {
 
 	@Override
 	public Value visit(ASTDecl decl) {
-		Value v = decl.def.accept(this); //TODO
-		v = decl.body.accept(this);
-		return v;
+		return null;
 	}
 }
