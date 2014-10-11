@@ -22,7 +22,9 @@
        ; place your bytecodes here
 
        ; START
-sipush 0
+sipush 2
+sipush 2
+iadd
        ; END
 
 

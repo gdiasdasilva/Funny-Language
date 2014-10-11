@@ -2,7 +2,6 @@ package ast;
 
 import semantics.Value;
 import semantics.Visitor;
-import semantics.compiler.CodeBlock;
 
 public class ASTNum implements ASTNode {
 	
@@ -10,18 +9,6 @@ public class ASTNum implements ASTNode {
 
 	public ASTNum(Value<Integer> iVal) {
 		this.iVal = iVal;
-	}
-
-	@Override
-	public int eval() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void compile(CodeBlock c) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

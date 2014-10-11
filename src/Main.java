@@ -10,6 +10,7 @@ import ast.ASTNode;
 
 public class Main {
 
+	@SuppressWarnings("static-access")
 	public static void main(String args[]) throws ParseException {
 		Parser parser = new Parser(System.in);
 		System.out.println("Welcome.");
@@ -20,9 +21,9 @@ public class Main {
 				ASTNode exp = parser.start();
 				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
 				System.out.println("Val: "+exp.accept(new EvalVisitor()));
-				cb = exp.accept(new CompilerVisitor());
-				cb.writeToFile(new File("Code.j"));
-				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
+				//cb = exp.accept(new CompilerVisitor());
+				//cb.writeToFile(new File("Code.j"));
+				//System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
 			} catch (Error e) {
 				System.out.println("Parsing error");
 				System.out.println(e.getMessage());

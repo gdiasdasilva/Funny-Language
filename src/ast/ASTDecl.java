@@ -2,13 +2,16 @@ package ast;
 
 import semantics.Visitor;
 
-public class ASTId implements ASTNode {
+public class ASTDecl implements ASTNode {
 
 	public final String id;
+	public ASTNode def, body;
 	
-	public ASTId(String id)
+	public ASTDecl(String id, ASTNode def, ASTNode body)
 	{
 		this.id = id;
+		this.def = def;
+		this.body = body;
 	}
 
 	@Override

@@ -20,4 +20,6 @@ public interface Visitor<T> {
 	T visit(ASTAnd and);
 	T visit(ASTOr or);
 	T visit(ASTCond cond);
+	T visit(ASTId id);
+	T visit(ASTDecl decl);
 }

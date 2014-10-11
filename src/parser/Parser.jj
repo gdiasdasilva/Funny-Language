@@ -21,8 +21,7 @@ SKIP :
 
 TOKEN :
 {
-  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-| < Num: (["0"-"9"]) + >
+< Num: (["0"-"9"]) + >
 | < BOOL_LIT: "true" | "false" >
 | < LPAR : "(" >
 | < RPAR : ")" >
@@ -42,13 +41,26 @@ TOKEN :
 | < OR : "||" >
 | < NOT: "!" >
 | < EL: "\n" >
+| < DECL: "decl" >
+| < ASSOC: "=" >
+| < IN: "in" >
+| < END: "end" >
+| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 ASTNode start():
 { ASTNode t; }
 {
-  	t = CondExp() < EL >
+  	t = Decl() < EL >
   	{ return t; } 
+}
+
+ASTNode Decl():
+{ ASTNode e1, e2, e3; Token var;}
+{
+  < DECL > (var = < Id > < ASSOC > e2 = Decl())+ < IN > e3 = Decl() < END > { return new ASTDecl(var.image, e2, e3); } |
+  e1 = CondExp() { return e1; }
+ 
 }
 
 ASTNode CondExp():
@@ -143,7 +155,7 @@ ASTNode Factor():
 {
 	(	   n = <Num> { f = new ASTNum(IValue.fromInteger(Integer.parseInt(n.image))); } |
 	   n = < BOOL_LIT > { f = new ASTTruth(new BValue(Boolean.parseBoolean(n.image))); } | 
-	   <LPAR> ( f = CondExp() ) <RPAR> |
+	   <LPAR> ( f = Decl() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
 	   n = < Id > { f = new ASTId(n.image); }

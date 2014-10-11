@@ -189,4 +189,16 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		cb.insertOp(Op.SUB);
 		return cb;
 	}
+
+	@Override
+	public CodeBlock visit(ASTDecl decl) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTId id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

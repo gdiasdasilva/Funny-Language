@@ -6,10 +6,12 @@ import semantics.Value;
 import semantics.Visitor;
 import ast.ASTAnd;
 import ast.ASTCond;
+import ast.ASTDecl;
 import ast.ASTDiv;
 import ast.ASTEq;
 import ast.ASTGr;
 import ast.ASTGreq;
+import ast.ASTId;
 import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
@@ -137,5 +139,17 @@ public class EvalVisitor implements Visitor<Value> {
 	public Value visit(ASTNot n) {
 		BValue v = (BValue) n.v.accept(this);
 		return new BValue(!v.b);
+	}
+	
+	@Override
+	public Value visit(ASTId id) {
+		return id.accept(this);
+	}
+
+	@Override
+	public Value visit(ASTDecl decl) {
+		Value v = decl.def.accept(this); //TODO 
+	//	v = decl.body.accept(this);
+		return v;
 	}
 }

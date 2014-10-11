@@ -1,7 +1,6 @@
 package ast;
 
 import semantics.Visitor;
-import semantics.compiler.CodeBlock;
 
 public class ASTCond implements ASTNode {
 	
@@ -11,22 +10,6 @@ public class ASTCond implements ASTNode {
 		this.condNode = condNode;
 		this.thenNode = thenNode;
 		this.elseNode = elseNode;
-	}
-	
-	@Override
-	public int eval() {
-		return (condNode.eval() != 0 ? thenNode.eval() : elseNode.eval());
-	}
-
-	@Override
-	public void compile(CodeBlock c) {
-//		condNode.compile(c);
-//		c.insertCondBranch(Cond.EQ);
-//		elseNode.compile(c);
-//		c.insertGoto();
-//		c.insertThenLabel();
-//		thenNode.compile(c);
-//		c.insertFinalLabel();
 	}
 
 	@Override

@@ -2,10 +2,12 @@ package semantics;
 
 import ast.ASTAnd;
 import ast.ASTCond;
+import ast.ASTDecl;
 import ast.ASTDiv;
 import ast.ASTEq;
 import ast.ASTGr;
 import ast.ASTGreq;
+import ast.ASTId;
 import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
@@ -105,4 +107,13 @@ public class UnparseVisitor implements Visitor<String> {
 		return "ASTUnMinus( " + n.v.accept(this) + " )";
 	}
 
+	@Override
+	public String visit(ASTId id) {
+		return "ASTId( " + id.id + " )";
+	}
+	
+	@Override
+	public String visit(ASTDecl decl) {
+		return "ASTDecl( " + decl.id + " , " + decl.def.accept(this) + " , " + decl.body.accept(this) + " )";
+	}
 }

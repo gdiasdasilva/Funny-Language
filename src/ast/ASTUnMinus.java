@@ -1,7 +1,6 @@
 package ast;
 
 import semantics.Visitor;
-import semantics.compiler.CodeBlock;
 
 public class ASTUnMinus implements ASTNode {
 
@@ -9,17 +8,6 @@ public class ASTUnMinus implements ASTNode {
 	
 	public ASTUnMinus(ASTNode v) {
 		this.v = v;
-	}
-
-	@Override
-	public int eval() {
-		return -v.eval();
-	}
-
-	@Override
-	public void compile(CodeBlock c) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
