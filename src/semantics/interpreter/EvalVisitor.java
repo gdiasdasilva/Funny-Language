@@ -153,8 +153,15 @@ public class EvalVisitor implements Visitor<Value> {
 	public Value visit(ASTDecl decl)
 	{
 		env.beginScope();
-		env.assoc(decl.id, decl.def.accept(this));
+		
+		for (int i = 0; i < decl.ids.size( ); i++)
+		{
+			env.assoc(decl.ids.get(i), decl.defs.get(i).accept(this));
+		}
+		
 		Value v = decl.body.accept(this);
+		
+		env.endScope();
 		return v;
 	}
 }

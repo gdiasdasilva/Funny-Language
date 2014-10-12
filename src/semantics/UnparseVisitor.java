@@ -114,6 +114,7 @@ public class UnparseVisitor implements Visitor<String> {
 	
 	@Override
 	public String visit(ASTDecl decl) {
-		return "ASTDecl( " + decl.id + " , " + decl.def.accept(this) + " , " + decl.body.accept(this) + " )";
+//		return "ASTDecl( " + decl.ids + " , " + decl.defs.accept(this) + " , " + decl.body.accept(this) + " )";
+		return "ASTDecl( NOT UNPARSING )";
 	}
 }

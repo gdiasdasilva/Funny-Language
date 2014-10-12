@@ -1,16 +1,19 @@
 package ast;
 
+import java.util.List;
+
 import semantics.Visitor;
 
 public class ASTDecl implements ASTNode {
 
-	public final String id;
-	public final ASTNode def, body;
+	public final List<String> ids;
+	public final ASTNode body;
+	public final List<ASTNode> defs;
 	
-	public ASTDecl(String id, ASTNode def, ASTNode body)
+	public ASTDecl(List<String> ids, List<ASTNode> defs, ASTNode body)
 	{
-		this.id = id;
-		this.def = def;
+		this.ids = ids;
+		this.defs = defs;
 		this.body = body;
 	}
 

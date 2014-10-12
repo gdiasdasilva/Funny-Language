@@ -3,6 +3,8 @@ PARSER_BEGIN(Parser)
 package parser;
 
 import ast.*;
+import java.util.List;
+import java.util.ArrayList;
 import semantics.*;
 
 public class Parser
@@ -56,9 +58,9 @@ ASTNode start():
 }
 
 ASTNode Decl():
-{ ASTNode e1, e2, e3; Token var;}
+{ ASTNode e1, e2, e3; Token id; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
 {
-  < DECL > (var = < Id > < ASSOC > e2 = Decl())+ < IN > e3 = Decl() < END > { return new ASTDecl(var.image, e2, e3); } |
+  < DECL > (id = < Id > < ASSOC > e2 = Decl() { ids.add(id.image); exps.add(e2); })+ < IN > e3 = Decl() < END > { return new ASTDecl(ids, exps, e3); } |
   e1 = CondExp() { return e1; }
  
 }
