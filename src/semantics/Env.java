@@ -35,14 +35,11 @@ public class Env implements IEnv {
 	}
 
 	@Override
-	public Value find(String id)
+	public Value find(String id) throws UndefinedIdException
 	{		
-		for(int i = scopes.size()-1; i >= 0; i--)
-		{
+		for(int i = scopes.size() - 1; i >= 0; i--)
 			if (scopes.get(i).containsKey(id))
-				return (Value) scopes.get(i).get(id);
-		}
-		
-		return null;
+				return scopes.get(i).get(id);
+		throw new UndefinedIdException(id);
 	}
 }

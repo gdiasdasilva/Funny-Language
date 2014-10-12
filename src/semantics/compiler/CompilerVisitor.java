@@ -47,7 +47,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTPlus plus) {
+	public CodeBlock visit(ASTPlus plus) throws Exception {
 		CodeBlock cb = plus.l.accept(this);
 		cb.merge(plus.r .accept(this));
 		cb.insertOp(Op.ADD);
@@ -55,7 +55,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTSub sub) {
+	public CodeBlock visit(ASTSub sub) throws Exception {
 		CodeBlock cb = sub.l.accept(this);
 		cb.merge(sub.r.accept(this));
 		cb.insertOp(Op.SUB);
@@ -63,7 +63,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTMul mul) {
+	public CodeBlock visit(ASTMul mul) throws Exception {
 		CodeBlock cb = mul.l.accept(this);
 		cb.merge(mul.r.accept(this));
 		cb.insertOp(Op.MUL);
@@ -71,7 +71,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTDiv div) {
+	public CodeBlock visit(ASTDiv div) throws Exception {
 		CodeBlock cb = div.l.accept(this);
 		cb.merge(div.r.accept(this));
 		cb.insertOp(Op.DIV);
@@ -79,7 +79,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTUnMinus um) {
+	public CodeBlock visit(ASTUnMinus um) throws Exception {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(0);
 		cb.merge(um.v.accept(this));
@@ -105,7 +105,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTEq eq) {
+	public CodeBlock visit(ASTEq eq) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = eq.l.accept(this);
 		this.label++;
@@ -115,7 +115,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTNeq neq) {
+	public CodeBlock visit(ASTNeq neq) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = neq.l.accept(this);
 		this.label++;
@@ -125,7 +125,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 	
 	@Override
-	public CodeBlock visit(ASTCond cond) {
+	public CodeBlock visit(ASTCond cond) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = cond.condNode.accept(this);
 		cb.insertIntArgument(FALSE);
@@ -142,7 +142,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTLs ls) {
+	public CodeBlock visit(ASTLs ls) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = ls.l.accept(this);
 		this.label++;
@@ -152,7 +152,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTGr gr) {
+	public CodeBlock visit(ASTGr gr) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = gr.l.accept(this);
 		this.label++;
@@ -162,7 +162,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTLseq lseq) {
+	public CodeBlock visit(ASTLseq lseq) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = lseq.l.accept(this);
 		this.label++;
@@ -172,7 +172,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTGreq greq) {
+	public CodeBlock visit(ASTGreq greq) throws Exception {
 		int label = this.label++;
 		CodeBlock cb = greq.l.accept(this);
 		this.label++;
@@ -182,7 +182,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTAnd and) {
+	public CodeBlock visit(ASTAnd and) throws Exception {
 		CodeBlock cb = and.l.accept(this);
 		cb.merge(and.r .accept(this));
 		cb.insertOp(Op.AND);
@@ -190,7 +190,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTOr or) {
+	public CodeBlock visit(ASTOr or) throws Exception {
 		CodeBlock cb = or.l.accept(this);
 		cb.merge(or.r .accept(this));
 		cb.insertOp(Op.OR);
@@ -198,7 +198,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTNot n) {
+	public CodeBlock visit(ASTNot n) throws Exception {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(1);
 		cb.merge(n.v.accept(this));
@@ -207,13 +207,13 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTId id) {
+	public CodeBlock visit(ASTId id) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTDecl decl) {
+	public CodeBlock visit(ASTDecl decl) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

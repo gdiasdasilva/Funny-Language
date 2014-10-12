@@ -3,5 +3,5 @@ package ast;
 import semantics.Visitor;
 
 public interface ASTNode {
-	<T> T accept(Visitor<T> visitor);
+	<T> T accept(Visitor<T> visitor) throws Exception;
 }

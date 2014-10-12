@@ -2,6 +2,7 @@ import java.io.File;
 
 import parser.ParseException;
 import parser.Parser;
+import semantics.UndefinedIdException;
 import semantics.UnparseVisitor;
 import semantics.compiler.CodeBlock;
 import semantics.compiler.CompilerVisitor;
@@ -27,6 +28,8 @@ public class Main {
 				System.out.println("Parsing error");
 				System.out.println(e.getMessage());
 				break;
+			} catch(UndefinedIdException e) {
+				System.out.println("The id '" + e.invalidId + "' is not defined in this scope.");
 			} catch (Exception e) {
 				System.out.println("NOK.");
 				e.printStackTrace();

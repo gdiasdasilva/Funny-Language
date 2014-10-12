@@ -12,7 +12,7 @@ public class ASTLseq implements ASTNode {
 	}
 
 	@Override
-	public <T> T accept(Visitor<T> visitor) {
+	public <T> T accept(Visitor<T> visitor) throws Exception {
 		return visitor.visit(this);
 	}
 
