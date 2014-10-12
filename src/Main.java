@@ -19,7 +19,7 @@ public class Main {
 			try {
 				ASTNode exp = parser.start();
 				System.out.println("Ok:  "+exp.accept(new UnparseVisitor()));
-				System.out.println("Val: "+exp.accept(new EvalVisitor()));
+				System.out.println("Val: "+exp.accept(new EvalVisitor(parser.env)));
 				//cb = exp.accept(new CompilerVisitor());
 				//cb.writeToFile(new File("Code.j"));
 				//System.out.println("Code written to file \"Code.j\" in the project or bin directory.");

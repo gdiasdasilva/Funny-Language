@@ -1,8 +1,6 @@
 package semantics.compiler;
 
-import semantics.BValue;
-import semantics.IValue;
-import semantics.Visitor;
+import semantics.*;
 import ast.ASTAnd;
 import ast.ASTCond;
 import ast.ASTDecl;
@@ -37,14 +35,14 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTNum num) {
 		CodeBlock cb = new CodeBlock();
-		cb.insertIntArgument(((IValue) num.iVal).i);
+		cb.insertIntArgument(((Value<Integer>) num.iVal).value);
 		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTTruth truth) {
 		CodeBlock cb = new CodeBlock();
-		cb.insertIntArgument(((BValue) truth.tVal).b ? TRUE : FALSE);
+		cb.insertIntArgument(((Value<Boolean>) truth.tVal).value ? TRUE : FALSE);
 		return cb;
 	}
 

@@ -7,7 +7,7 @@ import semantics.*;
 
 public class Parser
 {
-	public static final Env env = new IEnv();
+  public final IEnv env = new Env();
 }
 
 PARSER_END(Parser)
@@ -153,8 +153,8 @@ ASTNode Factor():
 { Token n; ASTNode f;
 }
 {
-	(	   n = <Num> { f = new ASTNum(IValue.fromInteger(Integer.parseInt(n.image))); } |
-	   n = < BOOL_LIT > { f = new ASTTruth(new BValue(Boolean.parseBoolean(n.image))); } | 
+	(	   n = <Num> { f = new ASTNum(new Value<Integer>(Integer.parseInt(n.image))); } |
+	   n = < BOOL_LIT > { f = new ASTTruth(new Value<Boolean>(Boolean.parseBoolean(n.image))); } | 
 	   <LPAR> ( f = Decl() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	   < NOT > f = Factor() { f = new ASTNot(f); } |

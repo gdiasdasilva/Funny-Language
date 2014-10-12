@@ -1,10 +1,6 @@
 package semantics.interpreter;
 
-import semantics.BValue;
-import semantics.Env;
-import semantics.IValue;
-import semantics.Value;
-import semantics.Visitor;
+import semantics.*;
 import ast.ASTAnd;
 import ast.ASTCond;
 import ast.ASTDecl;
@@ -25,8 +21,14 @@ import ast.ASTSub;
 import ast.ASTTruth;
 import ast.ASTUnMinus;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class EvalVisitor implements Visitor<Value> {
+	
+	private IEnv env;
+	
+	public EvalVisitor(IEnv env) {
+		this.env = env;
+	}
 
 	@Override
 	public Value<Integer> visit(ASTNum num) {
@@ -40,115 +42,119 @@ public class EvalVisitor implements Visitor<Value> {
 
 	@Override
 	public Value<Integer> visit(ASTPlus plus) {
-		IValue l = (IValue) plus.l.accept(this);
-		IValue r = (IValue) plus.r.accept(this);
-		return new IValue(l.i + r.i);
+		Value<Integer> l = plus.l.accept(this);
+		Value<Integer> r = plus.r.accept(this);
+		return new Value<Integer>(l.value + r.value);
 	}
 
 	@Override
 	public Value<Integer> visit(ASTSub sub) {
-		IValue l = (IValue) sub.l.accept(this);
-		IValue r = (IValue) sub.r.accept(this);
-		return new IValue(l.i - r.i);
+		Value<Integer> l = sub.l.accept(this);
+		Value<Integer> r = sub.r.accept(this);
+		return new Value<Integer>(l.value - r.value);
 	}
 
 	@Override
 	public Value<Integer> visit(ASTMul mul) {
-		IValue l = (IValue) mul.l.accept(this);
-		IValue r = (IValue) mul.r.accept(this);
-		return new IValue(l.i * r.i);
+		Value<Integer> l = mul.l.accept(this);
+		Value<Integer> r = mul.r.accept(this);
+		return new Value<Integer>(l.value * r.value);
 	}
 
 	@Override
 	public Value<Integer> visit(ASTDiv div) {
-		IValue l = (IValue) div.l.accept(this);
-		IValue r = (IValue) div.r.accept(this);
-		return new IValue(l.i / r.i);
+		Value<Integer> l = div.l.accept(this);
+		Value<Integer> r = div.r.accept(this);
+		return new Value<Integer>(l.value / r.value);
 	}
 
 	@Override
 	public Value<Integer> visit(ASTUnMinus um) {
-		IValue v = (IValue) um.v.accept(this);
-		return new IValue(-v.i);
+		Value<Integer> v = (Value<Integer>) um.v.accept(this);
+		return new Value<Integer>(-v.value);
 	}
 	
 	@Override
 	public Value<Boolean> visit(ASTEq eq) {
-		IValue l = (IValue) eq.l.accept(this);
-		IValue r = (IValue) eq.r.accept(this);
-		return new BValue(l.i == r.i);
+		Value<Integer> l = (Value<Integer>) eq.l.accept(this);
+		Value<Integer> r = (Value<Integer>) eq.r.accept(this);
+		return new Value<Boolean>(l.value == r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTAnd and) {
-		BValue l = (BValue) and.l.accept(this);
-		BValue r = (BValue) and.r.accept(this);
-		return new BValue(l.b && r.b);
+		Value<Boolean> l =  and.l.accept(this);
+		Value<Boolean> r =  and.r.accept(this);
+		return new Value<Boolean>(l.value && r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTOr or) {
-		BValue l = (BValue) or.l.accept(this);
-		BValue r = (BValue) or.r.accept(this);
-		return new BValue(l.b || r.b);
+		Value<Boolean> l =  or.l.accept(this);
+		Value<Boolean> r =  or.r.accept(this);
+		return new Value<Boolean>(l.value || r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTNeq neq) {
-		IValue l = (IValue) neq.l.accept(this);
-		IValue r = (IValue) neq.r.accept(this);
-		return new BValue(l.i != r.i);
+		Value<Integer> l = (Value<Integer>) neq.l.accept(this);
+		Value<Integer> r = (Value<Integer>) neq.r.accept(this);
+		return new Value<Boolean>(l.value != r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTLseq lseq) {
-		IValue l = (IValue) lseq.l.accept(this);
-		IValue r = (IValue) lseq.r.accept(this);
-		return new BValue(l.i <= r.i);
+		Value<Integer> l = (Value<Integer>) lseq.l.accept(this);
+		Value<Integer> r = (Value<Integer>) lseq.r.accept(this);
+		return new Value<Boolean>(l.value <= r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTGreq greq) {
-		IValue l = (IValue) greq.l.accept(this);
-		IValue r = (IValue) greq.r.accept(this);
-		return new BValue(l.i >= r.i);
+		Value<Integer> l = (Value<Integer>) greq.l.accept(this);
+		Value<Integer> r = (Value<Integer>) greq.r.accept(this);
+		return new Value<Boolean>(l.value >= r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTLs ls) {
-		IValue l = (IValue) ls.l.accept(this);
-		IValue r = (IValue) ls.r.accept(this);
-		return new BValue(l.i < r.i);
+		Value<Integer> l = (Value<Integer>) ls.l.accept(this);
+		Value<Integer> r = (Value<Integer>) ls.r.accept(this);
+		return new Value<Boolean>(l.value < r.value);
 	}
 
 	@Override
 	public Value<Boolean> visit(ASTGr gr) {
-		IValue l = (IValue) gr.l.accept(this);
-		IValue r = (IValue) gr.r.accept(this);
-		return new BValue(l.i > r.i);
+		Value<Integer> l = (Value<Integer>) gr.l.accept(this);
+		Value<Integer> r = (Value<Integer>) gr.r.accept(this);
+		return new Value<Boolean>(l.value > r.value);
 	}
 
 	@Override
 	public Value visit(ASTCond cond) {
-		BValue c = (BValue) cond.condNode.accept(this);
+		Value<Boolean> c =  cond.condNode.accept(this);
 		Value thenV = cond.thenNode.accept(this);
 		Value elseV = cond.elseNode.accept(this);
-		return (c.b ? thenV : elseV);
+		return (c.value ? thenV : elseV);
 	}
 
 	@Override
 	public Value visit(ASTNot n) {
-		BValue v = (BValue) n.v.accept(this);
-		return new BValue(!v.b);
+		Value<Boolean> v =  n.v.accept(this);
+		return new Value<Boolean>(!v.value);
 	}
 	
 	@Override
 	public Value visit(ASTId id) {
-		return id.accept(this);
+		return env.find(id.id);
 	}
 
 	@Override
-	public Value visit(ASTDecl decl) {
-		return null;
+	public Value visit(ASTDecl decl)
+	{
+		env.beginScope();
+		env.assoc(decl.id, decl.def.accept(this));
+		Value v = decl.body.accept(this);
+		return v;
 	}
 }

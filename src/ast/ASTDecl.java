@@ -5,7 +5,7 @@ import semantics.Visitor;
 public class ASTDecl implements ASTNode {
 
 	public final String id;
-	public ASTNode def, body;
+	public final ASTNode def, body;
 	
 	public ASTDecl(String id, ASTNode def, ASTNode body)
 	{
