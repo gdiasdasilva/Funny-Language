@@ -57,14 +57,6 @@ ASTNode start():
   	{ return t; } 
 }
 
-ASTNode Decl():
-{ ASTNode e1, e2, e3; Token id; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
-{
-  < DECL > (id = < Id > < ASSOC > e2 = Decl() { ids.add(id.image); exps.add(e2); })+ < IN > e3 = Decl() < END > { return new ASTDecl(ids, exps, e3); } |
-  e1 = CondExp() { return e1; }
- 
-}
-
 ASTNode CondExp():
 { ASTNode e1, e2, e3; }
 {
@@ -151,13 +143,20 @@ ASTNode Term():
  	{ return f1; }	
 }
 
+ASTNode Decl():
+{ ASTNode e1, e2, e3; Token id; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
+{
+  < DECL > (id = < Id > < ASSOC > e2 = CondExp() { ids.add(id.image); exps.add(e2); })+ < IN > e3 = CondExp() < END > { return new ASTDecl(ids, exps, e3); }
+}
+
 ASTNode Factor():
 { Token n; ASTNode f;
 }
 {
 	(	   n = <Num> { f = new ASTNum(new Value<Integer>(Integer.parseInt(n.image))); } |
-	   n = < BOOL_LIT > { f = new ASTTruth(new Value<Boolean>(Boolean.parseBoolean(n.image))); } | 
-	   <LPAR> ( f = Decl() ) <RPAR> |
+	   n = < BOOL_LIT > { f = new ASTTruth(new Value<Boolean>(Boolean.parseBoolean(n.image))); } |
+	   f = Decl() |
+	   <LPAR> ( f = CondExp() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
 	   n = < Id > { f = new ASTId(n.image); }
