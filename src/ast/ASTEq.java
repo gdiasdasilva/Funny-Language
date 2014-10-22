@@ -1,5 +1,6 @@
 package ast;
 
+import semantics.IValue;
 import semantics.Visitor;
 
 public class ASTEq implements ASTNode {
@@ -12,8 +13,7 @@ public class ASTEq implements ASTNode {
 	}
 
 	@Override
-	public <T> T accept(Visitor<T> visitor) throws Exception {
+	public IValue accept(Visitor<IValue> visitor) throws Exception {
 		return visitor.visit(this);
 	}
-	
 }

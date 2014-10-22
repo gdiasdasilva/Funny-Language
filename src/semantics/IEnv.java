@@ -4,6 +4,6 @@ public interface IEnv
 {
 	void beginScope();
 	void endScope();
-	void assoc(String id, Value val);
-	Value find(String id) throws UndefinedIdException;
+	void assoc(String id, IValue val);
+	IValue find(String id) throws UndefinedIdException;
 }

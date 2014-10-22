@@ -1,7 +1,6 @@
 package semantics.interpreter;
 
 import semantics.*;
-import semantics.Value;
 import ast.ASTAnd;
 import ast.ASTAssign;
 import ast.ASTCond;
@@ -24,8 +23,7 @@ import ast.ASTTruth;
 import ast.ASTUnMinus;
 import ast.ASTWhile;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class EvalVisitor implements Visitor<Value> {
+public class EvalVisitor implements Visitor<IValue> {
 	
 	private IEnv env;
 	
@@ -34,126 +32,126 @@ public class EvalVisitor implements Visitor<Value> {
 	}
 
 	@Override
-	public Value<Integer> visit(ASTNum num) {
+	public IValue visit(ASTNum num) {
 		return num.iVal;
 	}
 	
 	@Override
-	public Value<Boolean> visit(ASTTruth truth) {
+	public IValue visit(ASTTruth truth) {
 		return truth.tVal;
 	}
 
 	@Override
-	public Value<Integer> visit(ASTPlus plus) throws Exception {
-		Value<Integer> l = plus.l.accept(this);
-		Value<Integer> r = plus.r.accept(this);
-		return new Value<Integer>(l.value + r.value);
+	public IValue visit(ASTPlus plus) throws Exception {
+		IntValue l = (IntValue) plus.l.accept(this);
+		IntValue r = (IntValue) plus.r.accept(this);
+		return new IntValue(l.getVal() + r.getVal());
 	}
 
 	@Override
-	public Value<Integer> visit(ASTSub sub) throws Exception {
-		Value<Integer> l = sub.l.accept(this);
-		Value<Integer> r = sub.r.accept(this);
-		return new Value<Integer>(l.value - r.value);
+	public IValue visit(ASTSub sub) throws Exception {
+		IntValue l = (IntValue) sub.l.accept(this);
+		IntValue r = (IntValue) sub.r.accept(this);
+		return new IntValue(l.getVal() - r.getVal());
 	}
 
 	@Override
-	public Value<Integer> visit(ASTMul mul) throws Exception {
-		Value<Integer> l = mul.l.accept(this);
-		Value<Integer> r = mul.r.accept(this);
-		return new Value<Integer>(l.value * r.value);
+	public IValue visit(ASTMul mul) throws Exception {
+		IntValue l = (IntValue) mul.l.accept(this);
+		IntValue r = (IntValue) mul.r.accept(this);
+		return new IntValue(l.getVal() * r.getVal());
 	}
 
 	@Override
-	public Value<Integer> visit(ASTDiv div) throws Exception {
-		Value<Integer> l = div.l.accept(this);
-		Value<Integer> r = div.r.accept(this);
-		return new Value<Integer>(l.value / r.value);
+	public IValue visit(ASTDiv div) throws Exception {
+		IntValue l = (IntValue) div.l.accept(this);
+		IntValue r = (IntValue) div.r.accept(this);
+		return new IntValue(l.getVal() / r.getVal());
 	}
 
 	@Override
-	public Value<Integer> visit(ASTUnMinus um) throws Exception {
-		Value<Integer> v = (Value<Integer>) um.v.accept(this);
-		return new Value<Integer>(-v.value);
+	public IValue visit(ASTUnMinus um) throws Exception {
+		IntValue v = (IntValue) um.v.accept(this);
+		return new IntValue(-v.getVal());
 	}
 	
 	@Override
-	public Value<Boolean> visit(ASTEq eq) throws Exception {
-		Value<Integer> l = (Value<Integer>) eq.l.accept(this);
-		Value<Integer> r = (Value<Integer>) eq.r.accept(this);
-		return new Value<Boolean>(l.value == r.value);
+	public IValue visit(ASTEq eq) throws Exception {
+		BoolValue l = (BoolValue) eq.l.accept(this);
+		BoolValue r = (BoolValue) eq.r.accept(this);
+		return new BoolValue(l.getVal() == r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTAnd and) throws Exception{
-		Value<Boolean> l =  and.l.accept(this);
-		Value<Boolean> r =  and.r.accept(this);
-		return new Value<Boolean>(l.value && r.value);
+	public IValue visit(ASTAnd and) throws Exception{
+		BoolValue l = (BoolValue) and.l.accept(this);
+		BoolValue r = (BoolValue) and.r.accept(this);
+		return new BoolValue(l.getVal() && r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTOr or) throws Exception {
-		Value<Boolean> l =  or.l.accept(this);
-		Value<Boolean> r =  or.r.accept(this);
-		return new Value<Boolean>(l.value || r.value);
+	public IValue visit(ASTOr or) throws Exception {
+		BoolValue l = (BoolValue) or.l.accept(this);
+		BoolValue r = (BoolValue) or.r.accept(this);
+		return new BoolValue(l.getVal() || r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTNeq neq) throws Exception {
-		Value<Integer> l = (Value<Integer>) neq.l.accept(this);
-		Value<Integer> r = (Value<Integer>) neq.r.accept(this);
-		return new Value<Boolean>(l.value != r.value);
+	public IValue visit(ASTNeq neq) throws Exception {
+		BoolValue l = (BoolValue) neq.l.accept(this);
+		BoolValue r = (BoolValue) neq.r.accept(this);
+		return new BoolValue(l.getVal() != r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTLseq lseq) throws Exception {
-		Value<Integer> l = (Value<Integer>) lseq.l.accept(this);
-		Value<Integer> r = (Value<Integer>) lseq.r.accept(this);
-		return new Value<Boolean>(l.value <= r.value);
+	public IValue visit(ASTLseq lseq) throws Exception {
+		IntValue l = (IntValue) lseq.l.accept(this);
+		IntValue r = (IntValue) lseq.r.accept(this);
+		return new BoolValue(l.getVal() <= r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTGreq greq) throws Exception{
-		Value<Integer> l = (Value<Integer>) greq.l.accept(this);
-		Value<Integer> r = (Value<Integer>) greq.r.accept(this);
-		return new Value<Boolean>(l.value >= r.value);
+	public IValue visit(ASTGreq greq) throws Exception{
+		IntValue l = (IntValue) greq.l.accept(this);
+		IntValue r = (IntValue) greq.r.accept(this);
+		return new BoolValue(l.getVal() >= r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTLs ls) throws Exception {
-		Value<Integer> l = (Value<Integer>) ls.l.accept(this);
-		Value<Integer> r = (Value<Integer>) ls.r.accept(this);
-		return new Value<Boolean>(l.value < r.value);
+	public IValue visit(ASTLs ls) throws Exception {
+		IntValue l = (IntValue) ls.l.accept(this);
+		IntValue r = (IntValue) ls.r.accept(this);
+		return new BoolValue(l.getVal() < r.getVal());
 	}
 
 	@Override
-	public Value<Boolean> visit(ASTGr gr) throws Exception{
-		Value<Integer> l = (Value<Integer>) gr.l.accept(this);
-		Value<Integer> r = (Value<Integer>) gr.r.accept(this);
-		return new Value<Boolean>(l.value > r.value);
+	public IValue visit(ASTGr gr) throws Exception{
+		IntValue l = (IntValue) gr.l.accept(this);
+		IntValue r = (IntValue) gr.r.accept(this);
+		return new BoolValue(l.getVal() > r.getVal());
 	}
 
 	@Override
-	public Value visit(ASTCond cond) throws Exception{
-		Value<Boolean> c =  cond.condNode.accept(this);
-		Value thenV = cond.thenNode.accept(this);
-		Value elseV = cond.elseNode.accept(this);
-		return (c.value ? thenV : elseV);
+	public IValue visit(ASTCond cond) throws Exception{
+		BoolValue c = (BoolValue) cond.condNode.accept(this);
+		IValue thenV = cond.thenNode.accept(this);
+		IValue elseV = cond.elseNode.accept(this);
+		return (c.getVal() ? thenV : elseV);
 	}
 
 	@Override
-	public Value visit(ASTNot n) throws Exception {
-		Value<Boolean> v =  n.v.accept(this);
-		return new Value<Boolean>(!v.value);
+	public IValue visit(ASTNot n) throws Exception {
+		BoolValue v = (BoolValue) n.v.accept(this);
+		return new BoolValue(!v.getVal());
 	}
 	
 	@Override
-	public Value visit(ASTId id) throws Exception {
+	public IValue visit(ASTId id) throws Exception {
 		return env.find(id.id);
 	}
 
 	@Override
-	public Value visit(ASTDecl decl) throws Exception
+	public IValue visit(ASTDecl decl) throws Exception
 	{
 		env.beginScope();
 		
@@ -162,24 +160,30 @@ public class EvalVisitor implements Visitor<Value> {
 			env.assoc(decl.ids.get(i), decl.defs.get(i).accept(this));
 		}
 		
-		Value v = decl.body.accept(this);
+		IValue v = decl.body.accept(this);
 		
 		env.endScope();
 		return v;
 	}
 
 	@Override
-	public Value visit(ASTAssign astAssign) throws Exception {
+	public IValue visit(ASTAssign astAssign) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Value visit(ASTWhile astWhile) throws Exception {
-		while((astWhile.l.accept(this).toBoolean()))
+	public IValue visit(ASTWhile astWhile) throws Exception {
+		IValue v1 = astWhile.l.accept(this);
+		boolean cond = ((BoolValue) v1).getVal();
+		
+		if (v1.typeOf() != IValue.VType.BOOLEAN)
+			throw new Exception();
+		
+		while(cond)
 		{
 			astWhile.r.accept(this);
 		}	
-		return new Value(true);
+		return new BoolValue(true);
 	}
 }

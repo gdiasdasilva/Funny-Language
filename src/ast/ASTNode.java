@@ -1,7 +1,8 @@
 package ast;
 
+import semantics.IValue;
 import semantics.Visitor;
 
 public interface ASTNode {
-	<T> T accept(Visitor<T> visitor) throws Exception;
+	IValue accept(Visitor<IValue> visitor) throws Exception;
 }

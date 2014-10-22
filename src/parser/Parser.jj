@@ -167,8 +167,8 @@ ASTNode Term():
 ASTNode Factor():
 { Token n; ASTNode f; }
 {
-	(	   n = <Num> { f = new ASTNum(new Value<Integer>(Integer.parseInt(n.image))); } |
-	   n = < BOOL_LIT > { f = new ASTTruth(new Value<Boolean>(Boolean.parseBoolean(n.image))); } |
+	(	   n = <Num> { f = new ASTNum(new IntValue(Integer.parseInt(n.image))); } |
+	   n = < BOOL_LIT > { f = new ASTTruth(new BoolValue(Boolean.parseBoolean(n.image))); } |
 	   f = Decl() |
 	   <LPAR> ( f = CondExp() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |

@@ -37,14 +37,14 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTNum num) {
 		CodeBlock cb = new CodeBlock();
-		cb.insertIntArgument(((Value<Integer>) num.iVal).value);
+		cb.insertIntArgument(((IntValue) num.iVal).getVal());
 		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTTruth truth) {
 		CodeBlock cb = new CodeBlock();
-		cb.insertIntArgument(((Value<Boolean>) truth.tVal).value ? TRUE : FALSE);
+		cb.insertIntArgument(((BoolValue) truth.tVal).getVal() ? TRUE : FALSE);
 		return cb;
 	}
 

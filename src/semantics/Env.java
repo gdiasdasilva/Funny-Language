@@ -9,17 +9,17 @@ public class Env implements IEnv {
 
 	String id;
 	
-	List<Map<String, Value>> scopes;
+	List<Map<String, IValue>> scopes;
 
 	public Env()
 	{
-		scopes = new ArrayList<Map<String, Value>>();
+		scopes = new ArrayList<Map<String, IValue>>();
 	}
 
 	@Override
 	public void beginScope()
 	{
-		scopes.add(new HashMap<String, Value>());
+		scopes.add(new HashMap<String, IValue>());
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class Env implements IEnv {
 	}
 
 	@Override
-	public void assoc(String id, Value val)
+	public void assoc(String id, IValue val)
 	{
 		scopes.get(scopes.size()-1).put(id, val);
 	}
 
 	@Override
-	public Value find(String id) throws UndefinedIdException
+	public IValue find(String id) throws UndefinedIdException
 	{		
 		for(int i = scopes.size() - 1; i >= 0; i--)
 			if (scopes.get(i).containsKey(id))

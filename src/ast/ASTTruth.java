@@ -1,18 +1,19 @@
 package ast;
 
-import semantics.Value;
+import semantics.BoolValue;
+import semantics.IValue;
 import semantics.Visitor;
 
 public class ASTTruth implements ASTNode {
 	
-	public final Value<Boolean> tVal;
+	public final BoolValue tVal;
 
-	public ASTTruth(Value<Boolean> tVal) {
+	public ASTTruth(BoolValue tVal) {
 		this.tVal = tVal;
 	}
 
 	@Override
-	public <T> T accept(Visitor<T> visitor) throws Exception {
+	public IValue accept(Visitor<IValue> visitor) throws Exception {
 		return visitor.visit(this);
 	}
 
