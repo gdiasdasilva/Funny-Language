@@ -22,4 +22,6 @@ public interface Visitor<T> {
 	T visit(ASTCond cond) throws Exception;
 	T visit(ASTId id) throws Exception;
 	T visit(ASTDecl decl) throws Exception;
+	T visit(ASTAssign astAssign) throws Exception;
+	T visit(ASTWhile astWhile) throws Exception;
 }

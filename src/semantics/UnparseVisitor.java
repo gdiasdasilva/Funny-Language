@@ -1,6 +1,7 @@
 package semantics;
 
 import ast.ASTAnd;
+import ast.ASTAssign;
 import ast.ASTCond;
 import ast.ASTDecl;
 import ast.ASTDiv;
@@ -19,6 +20,7 @@ import ast.ASTPlus;
 import ast.ASTSub;
 import ast.ASTTruth;
 import ast.ASTUnMinus;
+import ast.ASTWhile;
 
 public class UnparseVisitor implements Visitor<String> {
 
@@ -116,5 +118,15 @@ public class UnparseVisitor implements Visitor<String> {
 	public String visit(ASTDecl decl) throws Exception {
 //		return "ASTDecl( " + decl.ids + " , " + decl.defs.accept(this) + " , " + decl.body.accept(this) + " )";
 		return "ASTDecl( NOT UNPARSING )";
+	}
+
+	@Override
+	public String visit(ASTAssign astAssign) throws Exception {
+		return "ASTAssign( " + astAssign.l.accept(this) + " , " + astAssign.r.accept(this) + " )";
+	}
+
+	@Override
+	public String visit(ASTWhile astWhile) throws Exception {
+		return "ASTWhile( " + astWhile.l.accept(this) + " , " + astWhile.r.accept(this) + " )";
 	}
 }

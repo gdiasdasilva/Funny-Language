@@ -11,4 +11,9 @@ public class Value<T> {
 	public String toString() {
 		return value.toString();
 	}
+	
+	public boolean toBoolean()
+	{
+		return Boolean.valueOf(value.toString());
+	}
 }

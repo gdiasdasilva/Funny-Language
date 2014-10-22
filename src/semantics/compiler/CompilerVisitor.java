@@ -2,6 +2,7 @@ package semantics.compiler;
 
 import semantics.*;
 import ast.ASTAnd;
+import ast.ASTAssign;
 import ast.ASTCond;
 import ast.ASTDecl;
 import ast.ASTDiv;
@@ -20,6 +21,7 @@ import ast.ASTPlus;
 import ast.ASTSub;
 import ast.ASTTruth;
 import ast.ASTUnMinus;
+import ast.ASTWhile;
 
 public class CompilerVisitor implements Visitor<CodeBlock> {
 	
@@ -214,6 +216,18 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTDecl decl) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTAssign astAssign) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTWhile astWhile) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

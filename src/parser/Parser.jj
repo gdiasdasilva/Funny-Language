@@ -41,21 +41,43 @@ TOKEN :
 | < NEQ : "!=" >
 | < AND : "&&" >
 | < OR : "||" >
-| < NOT: "!" >
+| < NOT: "~" >
 | < EL: "\n" >
 | < DECL: "decl" >
 | < ASSOC: "=" >
 | < IN: "in" >
 | < END: "end" >
+| < NEW: "new" >
+| < ASSIGN: ":=" >
+| < WHILE: "while" >
+| < DO: "do" >
+| < PRINT: "print" >
+| < PRINTLN: "println" >
 | < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 ASTNode start():
 { ASTNode t; }
 {
-  	t = Decl() < EL >
+  	t = CondExp() < EL >
   	{ return t; } 
 }
+
+/*
+ASTNode Assign():
+{ Token op; }
+{
+	CondExp() (< ASSIGN > CondExp())?
+	{ return null; }
+}
+
+void Print():
+{ }{
+	< PRINT > CondExp()}
+
+void Println():
+{ }{
+	< PRINTLN > CondExp()}*/
 
 ASTNode CondExp():
 { ASTNode e1, e2, e3; }
@@ -114,7 +136,6 @@ ASTNode CmpExp():
 	{ return e1; }
 }
 
-
 ASTNode Exp():
 { Token op;
   ASTNode t1, t2; }
@@ -143,15 +164,8 @@ ASTNode Term():
  	{ return f1; }	
 }
 
-ASTNode Decl():
-{ ASTNode e1, e2, e3; Token id; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
-{
-  < DECL > (id = < Id > < ASSOC > e2 = CondExp() { ids.add(id.image); exps.add(e2); })+ < IN > e3 = CondExp() < END > { return new ASTDecl(ids, exps, e3); }
-}
-
 ASTNode Factor():
-{ Token n; ASTNode f;
-}
+{ Token n; ASTNode f; }
 {
 	(	   n = <Num> { f = new ASTNum(new Value<Integer>(Integer.parseInt(n.image))); } |
 	   n = < BOOL_LIT > { f = new ASTTruth(new Value<Boolean>(Boolean.parseBoolean(n.image))); } |
@@ -159,7 +173,34 @@ ASTNode Factor():
 	   <LPAR> ( f = CondExp() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
-	   n = < Id > { f = new ASTId(n.image); }
+	   n = < Id > { f = new ASTId(n.image); } |
+	   f = While()
 	)
 	{ return f; }
+}
+
+ASTNode While():
+{ ASTNode l, r; }
+{
+	( < WHILE > l = CondExp() < DO > r = CondExp() { l = new ASTWhile(l, r); } < END > ) { return l; }
+}
+
+ASTNode Decl():
+{ ASTNode e1, e2, e3 = null; Token id, op; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
+{
+  < DECL > < Id > < ASSOC > (op = < NEW >)? CondExp() < IN > CondExp() < END >
+  { return null; }
+}
+
+ASTNode Assoc():
+{ Token op = null; }
+{
+	< ASSOC > (op = < NEW >)? CondExp()
+	{
+	  if(op.kind == NEW)
+		System.out.println("NEW");
+	  else
+	  	System.out.println("JUST ASSOC");
+	  return null;
+	}
 }

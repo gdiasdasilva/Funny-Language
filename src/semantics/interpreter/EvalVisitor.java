@@ -1,7 +1,9 @@
 package semantics.interpreter;
 
 import semantics.*;
+import semantics.Value;
 import ast.ASTAnd;
+import ast.ASTAssign;
 import ast.ASTCond;
 import ast.ASTDecl;
 import ast.ASTDiv;
@@ -20,6 +22,7 @@ import ast.ASTPlus;
 import ast.ASTSub;
 import ast.ASTTruth;
 import ast.ASTUnMinus;
+import ast.ASTWhile;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class EvalVisitor implements Visitor<Value> {
@@ -163,5 +166,20 @@ public class EvalVisitor implements Visitor<Value> {
 		
 		env.endScope();
 		return v;
+	}
+
+	@Override
+	public Value visit(ASTAssign astAssign) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Value visit(ASTWhile astWhile) throws Exception {
+		while((astWhile.l.accept(this).toBoolean()))
+		{
+			astWhile.r.accept(this);
+		}	
+		return new Value(true);
 	}
 }
