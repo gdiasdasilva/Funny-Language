@@ -9,7 +9,7 @@ import semantics.*;
 
 public class Parser
 {
-  public final IEnv env = new Env();
+
 }
 
 PARSER_END(Parser)
@@ -19,6 +19,7 @@ SKIP :
   " "
 | "\t"
 | "\r"
+| "\n"
 }
 
 TOKEN :
@@ -42,7 +43,7 @@ TOKEN :
 | < AND : "&&" >
 | < OR : "||" >
 | < NOT: "~" >
-| < EL: "\n" >
+| < EL: ";;" >
 | < DECL: "decl" >
 | < ASSOC: "=" >
 | < IN: "in" >
@@ -167,8 +168,8 @@ ASTNode Term():
 ASTNode Factor():
 { Token n; ASTNode f; }
 {
-	(	   n = <Num> { f = new ASTNum(new IntValue(Integer.parseInt(n.image))); } |
-	   n = < BOOL_LIT > { f = new ASTTruth(new BoolValue(Boolean.parseBoolean(n.image))); } |
+	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } |
+	   n = < BOOL_LIT > { f = new ASTTruth(Boolean.parseBoolean(n.image)); } |
 	   f = Decl() |
 	   <LPAR> ( f = CondExp() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
@@ -186,10 +187,29 @@ ASTNode While():
 }
 
 ASTNode Decl():
-{ ASTNode e1, e2, e3 = null; Token id, op; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
+{ ASTNode e1, e2, exp; Token id, op = null; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
 {
-  < DECL > < Id > < ASSOC > (op = < NEW >)? CondExp() < IN > CondExp() < END >
-  { return null; }
+  < DECL > (Defs(ids,exps))+
+  < IN > e2 = CondExp() { e1 = new ASTDecl(ids, exps, e2); }
+  < END >
+  {
+	return e1;
+  }
+}
+
+void Defs(List<String > ids, List<ASTNode> exps):
+{
+  ASTNode t1, exp;
+  Token op=null, id;}
+{
+  ( id= < Id > < ASSOC > (op = < NEW >)? exp = CondExp())  {
+    ids.add(id.image);
+    	if(op.kind == NEW)	{	  t1 = new ASTNew(exp);
+	}
+
+	exps.add(exp);
+  }
+  
 }
 
 ASTNode Assoc():

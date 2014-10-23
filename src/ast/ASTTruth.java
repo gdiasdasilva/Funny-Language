@@ -6,10 +6,10 @@ import semantics.Visitor;
 
 public class ASTTruth implements ASTNode {
 	
-	public final BoolValue tVal;
+	public final IValue tVal;
 
-	public ASTTruth(BoolValue tVal) {
-		this.tVal = tVal;
+	public ASTTruth(boolean tVal) {
+		this.tVal = new BoolValue(tVal);
 	}
 
 	@Override

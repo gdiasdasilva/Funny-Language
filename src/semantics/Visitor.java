@@ -25,4 +25,6 @@ public interface Visitor<IValue> {
 	IValue visit(ASTDecl decl) throws Exception;
 	IValue visit(ASTAssign astAssign) throws Exception;
 	IValue visit(ASTWhile astWhile) throws Exception;
+	IValue visit(ASTNew astNew) throws Exception;
+	IValue visit(ASTDeref astDeref) throws Exception;
 }

@@ -5,6 +5,7 @@ import ast.ASTAnd;
 import ast.ASTAssign;
 import ast.ASTCond;
 import ast.ASTDecl;
+import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
 import ast.ASTGr;
@@ -14,6 +15,7 @@ import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
 import ast.ASTNeq;
+import ast.ASTNew;
 import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
@@ -178,12 +180,33 @@ public class EvalVisitor implements Visitor<IValue> {
 		boolean cond = ((BoolValue) v1).getVal();
 		
 		if (v1.typeOf() != IValue.VType.BOOLEAN)
-			throw new Exception();
+			throw new Exception("Error: Type of parameter is not BOOLEAN.");
 		
 		while(cond)
 		{
 			astWhile.r.accept(this);
-		}	
+		}
+		
 		return new BoolValue(true);
+	}
+
+	@Override
+	public IValue visit(ASTNew astNew) throws Exception {
+		IValue v1 = astNew.node.accept(this);
+		RefValue ref = new RefValue();
+		ref.setVal(v1);
+		
+
+		return ref;
+	}
+
+	@Override
+	public IValue visit(ASTDeref astDeref) throws Exception {
+		IValue v = astDeref.node.accept(this);
+		
+		if(v.typeOf() == IValue.VType.VREFERENCE)
+			return ((RefValue) v).getVal();
+		else
+			throw new Exception("Error: Type of parameter is not VREFERENCE.");
 	}
 }

@@ -1,0 +1,1 @@
+decl x = new 2 in x end;;

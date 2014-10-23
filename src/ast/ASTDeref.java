@@ -1,17 +1,17 @@
 package ast;
 
 import semantics.IValue;
-import semantics.IntValue;
 import semantics.Visitor;
 
-public class ASTNum implements ASTNode {
+public class ASTDeref implements ASTNode {
+
+	public final ASTNode node;
 	
-	public final IValue iVal;
-
-	public ASTNum(int iVal) {
-		this.iVal = new IntValue(iVal);
+	public ASTDeref(ASTNode node)
+	{
+		this.node = node;
 	}
-
+	
 	@Override
 	public IValue accept(Visitor<IValue> visitor) throws Exception {
 		return visitor.visit(this);
