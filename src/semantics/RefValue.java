@@ -10,7 +10,7 @@ public class RefValue implements IValue {
 	}
 
 	public VType typeOf() {
-		return VType.VREFERENCE;
+		return VType.REFERENCE;
 	}
 
 	public String toString() {

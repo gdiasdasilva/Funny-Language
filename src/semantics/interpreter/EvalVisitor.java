@@ -22,6 +22,7 @@ import ast.ASTOr;
 import ast.ASTPlus;
 import ast.ASTPrint;
 import ast.ASTPrintln;
+import ast.ASTString;
 import ast.ASTSub;
 import ast.ASTTruth;
 import ast.ASTUnMinus;
@@ -206,21 +207,24 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTDeref astDeref) throws Exception {
 		IValue v = astDeref.node.accept(this);
 		
-		if(v.typeOf() == IValue.VType.VREFERENCE)
+		if(v.typeOf() == IValue.VType.REFERENCE)
 			return ((RefValue) v).getVal();
 		else
-			throw new Exception("Error: Type of parameter is not VREFERENCE.");
+			throw new Exception("Error: Type of parameter is not REFERENCE.");
 	}
 
 	@Override
 	public IValue visit(ASTPrint astPrint) throws Exception {
-		System.out.print(astPrint.node.accept(this));
-		return null;
+		return new StringValue(astPrint.node.accept(this).toString());
 	}
 	
 	@Override
 	public IValue visit(ASTPrintln astPrintln) throws Exception {
-		System.out.println(astPrintln.node.accept(this));
-		return null;
+		return new StringValue(astPrintln.node.accept(this).toString() + "\n");
+	}
+
+	@Override
+	public IValue visit(ASTString astString) {
+		return astString.val;
 	}
 }

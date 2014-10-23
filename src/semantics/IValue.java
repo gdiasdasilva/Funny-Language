@@ -3,7 +3,7 @@ package semantics;
 public interface IValue {
 
 public enum VType {
-  INTEGER, BOOLEAN, VREFERENCE
+  INTEGER, BOOLEAN, REFERENCE, STRING
 }
 
 VType typeOf();

@@ -33,8 +33,9 @@ TOKEN :
 | < MUL_OP : "*" >
 | < DIV_OP : "/" >
 | < EQ : "==" >
-| < IF_TOK : "?" >
-| < ELSE_TOK : ":" >
+| < IF_TOK : "if" >
+| < THEN_TOK: "then" >
+| < ELSE_TOK : "else" >
 | < GR: ">" >
 | < GREQ : ">=" >
 | < LS: "<" >
@@ -54,34 +55,37 @@ TOKEN :
 | < DO: "do" >
 | < PRINT: "print" >
 | < PRINTLN: "println" >
+| < SEMICOLON: ";" >
+| < STRING: "\"" ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* "\"" >
 | < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 ASTNode start():
-{ ASTNode t; }
+{ ASTNode t = null; }
 {
-  	t = CondExp() < EL >
-  	{ return t; } 
+  	t = Print() < EL > { return t; } | < EOF > { System.exit(-1); }
 }
 
-/*ASTNode Print():
+ASTNode Print():
 { Token op = null; ASTNode e; }{
 	( op = < PRINT > | < PRINTLN > )? e = CondExp()
 	{
-	  if(op.kind == PRINT)
-	  	return new ASTPrint(e);
-	  else if(op.kind == PRINTLN)
-	  	return new ASTPrintln(e);
-
-	  return e;
+	  if (op != null)
+	  {		if(op.kind == PRINT)
+	  		return new ASTPrint(e);
+	  	else if(op.kind == PRINTLN)
+	  		return new ASTPrintln(e);
+	  }
 	}
-}*/
+	{ return e; }
+}
 
 ASTNode CondExp():
 { ASTNode e1, e2, e3; }
 {
-	(	  e1 = LogExp() ( < IF_TOK > e2 = CondExp() < ELSE_TOK > e3 = CondExp() { return new ASTCond(e1, e2, e3); } )?
-    )
+	(< IF_TOK > e1 = LogExp() < THEN_TOK > e2 = CondExp() < ELSE_TOK > e3 = CondExp() { return new ASTCond(e1, e2, e3); } < END >)
+	| e1 = LogExp()
+
     { return e1; }
 }
 ASTNode LogExp():{ ASTNode tl1, tl2; Token op; }
@@ -172,7 +176,8 @@ ASTNode Factor():
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
 	   n = < Id > { f = new ASTId(n.image); } |
-	   f = While()
+	   f = While() |
+	   n = < STRING > { f = new ASTString(n.image); }
 	)
 	{ return f; }
 }
@@ -201,12 +206,14 @@ void Defs(List<String > ids, List<ASTNode> exps):
 {
   ( id= < Id > < ASSOC > (op = < NEW >)? exp = CondExp())  {
     ids.add(id.image);
-    	if(op.kind == NEW)	{	  t1 = new ASTNew(exp);
+    if(op != null)	{		if(op.kind == NEW)
+		{
+		  t1 = new ASTNew(exp);
+		}
 	}
 
 	exps.add(exp);
   }
-  
 }
 
 ASTNode Assoc():

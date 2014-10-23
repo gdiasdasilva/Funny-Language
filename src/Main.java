@@ -16,13 +16,14 @@ public class Main {
 	public static void main(String args[]) throws ParseException {
 		Parser parser = null;
 		final IEnv env = new Env();
+		
 		try
 		{
 			parser = new Parser(new FileInputStream(args[0]));
 		}
-		catch (FileNotFoundException e1)
+		catch (FileNotFoundException e)
 		{
-			e1.printStackTrace();
+			System.out.println("Ficheiro de input não encontrado em args[0].");
 		}
 		
 		System.out.println("Welcome.");
@@ -34,6 +35,7 @@ public class Main {
 			try
 			{
 				ASTNode exp = parser.start();
+				//System.out.println("Val: " + exp.accept(new UnparseVisitor()));
 				System.out.println("Val: " + exp.accept(new EvalVisitor(env)));
 				
 				//cb = exp.accept(new CompilerVisitor());
@@ -44,10 +46,15 @@ public class Main {
 			{
 				System.out.println("Parsing error");
 				System.out.println(e.getMessage());
+				e.printStackTrace();
 				break;
-			} catch(UndefinedIdException e) {
+			}
+			catch(UndefinedIdException e)
+			{
 				System.out.println("The id '" + e.invalidId + "' is not defined in this scope.");
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				System.out.println("NOK.");
 				e.printStackTrace();
 				break;

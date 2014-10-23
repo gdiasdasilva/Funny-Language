@@ -29,4 +29,5 @@ public interface Visitor<IValue> {
 	IValue visit(ASTDeref astDeref) throws Exception;
 	IValue visit(ASTPrint astPrint) throws Exception;
 	IValue visit(ASTPrintln astPrintln) throws Exception;
+	IValue visit(ASTString astString);
 }
