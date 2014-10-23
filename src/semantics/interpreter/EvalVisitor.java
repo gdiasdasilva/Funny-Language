@@ -20,6 +20,8 @@ import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
 import ast.ASTPlus;
+import ast.ASTPrint;
+import ast.ASTPrintln;
 import ast.ASTSub;
 import ast.ASTTruth;
 import ast.ASTUnMinus;
@@ -208,5 +210,17 @@ public class EvalVisitor implements Visitor<IValue> {
 			return ((RefValue) v).getVal();
 		else
 			throw new Exception("Error: Type of parameter is not VREFERENCE.");
+	}
+
+	@Override
+	public IValue visit(ASTPrint astPrint) throws Exception {
+		System.out.print(astPrint.node.accept(this));
+		return null;
+	}
+	
+	@Override
+	public IValue visit(ASTPrintln astPrintln) throws Exception {
+		System.out.println(astPrintln.node.accept(this));
+		return null;
 	}
 }

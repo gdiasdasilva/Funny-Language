@@ -64,21 +64,18 @@ ASTNode start():
   	{ return t; } 
 }
 
-/*
-ASTNode Assign():
-{ Token op; }
-{
-	CondExp() (< ASSIGN > CondExp())?
-	{ return null; }
-}
+/*ASTNode Print():
+{ Token op = null; ASTNode e; }{
+	( op = < PRINT > | < PRINTLN > )? e = CondExp()
+	{
+	  if(op.kind == PRINT)
+	  	return new ASTPrint(e);
+	  else if(op.kind == PRINTLN)
+	  	return new ASTPrintln(e);
 
-void Print():
-{ }{
-	< PRINT > CondExp()}
-
-void Println():
-{ }{
-	< PRINTLN > CondExp()}*/
+	  return e;
+	}
+}*/
 
 ASTNode CondExp():
 { ASTNode e1, e2, e3; }
