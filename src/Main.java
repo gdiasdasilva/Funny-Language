@@ -19,23 +19,8 @@ import ast.ASTPlus;
 import ast.ASTWhile;
 
 public class Main {
-
-//	public static void main(String args[]) throws ParseException {
 	public static void main(String args[]) throws Exception {
 		Parser parser = null;
-//		final IEnv env = new Env();
-		
-//		try
-//		{
-//			parser = new Parser(new FileInputStream(args[0]));
-//		}
-//		catch (FileNotFoundException e)
-//		{
-//			System.out.println("Ficheiro de input não encontrado em args[0].");
-//		}
-		
-//		System.out.println("Welcome.");
-		
 //		CodeBlock cb;
 		
 		boolean interactive = false;
@@ -61,25 +46,6 @@ public class Main {
 			System.exit(0);
 		}
 		
-//		ASTNode exp = new ASTEq( new ASTString("uma_string"), new ASTString("uma_string"));
-//		List<String> ids = new ArrayList<String>();
-//		List<ASTNode> defs = new ArrayList<ASTNode>();
-//		ids.add("x");
-//		defs.add(new ASTNew(new ASTNum(1)));
-//		ASTNode cond = new ASTLs(
-//				new ASTDeref(new ASTId("i"))
-//				, new ASTNum(10));
-//		ASTNode body = new ASTAssign( new ASTId("i"), new ASTPlus( new ASTDeref( new ASTId("i")), new ASTNum(1) ) );
-//		ASTNode loop = new ASTWhile(cond, body);
-//		ASTNode exp = new ASTDecl(ids, defs, loop);
-//		System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
-//		System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
-		
-//		ASTNode exp0 = new ASTDecl(ids, defs, new ASTDeref(new ASTId("x")));
-		
-//		System.out.println("Ok: " + exp0.accept(new UnparseVisitor()));
-//		System.out.println("Val: " + exp0.accept(new EvalVisitor(null)));
-		
 		while (true)
 		{
 			try
@@ -89,10 +55,11 @@ public class Main {
 					System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
 					System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
 				}
-				else{
-					System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
-					System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
+				else
+				{
+					exp.accept(new EvalVisitor(null));
 				}
+				
 				//cb = exp.accept(new CompilerVisitor());
 				//cb.writeToFile(new File("Code.j"));
 				//System.out.println("Code written to file \"Code.j\" in the project or bin directory.");

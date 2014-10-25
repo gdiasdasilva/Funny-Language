@@ -57,15 +57,28 @@ TOKEN :
 | < PRINTLN: "println" >
 | < SEMICOLON: ";" >
 | < DEREF: "!" >
-| < STRING: "\"" ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* "\"" >
-| < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+| < STRING_DEL: "\"" >
+| < STRING: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
 ASTNode start():
 { ASTNode t = null; }
 {
-  	t = CondExp() < EL > { return t; } | < EOF > { System.exit(0); }
+  	t = Sequence() < EL > { return t; } | < EOF > { System.exit(0); }
 }
+
+ASTNode Sequence():
+{ ASTNode f1, f2; }
+{
+	f1 = Assign() (< SEMICOLON > f2 = Assign() { f1 = new ASTSeq(f1, f2); } )*
+	{ return f1; }
+}
+
+ASTNode Assign():
+{ ASTNode e1, e2; }{
+  (    e1 = CondExp() ( < ASSIGN > e2 = CondExp() { e1 = new ASTAssign(e1, e2); } )?
+  )
+  { return e1; }}
 
 ASTNode CondExp():
 { ASTNode e1, e2, e3; }
@@ -142,7 +155,7 @@ ASTNode Term():
 { Token op;
   ASTNode f1, f2; }
 {
- 	f1 = Sequence() ( (op = <MUL_OP> | op = < DIV_OP >) f2 = Sequence()
+ 	f1 = Print() ( (op = <MUL_OP> | op = < DIV_OP >) f2 = Print()
  	{
  	  if (op.kind == MUL_OP)
  	    f1 = new ASTMul(f1, f2);
@@ -152,23 +165,17 @@ ASTNode Term():
  	{ return f1; }	
 }
 
-ASTNode Sequence():
-{ ASTNode f1, f2; }
-{	f1 = Print() (< SEMICOLON > f2 = Print() { f1 = new ASTSeq(f1, f2); } )*
-	{ return f1; }
-}
-
 ASTNode Print():
 { Token op = null; ASTNode e; }
 {
-	( op = < PRINT > | < PRINTLN > )? e = Factor0()
+	( op = < PRINT > | op = < PRINTLN > )? e = Factor0()
 	{
 	  if (op != null)
 	  {
 		if(op.kind == PRINT)
-	  		return new ASTPrint(e);
+	  		e =  new ASTPrint(e);
 	  	else if(op.kind == PRINTLN)
-	  		return new ASTPrintln(e);
+	  		e = new ASTPrintln(e);
 	  }
 	}
 	{ return e; }
@@ -178,7 +185,7 @@ ASTNode Factor0():
 { ASTNode f, e; }{
   (
     < DEREF > f = Factor() { f = new ASTDeref(f); } |
-    f = Factor() ( < ASSIGN > e = Factor() { f = new ASTAssign(f, e); } )?
+    f = Factor()
   )
   { return f; }}
 
@@ -188,12 +195,12 @@ ASTNode Factor():
 	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } |
 	   n = < BOOL_LIT > { f = new ASTBool(Boolean.parseBoolean(n.image)); } |
 	   f = Decl() |
-	   <LPAR> ( f = CondExp() ) <RPAR> |
+	   <LPAR> ( f = Sequence() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
-	   n = < Id > { f = new ASTId(n.image); } |
+	   n = < STRING > { f = new ASTId(n.image); } |
 	   f = While() |
-	   n = < STRING > { f = new ASTString(n.image); }
+	   < STRING_DEL > n = < STRING > < STRING_DEL > { f = new ASTString(n.image); }
 	)
 	{ return f; }
 }
@@ -201,14 +208,14 @@ ASTNode Factor():
 ASTNode While():
 { ASTNode c, b; }
 {
-	( < WHILE > c = CondExp() < DO > b = CondExp() { b = new ASTWhile(c, b); } < END > ) { return b; }
+	( < WHILE > c = CondExp() < DO > b = Sequence() { b = new ASTWhile(c, b); } < END > ) { return b; }
 }
 
 ASTNode Decl():
 { ASTNode e1, e2, exp; Token id, op = null; List<String> ids = new ArrayList<String>(); List<ASTNode> exps = new ArrayList<ASTNode>(); }
 {
   < DECL > (Defs(ids, exps))+
-  < IN > e2 = CondExp() { e1 = new ASTDecl(ids, exps, e2); }
+  < IN > e2 = Sequence() { e1 = new ASTDecl(ids, exps, e2); }
   < END >
   {
 	return e1;
@@ -218,7 +225,7 @@ ASTNode Decl():
 void Defs(List<String > ids, List<ASTNode> exps):
 { ASTNode exp; Token op=null, id; }
 {
-  (id = < Id > < ASSOC > (op = < NEW >)? exp = CondExp())  {
+  (id = < STRING > < ASSOC > (op = < NEW >)? exp = CondExp())  {
     ids.add(id.image);
     if(op != null)	{		if(op.kind == NEW)
 		{

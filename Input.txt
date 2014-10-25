@@ -4,3 +4,41 @@ in
   c := 2*(!c + i);
   println (!c)
 end;;
+
+decl
+i = new 0 c=i
+in
+c := 2;
+  print (c);
+  print (!i + 1);
+  println "hello"
+end;;
+
+decl
+  i = new 0
+  c = (i := !i + 1; !i)
+in
+  i := !i + c;
+  println i
+end;;
+
+decl
+  i = new 0
+  c = !i+1
+in
+  while (!i < 100) do
+println !i;
+i := !i+c end
+end;;
+
+decl
+  i = new 0
+  c = !i+1
+in
+  while (!i < 100) do
+    decl x = !i in
+      println x;
+      i := x + c
+end end;
+  print !i
+end;;

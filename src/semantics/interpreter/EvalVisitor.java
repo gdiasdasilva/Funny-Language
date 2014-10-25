@@ -288,14 +288,14 @@ public class EvalVisitor implements Visitor<IValue> {
 	
 	@Override
 	public IValue visit(ASTPrint astPrint) throws SemanticException {
-		IValue val = astPrint.accept(this);
+		IValue val = astPrint.node.accept(this);
 		System.out.print(val);
 		return val;
 	}
 
 	@Override
 	public IValue visit(ASTPrintln astPrintln) throws SemanticException {
-		IValue val = astPrintln.accept(this);
+		IValue val = astPrintln.node.accept(this);
 		System.out.println(val);
 		return val;
 	}
