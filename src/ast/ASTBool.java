@@ -1,19 +1,20 @@
 package ast;
 
+import semantics.BoolValue;
 import semantics.SemanticException;
 import semantics.Visitor;
 
-public class ASTGreq implements ASTNode {
-
-	public final ASTNode l, r;
+public class ASTBool implements ASTNode {
 	
-	public ASTGreq(ASTNode l, ASTNode r) {
-		this.l = l;
-		this.r = r;
+	public final BoolValue bool;
+
+	public ASTBool(boolean bool) {
+		this.bool = new BoolValue(bool);
 	}
 
 	@Override
 	public <T> T accept(Visitor<T> visitor) throws SemanticException {
 		return visitor.visit(this);
 	}
+
 }

@@ -5,6 +5,7 @@ import ast.ASTAnd;
 import ast.ASTAssign;
 import ast.ASTCond;
 import ast.ASTDecl;
+import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
 import ast.ASTGr;
@@ -14,12 +15,16 @@ import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
 import ast.ASTNeq;
+import ast.ASTNew;
 import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
 import ast.ASTPlus;
+import ast.ASTPrint;
+import ast.ASTPrintln;
+import ast.ASTString;
 import ast.ASTSub;
-import ast.ASTTruth;
+import ast.ASTBool;
 import ast.ASTUnMinus;
 import ast.ASTWhile;
 
@@ -37,19 +42,19 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTNum num) {
 		CodeBlock cb = new CodeBlock();
-		cb.insertIntArgument(((IntValue) num.iVal).getVal());
+		cb.insertIntArgument(((IntValue) num.integer).getVal());
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTTruth truth) {
+	public CodeBlock visit(ASTBool truth) {
 		CodeBlock cb = new CodeBlock();
-		cb.insertIntArgument(((BoolValue) truth.tVal).getVal() ? TRUE : FALSE);
+		cb.insertIntArgument(((BoolValue) truth.bool).getVal() ? TRUE : FALSE);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTPlus plus) throws Exception {
+	public CodeBlock visit(ASTPlus plus) throws SemanticException {
 		CodeBlock cb = plus.l.accept(this);
 		cb.merge(plus.r .accept(this));
 		cb.insertOp(Op.ADD);
@@ -57,7 +62,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTSub sub) throws Exception {
+	public CodeBlock visit(ASTSub sub) throws SemanticException {
 		CodeBlock cb = sub.l.accept(this);
 		cb.merge(sub.r.accept(this));
 		cb.insertOp(Op.SUB);
@@ -65,7 +70,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTMul mul) throws Exception {
+	public CodeBlock visit(ASTMul mul) throws SemanticException {
 		CodeBlock cb = mul.l.accept(this);
 		cb.merge(mul.r.accept(this));
 		cb.insertOp(Op.MUL);
@@ -73,7 +78,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTDiv div) throws Exception {
+	public CodeBlock visit(ASTDiv div) throws SemanticException {
 		CodeBlock cb = div.l.accept(this);
 		cb.merge(div.r.accept(this));
 		cb.insertOp(Op.DIV);
@@ -81,7 +86,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTUnMinus um) throws Exception {
+	public CodeBlock visit(ASTUnMinus um) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(0);
 		cb.merge(um.v.accept(this));
@@ -107,7 +112,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTEq eq) throws Exception {
+	public CodeBlock visit(ASTEq eq) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = eq.l.accept(this);
 		this.label++;
@@ -117,7 +122,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTNeq neq) throws Exception {
+	public CodeBlock visit(ASTNeq neq) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = neq.l.accept(this);
 		this.label++;
@@ -127,7 +132,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 	
 	@Override
-	public CodeBlock visit(ASTCond cond) throws Exception {
+	public CodeBlock visit(ASTCond cond) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = cond.condNode.accept(this);
 		cb.insertIntArgument(FALSE);
@@ -144,7 +149,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTLs ls) throws Exception {
+	public CodeBlock visit(ASTLs ls) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = ls.l.accept(this);
 		this.label++;
@@ -154,7 +159,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTGr gr) throws Exception {
+	public CodeBlock visit(ASTGr gr) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = gr.l.accept(this);
 		this.label++;
@@ -164,7 +169,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTLseq lseq) throws Exception {
+	public CodeBlock visit(ASTLseq lseq) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = lseq.l.accept(this);
 		this.label++;
@@ -174,7 +179,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTGreq greq) throws Exception {
+	public CodeBlock visit(ASTGreq greq) throws SemanticException {
 		int label = this.label++;
 		CodeBlock cb = greq.l.accept(this);
 		this.label++;
@@ -184,7 +189,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTAnd and) throws Exception {
+	public CodeBlock visit(ASTAnd and) throws SemanticException {
 		CodeBlock cb = and.l.accept(this);
 		cb.merge(and.r .accept(this));
 		cb.insertOp(Op.AND);
@@ -192,7 +197,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTOr or) throws Exception {
+	public CodeBlock visit(ASTOr or) throws SemanticException {
 		CodeBlock cb = or.l.accept(this);
 		cb.merge(or.r .accept(this));
 		cb.insertOp(Op.OR);
@@ -200,7 +205,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTNot n) throws Exception {
+	public CodeBlock visit(ASTNot n) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(1);
 		cb.merge(n.v.accept(this));
@@ -209,25 +214,55 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTId id) throws Exception {
+	public CodeBlock visit(ASTId id) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTDecl decl) throws Exception {
+	public CodeBlock visit(ASTDecl decl) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTAssign astAssign) throws Exception {
+	public CodeBlock visit(ASTAssign astAssign) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTWhile astWhile) throws Exception {
+	public CodeBlock visit(ASTWhile astWhile) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTNew astNew) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTDeref astDeref) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTPrint astPrint) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTPrintln astPrintln) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTString astString) {
 		// TODO Auto-generated method stub
 		return null;
 	}

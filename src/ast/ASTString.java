@@ -1,20 +1,20 @@
 package ast;
 
-import semantics.IValue;
+import semantics.SemanticException;
 import semantics.StringValue;
 import semantics.Visitor;
 
 public class ASTString implements ASTNode {
 
-	public final IValue val;
+	public final StringValue string;
 	
-	public ASTString(String val)
+	public ASTString(String string)
 	{
-		this.val = new StringValue(val);
+		this.string = new StringValue(string);
 	}
 	
 	@Override
-	public IValue accept(Visitor<IValue> visitor) throws Exception {
+	public <T> T accept(Visitor<T> visitor) throws SemanticException {
 		return visitor.visit(this);
 	}
 

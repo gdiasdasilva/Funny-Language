@@ -63,7 +63,7 @@ TOKEN :
 ASTNode start():
 { ASTNode t = null; }
 {
-  	t = Print() < EL > { return t; } | < EOF > { System.exit(-1); }
+  	t = Print() < EL > { return t; } | < EOF > { System.exit(0); }
 }
 
 ASTNode Print():
@@ -85,7 +85,6 @@ ASTNode CondExp():
 {
 	(< IF_TOK > e1 = LogExp() < THEN_TOK > e2 = CondExp() < ELSE_TOK > e3 = CondExp() { return new ASTCond(e1, e2, e3); } < END >)
 	| e1 = LogExp()
-
     { return e1; }
 }
 ASTNode LogExp():{ ASTNode tl1, tl2; Token op; }
@@ -170,7 +169,7 @@ ASTNode Factor():
 { Token n; ASTNode f; }
 {
 	(	   n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } |
-	   n = < BOOL_LIT > { f = new ASTTruth(Boolean.parseBoolean(n.image)); } |
+	   n = < BOOL_LIT > { f = new ASTBool(Boolean.parseBoolean(n.image)); } |
 	   f = Decl() |
 	   <LPAR> ( f = CondExp() ) <RPAR> |
 	   < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
@@ -183,9 +182,9 @@ ASTNode Factor():
 }
 
 ASTNode While():
-{ ASTNode l, r; }
+{ ASTNode c, b; }
 {
-	( < WHILE > l = CondExp() < DO > r = CondExp() { l = new ASTWhile(l, r); } < END > ) { return l; }
+	( < WHILE > c = CondExp() < DO > b = CondExp() { b = new ASTWhile(l, r); } < END > ) { return l; }
 }
 
 ASTNode Decl():
@@ -199,7 +198,7 @@ ASTNode Decl():
   }
 }
 
-void Defs(List<String > ids, List<ASTNode> exps):
+/*void Defs(List<String > ids, List<ASTNode> exps):
 {
   ASTNode t1, exp;
   Token op=null, id;}
@@ -214,7 +213,7 @@ void Defs(List<String > ids, List<ASTNode> exps):
 
 	exps.add(exp);
   }
-}
+}*/
 
 ASTNode Assoc():
 { Token op = null; }

@@ -2,19 +2,15 @@ package semantics;
 
 public class RefValue implements IValue {
 
-	IValue val;
-
-	public RefValue()
-	{
-		
-	}
+	private IValue val = null;
 
 	public VType typeOf() {
 		return VType.REFERENCE;
 	}
 
 	public String toString() {
-		return "referencia";
+//		return "reference";
+		return val.toString();
 	}
 	
 	public IValue getVal()

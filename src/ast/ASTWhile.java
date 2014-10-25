@@ -1,21 +1,21 @@
 package ast;
 
-import semantics.IValue;
+import semantics.SemanticException;
 import semantics.Visitor;
 
 public class ASTWhile implements ASTNode {
 
-	public final ASTNode l;
-	public final ASTNode r;
+	public final ASTNode c; // condition (boolean expression)
+	public final ASTNode b; // body
 	
-	public ASTWhile(ASTNode l, ASTNode r)
+	public ASTWhile(ASTNode c, ASTNode b)
 	{
-		this.l = l;
-		this.r = r;
+		this.c = c;
+		this.b = b;
 	}
 	
 	@Override
-	public IValue accept(Visitor<IValue> visitor) throws Exception {
+	public <T> T accept(Visitor<T> visitor) throws SemanticException {
 		return visitor.visit(this);
 	}
 

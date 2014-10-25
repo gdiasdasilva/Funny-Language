@@ -2,32 +2,31 @@ package semantics;
 
 import ast.*;
 
-@SuppressWarnings("hiding")
-public interface Visitor<IValue> {
-	IValue visit(ASTNum num);
-	IValue visit(ASTTruth truth) throws Exception;
-	IValue visit(ASTPlus plus) throws Exception;
-	IValue visit(ASTSub sub) throws Exception;
-	IValue visit(ASTMul mul) throws Exception;
-	IValue visit(ASTDiv div) throws Exception;
-	IValue visit(ASTUnMinus um) throws Exception;
-	IValue visit(ASTNot n) throws Exception;
-	IValue visit(ASTEq eq) throws Exception;
-	IValue visit(ASTNeq neq) throws Exception;
-	IValue visit(ASTLs ls) throws Exception;
-	IValue visit(ASTGr gr) throws Exception;
-	IValue visit(ASTLseq lseq) throws Exception;
-	IValue visit(ASTGreq greq) throws Exception;
-	IValue visit(ASTAnd and) throws Exception;
-	IValue visit(ASTOr or) throws Exception;
-	IValue visit(ASTCond cond) throws Exception;
-	IValue visit(ASTId id) throws Exception;
-	IValue visit(ASTDecl decl) throws Exception;
-	IValue visit(ASTAssign astAssign) throws Exception;
-	IValue visit(ASTWhile astWhile) throws Exception;
-	IValue visit(ASTNew astNew) throws Exception;
-	IValue visit(ASTDeref astDeref) throws Exception;
-	IValue visit(ASTPrint astPrint) throws Exception;
-	IValue visit(ASTPrintln astPrintln) throws Exception;
-	IValue visit(ASTString astString);
+public interface Visitor<T> {
+	T visit(ASTNum num);
+	T visit(ASTBool truth);
+	T visit(ASTString astString);
+	T visit(ASTPlus plus) throws SemanticException;
+	T visit(ASTSub sub) throws SemanticException;
+	T visit(ASTMul mul) throws SemanticException;
+	T visit(ASTDiv div) throws SemanticException;
+	T visit(ASTUnMinus um) throws SemanticException;
+	T visit(ASTNot n) throws SemanticException;
+	T visit(ASTEq eq) throws SemanticException;
+	T visit(ASTNeq neq) throws SemanticException;
+	T visit(ASTLs ls) throws SemanticException;
+	T visit(ASTGr gr) throws SemanticException;
+	T visit(ASTLseq lseq) throws SemanticException;
+	T visit(ASTGreq greq) throws SemanticException;
+	T visit(ASTAnd and) throws SemanticException;
+	T visit(ASTOr or) throws SemanticException;
+	T visit(ASTCond cond) throws SemanticException;
+	T visit(ASTId id) throws SemanticException;
+	T visit(ASTDecl decl) throws SemanticException;
+	T visit(ASTAssign astAssign) throws SemanticException;
+	T visit(ASTWhile astWhile) throws SemanticException;
+	T visit(ASTNew astNew) throws SemanticException;
+	T visit(ASTDeref astDeref) throws SemanticException;
+	T visit(ASTPrint astPrint) throws SemanticException;
+	T visit(ASTPrintln astPrintln) throws SemanticException;
 }

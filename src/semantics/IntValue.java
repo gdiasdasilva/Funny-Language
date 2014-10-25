@@ -2,11 +2,11 @@ package semantics;
 
 public class IntValue implements IValue {
 
-	int val;
+	private final int val;
 
-	public IntValue(int v)
+	public IntValue(int intVal)
 	{
-		val = v;
+		val = intVal;
 	}
 
 	public VType typeOf() {
@@ -21,5 +21,3 @@ public class IntValue implements IValue {
 		return Integer.toString(val);
 	}
 }
-
-

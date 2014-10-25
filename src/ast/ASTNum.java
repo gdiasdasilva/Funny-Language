@@ -1,19 +1,19 @@
 package ast;
 
-import semantics.IValue;
 import semantics.IntValue;
+import semantics.SemanticException;
 import semantics.Visitor;
 
 public class ASTNum implements ASTNode {
 	
-	public final IValue iVal;
+	public final IntValue integer;
 
-	public ASTNum(int iVal) {
-		this.iVal = new IntValue(iVal);
+	public ASTNum(int integer) {
+		this.integer = new IntValue(integer);
 	}
 
 	@Override
-	public IValue accept(Visitor<IValue> visitor) throws Exception {
+	public <T> T accept(Visitor<T> visitor) throws SemanticException {
 		return visitor.visit(this);
 	}
 
