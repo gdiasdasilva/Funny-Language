@@ -52,12 +52,12 @@ public class Main {
 			{
 				ASTNode exp = parser.start();
 				if (interactive) {
-					System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
-					System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
+//					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
+					System.out.println("Val: " + exp.accept(new EvalVisitor()));
 				}
 				else
 				{
-					exp.accept(new EvalVisitor(null));
+					exp.accept(new EvalVisitor());
 				}
 				
 				//cb = exp.accept(new CompilerVisitor());
@@ -73,9 +73,8 @@ public class Main {
 			}
 			catch(UndefinedIdException e)
 			{
-//				System.out.println("The id '" + e.invalidId + "' is not defined in this scope.");
 				System.err.println("UndefinedId");
-//				System.err.println(e.getMessage());
+				System.err.println(e.getMessage());
 			}
 			catch (Exception e)
 			{

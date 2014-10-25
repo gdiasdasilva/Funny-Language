@@ -42,8 +42,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	
 	private IEnv env;
 	
-	public EvalVisitor(IEnv env) {
-//		this.env = env;
+	public EvalVisitor() {
 		this.env = new Env();
 	}
 
