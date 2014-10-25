@@ -1,6 +1,6 @@
 package semantics;
 
-public class IntValue implements IValue {
+public class IntValue extends IValue {
 
 	private final int val;
 

@@ -1,6 +1,6 @@
 package semantics;
 
-public class BoolValue implements IValue {
+public class BoolValue extends IValue {
 
 	boolean val;
 

@@ -1,6 +1,6 @@
 package semantics;
 
-public class RefValue implements IValue {
+public class RefValue extends IValue {
 
 	private IValue val = null;
 

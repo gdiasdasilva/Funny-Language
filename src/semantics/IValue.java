@@ -1,13 +1,28 @@
 package semantics;
 
-public interface IValue {
+public abstract class IValue {
 
-	enum VType {
+	public enum VType {
 		INTEGER, BOOLEAN, REFERENCE, STRING
 	}
+	
+	public static String nameOfType(VType t) {
+		switch (t) {
+		case INTEGER:
+			return "Integer";
+		case BOOLEAN:
+			return "Boolean";
+		case REFERENCE:
+			return "Reference";
+		case STRING:
+			return "String";
+		default:
+			return "Unknown";
+		}
+	}
 
-	VType typeOf();
+	public abstract VType typeOf();
 
-	String toString();
+	public abstract String toString();
 
 }

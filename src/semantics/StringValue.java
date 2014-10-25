@@ -1,6 +1,6 @@
 package semantics;
 
-public class StringValue implements IValue {
+public class StringValue extends IValue {
 
 	String val;
 	
