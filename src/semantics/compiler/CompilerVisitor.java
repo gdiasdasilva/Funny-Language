@@ -22,6 +22,7 @@ import ast.ASTOr;
 import ast.ASTPlus;
 import ast.ASTPrint;
 import ast.ASTPrintln;
+import ast.ASTSeq;
 import ast.ASTString;
 import ast.ASTSub;
 import ast.ASTBool;
@@ -263,6 +264,12 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTString astString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTSeq astSeq) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}

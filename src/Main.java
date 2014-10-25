@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import parser.Parser;
+import semantics.UndefinedIdException;
 import semantics.UnparseVisitor;
 import semantics.interpreter.EvalVisitor;
 import ast.ASTAssign;
@@ -61,53 +62,60 @@ public class Main {
 		}
 		
 //		ASTNode exp = new ASTEq( new ASTString("uma_string"), new ASTString("uma_string"));
-		List<String> ids = new ArrayList<String>();
-		List<ASTNode> defs = new ArrayList<ASTNode>();
-		ids.add("i");
-		defs.add(new ASTNew(new ASTNum(0)));
-		ASTNode cond = new ASTLs(
-				new ASTDeref(new ASTId("i"))
-				, new ASTNum(10));
-		ASTNode body = new ASTAssign( new ASTId("i"), new ASTPlus( new ASTDeref( new ASTId("i")), new ASTNum(1) ) );
-		ASTNode loop = new ASTWhile(cond, body);
-		ASTNode exp = new ASTDecl(ids, defs, loop);
-		System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
-		System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
+//		List<String> ids = new ArrayList<String>();
+//		List<ASTNode> defs = new ArrayList<ASTNode>();
+//		ids.add("x");
+//		defs.add(new ASTNew(new ASTNum(1)));
+//		ASTNode cond = new ASTLs(
+//				new ASTDeref(new ASTId("i"))
+//				, new ASTNum(10));
+//		ASTNode body = new ASTAssign( new ASTId("i"), new ASTPlus( new ASTDeref( new ASTId("i")), new ASTNum(1) ) );
+//		ASTNode loop = new ASTWhile(cond, body);
+//		ASTNode exp = new ASTDecl(ids, defs, loop);
+//		System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
+//		System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
 		
-//		while (true)
-//		{
-//			try
-//			{
-//				ASTNode exp = parser.start();
-//				if (interactive) {
-//					System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
-//					System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
-//				}
-//				else
-//					exp.accept(new EvalVisitor(null));
-//				//cb = exp.accept(new CompilerVisitor());
-//				//cb.writeToFile(new File("Code.j"));
-//				//System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
-//			}
-//			catch (Error e)
-//			{
-//				System.out.println("Parsing error");
-//				System.out.println(e.getMessage());
-//				e.printStackTrace();
-//				break;
-//			}
-//			catch(UndefinedIdException e)
-//			{
-////				System.out.println("The id '" + e.invalidId + "' is not defined in this scope.");
-//				System.err.println("UndefinedId");
-////				System.err.println(e.getMessage());
-//			}
-//			catch (Exception e)
-//			{
-//				System.out.println("NOK.");
-//				e.printStackTrace();
-//				break;
-//			}
-//		}
+//		ASTNode exp0 = new ASTDecl(ids, defs, new ASTDeref(new ASTId("x")));
+		
+//		System.out.println("Ok: " + exp0.accept(new UnparseVisitor()));
+//		System.out.println("Val: " + exp0.accept(new EvalVisitor(null)));
+		
+		while (true)
+		{
+			try
+			{
+				ASTNode exp = parser.start();
+				if (interactive) {
+					System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
+					System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
+				}
+				else{
+					System.out.println("Ok: " + exp.accept(new UnparseVisitor()));
+					System.out.println("Val: " + exp.accept(new EvalVisitor(null)));
+				}
+				//cb = exp.accept(new CompilerVisitor());
+				//cb.writeToFile(new File("Code.j"));
+				//System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
+			}
+			catch (Error e)
+			{
+				System.out.println("Parsing error");
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+				break;
+			}
+			catch(UndefinedIdException e)
+			{
+//				System.out.println("The id '" + e.invalidId + "' is not defined in this scope.");
+				System.err.println("UndefinedId");
+//				System.err.println(e.getMessage());
+			}
+			catch (Exception e)
+			{
+				System.out.println("NOK.");
+				e.printStackTrace();
+				break;
+			}
+		}
 	}
 }

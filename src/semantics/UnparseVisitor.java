@@ -114,22 +114,22 @@ public class UnparseVisitor implements Visitor<String> {
 
 	@Override
 	public String visit(ASTNew astNew) throws SemanticException {
-		return "ASTNew( " + astNew.accept(this) + " )";
+		return "ASTNew( " + astNew.node.accept(this) + " )";
 	}
 
 	@Override
 	public String visit(ASTDeref astDeref) throws SemanticException {
-		return "ASTDeref( " + astDeref.node + " )";
+		return "ASTDeref( " + astDeref.node.accept(this) + " )";
 	}
 
 	@Override
 	public String visit(ASTPrint astPrint) throws SemanticException {
-		return "ASTPrint( " + astPrint.node + " )";
+		return "ASTPrint( " + astPrint.node.accept(this) + " )";
 	}
 
 	@Override
 	public String visit(ASTPrintln astPrintln) throws SemanticException {
-		return "ASTPrintln( " + astPrintln.node + " )";
+		return "ASTPrintln( " + astPrintln.node.accept(this) + " )";
 	}
 
 	@Override

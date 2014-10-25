@@ -213,7 +213,6 @@ public class EvalVisitor implements Visitor<IValue> {
 	
 	@Override
 	public IValue visit(ASTId id) throws SemanticException {
-		System.out.println(id.id);
 		return env.find(id.id);
 	}
 
