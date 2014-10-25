@@ -32,6 +32,7 @@ import ast.ASTOr;
 import ast.ASTPlus;
 import ast.ASTPrint;
 import ast.ASTPrintln;
+import ast.ASTSeq;
 import ast.ASTString;
 import ast.ASTSub;
 import ast.ASTUnMinus;
@@ -248,7 +249,6 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTDeref astDeref) throws SemanticException {
 		IValue v = astDeref.node.accept(this);
 		if (v.typeOf() == IValue.VType.REFERENCE) {
-			System.out.println(v);
 			return ((RefValue) v).getVal();
 		}
 		else
@@ -301,15 +301,9 @@ public class EvalVisitor implements Visitor<IValue> {
 		return val;
 	}
 
-//	@Override
-//	public IValue visit(ASTPrint astPrint) throws SemanticException {
-//		return new StringValue(astPrint.node.accept(this).toString());
-//	}
-//	
-//	@Override
-//	public IValue visit(ASTPrintln astPrintln) throws SemanticException {
-//		return new StringValue(astPrintln.node.accept(this).toString() + "\n");
-//	}
-	
-	
+	@Override
+	public IValue visit(ASTSeq astSeq) throws SemanticException {
+		astSeq.f.accept(this);
+		return astSeq.s.accept(this);
+	}
 }

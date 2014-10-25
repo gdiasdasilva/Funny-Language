@@ -29,4 +29,5 @@ public interface Visitor<T> {
 	T visit(ASTDeref astDeref) throws SemanticException;
 	T visit(ASTPrint astPrint) throws SemanticException;
 	T visit(ASTPrintln astPrintln) throws SemanticException;
+	T visit(ASTSeq astSeq) throws SemanticException;
 }

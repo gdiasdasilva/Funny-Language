@@ -96,8 +96,10 @@ public class UnparseVisitor implements Visitor<String> {
 	
 	@Override
 	public String visit(ASTDecl decl) throws SemanticException {
-//		return "ASTDecl( " + decl.ids + " , " + decl.defs.accept(this) + " , " + decl.body.accept(this) + " )";
-		return "ASTDecl( NOT UNPARSING )";
+		StringBuilder sb = new StringBuilder();
+		for (ASTNode def : decl.defs)
+			sb.append(def.accept(this) + " ");
+		return "ASTDecl( " + decl.ids + " , [ " + sb.toString() + " ] , " + decl.body.accept(this) + " )";
 	}
 
 	@Override
@@ -133,5 +135,10 @@ public class UnparseVisitor implements Visitor<String> {
 	@Override
 	public String visit(ASTString astString) {
 		return astString.string.toString();
+	}
+
+	@Override
+	public String visit(ASTSeq astSeq) throws SemanticException {
+		return "ASTSeq( " + astSeq.f.accept(this) + " , " + astSeq.s.accept(this) + " )";
 	}
 }
