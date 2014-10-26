@@ -83,28 +83,50 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTSub sub) throws SemanticException {
 		IntValue l = (IntValue) sub.l.accept(this);
-		IntValue r = (IntValue) sub.r.accept(this);
-		return new IntValue(l.getVal() - r.getVal());
+		IntValue r = (IntValue) sub.r.accept(this);		
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new IntValue(vl.getVal() - vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to subtract non-integer values.");
 	}
 
 	@Override
 	public IValue visit(ASTMul mul) throws SemanticException {
 		IntValue l = (IntValue) mul.l.accept(this);
 		IntValue r = (IntValue) mul.r.accept(this);
-		return new IntValue(l.getVal() * r.getVal());
+		
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new IntValue(vl.getVal() * vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to multiply non-integer values.");
 	}
 
 	@Override
 	public IValue visit(ASTDiv div) throws SemanticException {
 		IntValue l = (IntValue) div.l.accept(this);
 		IntValue r = (IntValue) div.r.accept(this);
-		return new IntValue(l.getVal() / r.getVal());
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new IntValue(vl.getVal() / vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to divide non-integer values.");	
 	}
 
 	@Override
 	public IValue visit(ASTUnMinus um) throws SemanticException {
 		IntValue v = (IntValue) um.v.accept(this);
-		return new IntValue(-v.getVal());
+		if(v.typeOf() == IValue.VType.INTEGER)
+			return new IntValue(-v.getVal());
+		else
+			throw new TypeErrorException("Trying to use unary minus with non-integer value.");
 	}
 	
 	@Override
@@ -137,15 +159,27 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTAnd and) throws SemanticException{
 		BoolValue l = (BoolValue) and.l.accept(this);
-		BoolValue r = (BoolValue) and.r.accept(this);
-		return new BoolValue(l.getVal() && r.getVal());
+		BoolValue r = (BoolValue) and.r.accept(this);		
+		if (l.typeOf() == IValue.VType.BOOLEAN && l.typeOf() == IValue.VType.BOOLEAN) {
+			BoolValue vl = (BoolValue) l;
+			BoolValue vr = (BoolValue) r;
+			return new BoolValue(vl.getVal() && vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to AND non-boolean values.");
 	}
 
 	@Override
 	public IValue visit(ASTOr or) throws SemanticException {
 		BoolValue l = (BoolValue) or.l.accept(this);
 		BoolValue r = (BoolValue) or.r.accept(this);
-		return new BoolValue(l.getVal() || r.getVal());
+		if (l.typeOf() == IValue.VType.BOOLEAN && l.typeOf() == IValue.VType.BOOLEAN) {
+			BoolValue vl = (BoolValue) l;
+			BoolValue vr = (BoolValue) r;
+			return new BoolValue(vl.getVal() || vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to OR non-boolean values.");
 	}
 
 	@Override
@@ -179,33 +213,59 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTLseq lseq) throws SemanticException {
 		IntValue l = (IntValue) lseq.l.accept(this);
 		IntValue r = (IntValue) lseq.r.accept(this);
-		return new BoolValue(l.getVal() <= r.getVal());
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new BoolValue(vl.getVal() <= vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to LSorEQthan non-integer values.");		
 	}
 
 	@Override
 	public IValue visit(ASTGreq greq) throws SemanticException{
 		IntValue l = (IntValue) greq.l.accept(this);
 		IntValue r = (IntValue) greq.r.accept(this);
-		return new BoolValue(l.getVal() >= r.getVal());
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new BoolValue(vl.getVal() >= vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to GRorEQthan non-integer values.");
 	}
 
 	@Override
 	public IValue visit(ASTLs ls) throws SemanticException {
 		IntValue l = (IntValue) ls.l.accept(this);
 		IntValue r = (IntValue) ls.r.accept(this);
-		return new BoolValue(l.getVal() < r.getVal());
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new BoolValue(vl.getVal() < vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to LSthan non-integer values.");
 	}
 
 	@Override
 	public IValue visit(ASTGr gr) throws SemanticException{
 		IntValue l = (IntValue) gr.l.accept(this);
 		IntValue r = (IntValue) gr.r.accept(this);
-		return new BoolValue(l.getVal() > r.getVal());
+		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+			IntValue vl = (IntValue) l;
+			IntValue vr = (IntValue) r;
+			return new BoolValue(vl.getVal() > vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to GRthan non-integer values.");
 	}
 
 	@Override
 	public IValue visit(ASTCond cond) throws SemanticException{
 		BoolValue c = (BoolValue) cond.condNode.accept(this);
+		if(c.typeOf() != IValue.VType.BOOLEAN)
+			throw new TypeErrorException("If's condition must be a boolean expression.");
 		IValue thenV = cond.thenNode.accept(this);
 		IValue elseV = cond.elseNode.accept(this);
 		return (c.getVal() ? thenV : elseV);
@@ -214,7 +274,10 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTNot n) throws SemanticException {
 		BoolValue v = (BoolValue) n.v.accept(this);
-		return new BoolValue(!v.getVal());
+		if(v.typeOf() == IValue.VType.BOOLEAN)
+			return new BoolValue(!v.getVal());
+		else
+			throw new TypeErrorException("Trying to NOT a non-boolean value.");
 	}
 	
 	@Override
@@ -276,12 +339,12 @@ public class EvalVisitor implements Visitor<IValue> {
 					boolc = (BoolValue) astWhile.c.accept(this);
 				else
 					throw new TypeErrorException(
-							"while's condition must be a boolean expression");
+							"While's condition must be a boolean expression");
 			}
 			return new BoolValue(true);
 		}
 		else
-			throw new TypeErrorException("while's condition must be a boolean expression");
+			throw new TypeErrorException("While's condition must be a boolean expression");
 	}
 	
 	@Override
