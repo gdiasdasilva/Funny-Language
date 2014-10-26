@@ -7,10 +7,8 @@ import java.util.Map;
 
 public class Env implements IEnv {
 
-	String id;
+	private List<Map<String, IValue>> scopes;
 	
-	List<Map<String, IValue>> scopes;
-
 	public Env()
 	{
 		scopes = new ArrayList<Map<String, IValue>>();
@@ -27,11 +25,15 @@ public class Env implements IEnv {
 	{
 		scopes.remove(scopes.size()-1);
 	}
+	
 
 	@Override
-	public void assoc(String id, IValue val)
+	public void assoc(String id, IValue val) throws IdentiferDeclaredTwiceException
 	{
-		scopes.get(scopes.size()-1).put(id, val);
+		if (!scopes.get(scopes.size()-1).containsKey(id))
+			scopes.get(scopes.size()-1).put(id, val);
+		else
+			throw new IdentiferDeclaredTwiceException();
 	}
 
 	@Override
