@@ -1,24 +1,13 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 import parser.Parser;
 import semantics.UndefinedIdException;
-import semantics.UnparseVisitor;
 import semantics.interpreter.EvalVisitor;
-import ast.ASTAssign;
-import ast.ASTDecl;
-import ast.ASTDeref;
-import ast.ASTId;
-import ast.ASTLs;
-import ast.ASTNew;
 import ast.ASTNode;
-import ast.ASTNum;
-import ast.ASTPlus;
-import ast.ASTWhile;
 
 public class Main {
+	@SuppressWarnings("static-access")
 	public static void main(String args[]) throws Exception {
 		Parser parser = null;
 //		CodeBlock cb;
@@ -66,19 +55,18 @@ public class Main {
 			}
 			catch (Error e)
 			{
-				System.out.println("Parsing error");
-				System.out.println(e.getMessage());
+				System.err.println("Parsing error");
+				System.err.println(e.getMessage());
 				e.printStackTrace();
 				break;
 			}
 			catch(UndefinedIdException e)
 			{
-				System.err.println("UndefinedId");
 				System.err.println(e.getMessage());
 			}
 			catch (Exception e)
 			{
-				System.out.println("NOK.");
+				System.err.println("Not OK.");
 				e.printStackTrace();
 				break;
 			}

@@ -40,6 +40,6 @@ public class Env implements IEnv {
 		for(int i = scopes.size() - 1; i >= 0; i--)
 			if (scopes.get(i).containsKey(id))
 				return scopes.get(i).get(id);
-		throw new UndefinedIdException(id);
+		throw new UndefinedIdException("Undefined id '" + id + "' in this scope.");
 	}
 }

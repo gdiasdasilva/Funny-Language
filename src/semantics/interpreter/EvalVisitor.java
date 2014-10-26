@@ -65,12 +65,12 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTPlus plus) throws SemanticException {
 		IValue l = plus.l.accept(this);
 		IValue r = plus.r.accept(this);
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new IntValue(vl.getVal() + vr.getVal());
 		}
-		else if (l.typeOf() == IValue.VType.STRING && l.typeOf() == IValue.VType.STRING)
+		else if (l.typeOf() == IValue.VType.STRING && r.typeOf() == IValue.VType.STRING)
 		{
 			StringValue vl = (StringValue) l;
 			StringValue vr = (StringValue) r;
@@ -82,9 +82,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTSub sub) throws SemanticException {
-		IntValue l = (IntValue) sub.l.accept(this);
-		IntValue r = (IntValue) sub.r.accept(this);		
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		IValue l = sub.l.accept(this);
+		IValue r = sub.r.accept(this);		
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new IntValue(vl.getVal() - vr.getVal());
@@ -95,10 +95,10 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTMul mul) throws SemanticException {
-		IntValue l = (IntValue) mul.l.accept(this);
-		IntValue r = (IntValue) mul.r.accept(this);
+		IValue l = mul.l.accept(this);
+		IValue r = mul.r.accept(this);
 		
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new IntValue(vl.getVal() * vr.getVal());
@@ -109,9 +109,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTDiv div) throws SemanticException {
-		IntValue l = (IntValue) div.l.accept(this);
-		IntValue r = (IntValue) div.r.accept(this);
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		IValue l = div.l.accept(this);
+		IValue r = div.r.accept(this);
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new IntValue(vl.getVal() / vr.getVal());
@@ -124,7 +124,10 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTUnMinus um) throws SemanticException {
 		IntValue v = (IntValue) um.v.accept(this);
 		if(v.typeOf() == IValue.VType.INTEGER)
-			return new IntValue(-v.getVal());
+		{
+			IntValue vv = (IntValue) v;
+			return new IntValue(-vv.getVal());	
+		}
 		else
 			throw new TypeErrorException("Trying to use unary minus with non-integer value.");
 	}
@@ -158,9 +161,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTAnd and) throws SemanticException{
-		BoolValue l = (BoolValue) and.l.accept(this);
-		BoolValue r = (BoolValue) and.r.accept(this);		
-		if (l.typeOf() == IValue.VType.BOOLEAN && l.typeOf() == IValue.VType.BOOLEAN) {
+		IValue l = and.l.accept(this);
+		IValue r = and.r.accept(this);		
+		if (l.typeOf() == IValue.VType.BOOLEAN && r.typeOf() == IValue.VType.BOOLEAN) {
 			BoolValue vl = (BoolValue) l;
 			BoolValue vr = (BoolValue) r;
 			return new BoolValue(vl.getVal() && vr.getVal());
@@ -171,9 +174,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTOr or) throws SemanticException {
-		BoolValue l = (BoolValue) or.l.accept(this);
-		BoolValue r = (BoolValue) or.r.accept(this);
-		if (l.typeOf() == IValue.VType.BOOLEAN && l.typeOf() == IValue.VType.BOOLEAN) {
+		IValue l = or.l.accept(this);
+		IValue r = or.r.accept(this);
+		if (l.typeOf() == IValue.VType.BOOLEAN && r.typeOf() == IValue.VType.BOOLEAN) {
 			BoolValue vl = (BoolValue) l;
 			BoolValue vr = (BoolValue) r;
 			return new BoolValue(vl.getVal() || vr.getVal());
@@ -211,9 +214,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTLseq lseq) throws SemanticException {
-		IntValue l = (IntValue) lseq.l.accept(this);
-		IntValue r = (IntValue) lseq.r.accept(this);
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		IValue l = lseq.l.accept(this);
+		IValue r = lseq.r.accept(this);
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new BoolValue(vl.getVal() <= vr.getVal());
@@ -224,9 +227,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTGreq greq) throws SemanticException{
-		IntValue l = (IntValue) greq.l.accept(this);
-		IntValue r = (IntValue) greq.r.accept(this);
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		IValue l = greq.l.accept(this);
+		IValue r = greq.r.accept(this);
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new BoolValue(vl.getVal() >= vr.getVal());
@@ -237,9 +240,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTLs ls) throws SemanticException {
-		IntValue l = (IntValue) ls.l.accept(this);
-		IntValue r = (IntValue) ls.r.accept(this);
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		IValue l = ls.l.accept(this);
+		IValue r = ls.r.accept(this);
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new BoolValue(vl.getVal() < vr.getVal());
@@ -250,9 +253,9 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTGr gr) throws SemanticException{
-		IntValue l = (IntValue) gr.l.accept(this);
-		IntValue r = (IntValue) gr.r.accept(this);
-		if (l.typeOf() == IValue.VType.INTEGER && l.typeOf() == IValue.VType.INTEGER) {
+		IValue l = gr.l.accept(this);
+		IValue r = gr.r.accept(this);
+		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new BoolValue(vl.getVal() > vr.getVal());
@@ -263,19 +266,26 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTCond cond) throws SemanticException{
-		BoolValue c = (BoolValue) cond.condNode.accept(this);
-		if(c.typeOf() != IValue.VType.BOOLEAN)
+		IValue c = cond.condNode.accept(this);
+		if(c.typeOf() == IValue.VType.BOOLEAN)
+		{
+			BoolValue vc = (BoolValue) c;
+			IValue thenV = cond.thenNode.accept(this);
+			IValue elseV = cond.elseNode.accept(this);
+			return (vc.getVal() ? thenV : elseV);
+		}
+		else
 			throw new TypeErrorException("If's condition must be a boolean expression.");
-		IValue thenV = cond.thenNode.accept(this);
-		IValue elseV = cond.elseNode.accept(this);
-		return (c.getVal() ? thenV : elseV);
 	}
 
 	@Override
 	public IValue visit(ASTNot n) throws SemanticException {
-		BoolValue v = (BoolValue) n.v.accept(this);
+		IValue v = n.v.accept(this);
 		if(v.typeOf() == IValue.VType.BOOLEAN)
-			return new BoolValue(!v.getVal());
+		{
+			BoolValue vv = (BoolValue) v;
+			return new BoolValue(!vv.getVal());
+		}
 		else
 			throw new TypeErrorException("Trying to NOT a non-boolean value.");
 	}
