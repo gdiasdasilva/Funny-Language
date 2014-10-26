@@ -69,8 +69,15 @@ public class EvalVisitor implements Visitor<IValue> {
 			IntValue vl = (IntValue) l;
 			IntValue vr = (IntValue) r;
 			return new IntValue(vl.getVal() + vr.getVal());
-		} else
-			throw new TypeErrorException("Trying to add non numerical values");
+		}
+		else if (l.typeOf() == IValue.VType.STRING && l.typeOf() == IValue.VType.STRING)
+		{
+			StringValue vl = (StringValue) l;
+			StringValue vr = (StringValue) r;
+			return new StringValue(vl.getVal() + vr.getVal());
+		}
+		else
+			throw new TypeErrorException("Trying to add values with different type.");
 	}
 
 	@Override
