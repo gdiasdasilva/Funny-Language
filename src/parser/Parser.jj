@@ -58,6 +58,8 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < DEREF: "!" >
 | < STRING_DEL: "\"" >
+| < FUN: "fun" >
+| < ARROW: "=>" >
 | < STRING: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
@@ -200,6 +202,7 @@ ASTNode Factor():
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
 	   n = < STRING > { f = new ASTId(n.image); } |
 	   f = While() |
+	   f = FunctionDef() | 
 	   < STRING_DEL > n = < STRING > < STRING_DEL > { f = new ASTString(n.image); }
 	)
 	{ return f; }
@@ -235,3 +238,17 @@ void Defs(List<String > ids, List<ASTNode> exps):
 	exps.add(exp);
   }
 }
+
+ASTNode FunctionDef():
+{ ASTNode e; }
+{
+  	< FUN > < STRING > < ARROW > e = CondExp() < END >
+	{ return e; }
+}
+
+ASTNode FunctionCall():
+{  }{
+  }
+
+
+

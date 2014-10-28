@@ -3,6 +3,7 @@ package semantics.compiler;
 import semantics.*;
 import ast.ASTAnd;
 import ast.ASTAssign;
+import ast.ASTCall;
 import ast.ASTCond;
 import ast.ASTDecl;
 import ast.ASTDeref;
@@ -270,6 +271,12 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTSeq astSeq) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTCall astCall) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -3,7 +3,7 @@ package semantics;
 public abstract class IValue {
 
 	public enum VType {
-		INTEGER, BOOLEAN, REFERENCE, STRING
+		INTEGER, BOOLEAN, REFERENCE, STRING, FUNCTION
 	}
 	
 	public static String nameOfType(VType t) {
@@ -16,6 +16,8 @@ public abstract class IValue {
 			return "Reference";
 		case STRING:
 			return "String";
+		case FUNCTION:
+			return "Function";
 		default:
 			return "Unknown";
 		}

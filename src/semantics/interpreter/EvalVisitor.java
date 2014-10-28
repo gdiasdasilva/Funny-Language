@@ -2,6 +2,7 @@ package semantics.interpreter;
 
 import semantics.BoolValue;
 import semantics.Env;
+import semantics.FunValue;
 import semantics.IEnv;
 import semantics.IValue;
 import semantics.IntValue;
@@ -13,6 +14,7 @@ import semantics.Visitor;
 import ast.ASTAnd;
 import ast.ASTAssign;
 import ast.ASTBool;
+import ast.ASTCall;
 import ast.ASTCond;
 import ast.ASTDecl;
 import ast.ASTDeref;
@@ -383,5 +385,25 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTSeq astSeq) throws SemanticException {
 		astSeq.f.accept(this);
 		return astSeq.s.accept(this);
+	}
+
+	@Override
+	public IValue visit(ASTCall astCall) throws SemanticException {
+		IValue vfun = astCall.fun.accept(this);
+		IValue varg = astCall.arg.accept(this);
+		FunValue vf;
+		
+		if (vfun.typeOf() == IValue.VType.FUNCTION)
+		{
+			vf = (FunValue) vfun;
+		}
+		else
+			throw new TypeErrorException("Wrong type in function.");
+		
+		env.beginScope();
+		env.assoc(vf.getParameter(), varg);
+		IValue result = vf.getBody().accept(this);
+		env.endScope();
+		return result;
 	}
 }
