@@ -5,15 +5,15 @@ import java.util.List;
 import semantics.SemanticException;
 import semantics.Visitor;
 
-public class ASTCall implements ASTNode {
+public class ASTFun implements ASTNode {
 
-	public final ASTNode fun;
-	public final List<ASTNode> args;
+	public final List<String> params;
+	public final ASTNode body;
 	
-	public ASTCall(ASTNode fun, List<ASTNode> args)
+	public ASTFun(List<String> params, ASTNode body) 
 	{
-		this.fun = fun;
-		this.args = args;
+		this.params = params;
+		this.body = body;
 	}
 	
 	@Override

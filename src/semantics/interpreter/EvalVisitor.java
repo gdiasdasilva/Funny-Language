@@ -1,5 +1,9 @@
 package semantics.interpreter;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import semantics.BoolValue;
 import semantics.Env;
 import semantics.FunValue;
@@ -20,6 +24,7 @@ import ast.ASTDecl;
 import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
+import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
 import ast.ASTId;
@@ -28,6 +33,7 @@ import ast.ASTLseq;
 import ast.ASTMul;
 import ast.ASTNeq;
 import ast.ASTNew;
+import ast.ASTNode;
 import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
@@ -390,7 +396,11 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTCall astCall) throws SemanticException {
 		IValue vfun = astCall.fun.accept(this);
-		IValue varg = astCall.arg.accept(this);
+//		IValue varg = astCall.arg.accept(this);
+		List<IValue> vargs = new ArrayList<IValue>();
+		for (ASTNode arg : astCall.args)
+			vargs.add(arg.accept(this));
+		
 		FunValue vf;
 		
 		if (vfun.typeOf() == IValue.VType.FUNCTION)
@@ -401,9 +411,22 @@ public class EvalVisitor implements Visitor<IValue> {
 			throw new TypeErrorException("Wrong type in function.");
 		
 		env.beginScope();
-		env.assoc(vf.getParameter(), varg);
+//		env.assoc(vf.getParameter(), varg);
+		Iterator<String> pit = vf.getParameters().iterator();
+		Iterator<IValue> vit = vargs.iterator();
+		
+		while (pit.hasNext())
+			while (vit.hasNext())
+				env.assoc(pit.next(), vit.next());
+		
 		IValue result = vf.getBody().accept(this);
 		env.endScope();
 		return result;
+	}
+
+	@Override
+	public IValue visit(ASTFun astFun) throws SemanticException {
+		IValue v = new FunValue(astFun.body, astFun.params);
+		return v;
 	}
 }

@@ -1,16 +1,18 @@
 package semantics;
 
+import java.util.List;
+
 import ast.ASTNode;
 
 public class FunValue extends IValue {
 
 	public final ASTNode expBody;
-	public final String parameter;
+	public final List<String> parameters;
 	
-	public FunValue(ASTNode expBody, String parameter)
+	public FunValue(ASTNode expBody, List<String> parameters)
 	{
 		this.expBody = expBody;
-		this.parameter = parameter;
+		this.parameters = parameters;
 	}
 	
 	@Override
@@ -22,12 +24,12 @@ public class FunValue extends IValue {
 	@Override
 	public String toString()
 	{
-		return expBody.toString();
+		return "Function w/ params " + parameters.toString();
 	}
 	
-	public String getParameter()
+	public List<String> getParameters()
 	{
-		return parameter;	
+		return parameters;	
 	}
 	
 	public ASTNode getBody()

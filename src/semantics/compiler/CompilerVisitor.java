@@ -9,6 +9,7 @@ import ast.ASTDecl;
 import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
+import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
 import ast.ASTId;
@@ -277,6 +278,12 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTCall astCall) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTFun astFun) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -144,7 +144,11 @@ public class UnparseVisitor implements Visitor<String> {
 
 	@Override
 	public String visit(ASTCall astCall) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		return "ASTCall( " + astCall.fun.accept(this) + " , " + astCall.args.toString() + " )";
+	}
+
+	@Override
+	public String visit(ASTFun astFun) throws SemanticException {
+		return "ASTFun( " + astFun.body.accept(this) + " , " + astFun.params.toString() + " )";
 	}
 }

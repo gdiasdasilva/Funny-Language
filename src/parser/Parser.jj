@@ -60,6 +60,7 @@ TOKEN :
 | < STRING_DEL: "\"" >
 | < FUN: "fun" >
 | < ARROW: "=>" >
+| < COMMA: "," >
 | < STRING: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
@@ -202,7 +203,8 @@ ASTNode Factor():
 	   < NOT > f = Factor() { f = new ASTNot(f); } |
 	   n = < STRING > { f = new ASTId(n.image); } |
 	   f = While() |
-	   f = FunctionDef() | 
+	   f = FunctionDef() |
+	   f = FunctionCall() | 
 	   < STRING_DEL > n = < STRING > < STRING_DEL > { f = new ASTString(n.image); }
 	)
 	{ return f; }
@@ -240,15 +242,16 @@ void Defs(List<String > ids, List<ASTNode> exps):
 }
 
 ASTNode FunctionDef():
-{ ASTNode e; }
+{ ASTNode e; List<String> params = new ArrayList<String>(); Token param; }
 {
-  	< FUN > < STRING > < ARROW > e = CondExp() < END >
+  	< FUN > ( param = < STRING > { params.add(param.image); } (< COMMA > param = < STRING > { params.add(param.image); } )* )? < ARROW > e = Assign() { e = new ASTFun(params, e);} < END >
 	{ return e; }
 }
 
 ASTNode FunctionCall():
-{  }{
-  }
+{ ASTNode e; List<ASTNode> args = new ArrayList<ASTNode>(); }{
+  e = Assign() < LPAR > ( e = Assign() { args.add(e); } ( < COMMA > e = Assign() { args.add(e); } )* )? < RPAR >
+  { return e; }}
 
 
 
