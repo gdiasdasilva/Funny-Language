@@ -7,6 +7,7 @@ import parser.Parser;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.TypeErrorException;
 import semantics.UndefinedIdException;
+import semantics.UnparseVisitor;
 import semantics.interpreter.EvalVisitor;
 import ast.ASTNode;
 
@@ -51,8 +52,8 @@ public class Main {
 			{
 				ASTNode exp = parser.start();
 				if (interactive) {
-//					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
-					System.out.println("Val: " + exp.accept(new EvalVisitor()));
+					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
+//					System.out.println("Val: " + exp.accept(new EvalVisitor()));
 				}
 				else
 				{
