@@ -71,9 +71,18 @@ ASTNode start():
 }
 
 ASTNode Exp():
-{ ASTNode le, le1; }
+{ ASTNode e; }
 {
-  le = Seq() { return le; }
+  (e = CondExp() | e = Seq()) { return e; }
+}
+
+ASTNode CondExp():
+{ ASTNode ife, thene, elsee; }
+{
+  < IF_TOK > ife = Exp()
+  < THEN_TOK > thene = Exp()
+  < ELSE_TOK > elsee = Exp() { ife = new ASTCond(ife, thene, elsee); }
+  { return ife; }
 }
 
 ASTNode Seq():
