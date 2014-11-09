@@ -43,56 +43,56 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTNum num) {
+	public CodeBlock visit(ASTNum num, IEnv e) {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(((IntValue) num.integer).getVal());
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTBool truth) {
+	public CodeBlock visit(ASTBool truth, IEnv e) {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(((BoolValue) truth.bool).getVal() ? TRUE : FALSE);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTPlus plus) throws SemanticException {
-		CodeBlock cb = plus.l.accept(this);
-		cb.merge(plus.r .accept(this));
+	public CodeBlock visit(ASTPlus plus, IEnv e) throws SemanticException {
+		CodeBlock cb = plus.l.accept(this, e);
+		cb.merge(plus.r .accept(this, e));
 		cb.insertOp(Op.ADD);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTSub sub) throws SemanticException {
-		CodeBlock cb = sub.l.accept(this);
-		cb.merge(sub.r.accept(this));
+	public CodeBlock visit(ASTSub sub, IEnv e) throws SemanticException {
+		CodeBlock cb = sub.l.accept(this, e);
+		cb.merge(sub.r.accept(this, e));
 		cb.insertOp(Op.SUB);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTMul mul) throws SemanticException {
-		CodeBlock cb = mul.l.accept(this);
-		cb.merge(mul.r.accept(this));
+	public CodeBlock visit(ASTMul mul, IEnv e) throws SemanticException {
+		CodeBlock cb = mul.l.accept(this, e);
+		cb.merge(mul.r.accept(this, e));
 		cb.insertOp(Op.MUL);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTDiv div) throws SemanticException {
-		CodeBlock cb = div.l.accept(this);
-		cb.merge(div.r.accept(this));
+	public CodeBlock visit(ASTDiv div, IEnv e) throws SemanticException {
+		CodeBlock cb = div.l.accept(this, e);
+		cb.merge(div.r.accept(this, e));
 		cb.insertOp(Op.DIV);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTUnMinus um) throws SemanticException {
+	public CodeBlock visit(ASTUnMinus um, IEnv e) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(0);
-		cb.merge(um.v.accept(this));
+		cb.merge(um.v.accept(this, e));
 		cb.insertOp(Op.SUB);
 		return cb;
 	}
@@ -115,175 +115,175 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTEq eq) throws SemanticException {
+	public CodeBlock visit(ASTEq eq, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = eq.l.accept(this);
+		CodeBlock cb = eq.l.accept(this, e);
 		this.label++;
-		cb.merge(eq.r.accept(this));
+		cb.merge(eq.r.accept(this, e));
 		cb.insertCondBranching(Cond.EQ, label);
 		return this.addBI(cb, label);
 	}
 
 	@Override
-	public CodeBlock visit(ASTNeq neq) throws SemanticException {
+	public CodeBlock visit(ASTNeq neq, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = neq.l.accept(this);
+		CodeBlock cb = neq.l.accept(this, e);
 		this.label++;
-		cb.merge(neq.r.accept(this));
+		cb.merge(neq.r.accept(this, e));
 		cb.insertCondBranching(Cond.NEQ, label);
 		return this.addBI(cb, label);
 	}
 	
 	@Override
-	public CodeBlock visit(ASTCond cond) throws SemanticException {
+	public CodeBlock visit(ASTCond cond, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = cond.condNode.accept(this);
+		CodeBlock cb = cond.condNode.accept(this, e);
 		cb.insertIntArgument(FALSE);
 		cb.insertCondBranching(Cond.NEQ, label);
 		this.label++;
-		cb.merge(cond.elseNode.accept(this));
+		cb.merge(cond.elseNode.accept(this, e));
 		cb.insertGotoContinue(label);
 		cb.insertThenLabel(label);
 		this.label++;
-		cb.merge(cond.thenNode.accept(this));
+		cb.merge(cond.thenNode.accept(this, e));
 		cb.insertContinueLabel(label);
 		this.label++;
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTLs ls) throws SemanticException {
+	public CodeBlock visit(ASTLs ls, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = ls.l.accept(this);
+		CodeBlock cb = ls.l.accept(this, e);
 		this.label++;
-		cb.merge(ls.r.accept(this));
+		cb.merge(ls.r.accept(this, e));
 		cb.insertCondBranching(Cond.LS, label);
 		return this.addBI(cb, label);
 	}
 
 	@Override
-	public CodeBlock visit(ASTGr gr) throws SemanticException {
+	public CodeBlock visit(ASTGr gr, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = gr.l.accept(this);
+		CodeBlock cb = gr.l.accept(this, e);
 		this.label++;
-		cb.merge(gr.r.accept(this));
+		cb.merge(gr.r.accept(this, e));
 		cb.insertCondBranching(Cond.GR, label);
 		return this.addBI(cb, label);
 	}
 
 	@Override
-	public CodeBlock visit(ASTLseq lseq) throws SemanticException {
+	public CodeBlock visit(ASTLseq lseq, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = lseq.l.accept(this);
+		CodeBlock cb = lseq.l.accept(this, e);
 		this.label++;
-		cb.merge(lseq.r.accept(this));
+		cb.merge(lseq.r.accept(this, e));
 		cb.insertCondBranching(Cond.LSEQ, label);
 		return this.addBI(cb, label);
 	}
 
 	@Override
-	public CodeBlock visit(ASTGreq greq) throws SemanticException {
+	public CodeBlock visit(ASTGreq greq, IEnv e) throws SemanticException {
 		int label = this.label++;
-		CodeBlock cb = greq.l.accept(this);
+		CodeBlock cb = greq.l.accept(this, e);
 		this.label++;
-		cb.merge(greq.r.accept(this));
+		cb.merge(greq.r.accept(this, e));
 		cb.insertCondBranching(Cond.GREQ, label);
 		return this.addBI(cb, label);
 	}
 
 	@Override
-	public CodeBlock visit(ASTAnd and) throws SemanticException {
-		CodeBlock cb = and.l.accept(this);
-		cb.merge(and.r .accept(this));
+	public CodeBlock visit(ASTAnd and, IEnv e) throws SemanticException {
+		CodeBlock cb = and.l.accept(this, e);
+		cb.merge(and.r .accept(this, e));
 		cb.insertOp(Op.AND);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTOr or) throws SemanticException {
-		CodeBlock cb = or.l.accept(this);
-		cb.merge(or.r .accept(this));
+	public CodeBlock visit(ASTOr or, IEnv e) throws SemanticException {
+		CodeBlock cb = or.l.accept(this, e);
+		cb.merge(or.r .accept(this, e));
 		cb.insertOp(Op.OR);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTNot n) throws SemanticException {
+	public CodeBlock visit(ASTNot n, IEnv e) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(1);
-		cb.merge(n.v.accept(this));
+		cb.merge(n.v.accept(this, e));
 		cb.insertOp(Op.SUB);
 		return cb;
 	}
 
 	@Override
-	public CodeBlock visit(ASTId id) throws SemanticException {
+	public CodeBlock visit(ASTId id, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTDecl decl) throws SemanticException {
+	public CodeBlock visit(ASTDecl decl, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTAssign astAssign) throws SemanticException {
+	public CodeBlock visit(ASTAssign astAssign, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTWhile astWhile) throws SemanticException {
+	public CodeBlock visit(ASTWhile astWhile, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTNew astNew) throws SemanticException {
+	public CodeBlock visit(ASTNew astNew, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTDeref astDeref) throws SemanticException {
+	public CodeBlock visit(ASTDeref astDeref, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTPrint astPrint) throws SemanticException {
+	public CodeBlock visit(ASTPrint astPrint, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTPrintln astPrintln) throws SemanticException {
+	public CodeBlock visit(ASTPrintln astPrintln, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTString astString) {
+	public CodeBlock visit(ASTString astString, IEnv e) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTSeq astSeq) throws SemanticException {
+	public CodeBlock visit(ASTSeq astSeq, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTCall astCall) throws SemanticException {
+	public CodeBlock visit(ASTCall astCall, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CodeBlock visit(ASTFun astFun) throws SemanticException {
+	public CodeBlock visit(ASTFun astFun, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -5,150 +5,150 @@ import ast.*;
 public class UnparseVisitor implements Visitor<String> {
 
 	@Override
-	public String visit(ASTNum num) {
+	public String visit(ASTNum num, IEnv e) {
 		return num.integer.toString();
 	}
 
 	@Override
-	public String visit(ASTBool truth) {
+	public String visit(ASTBool truth, IEnv e) {
 		return truth.bool.toString();
 	}
 
 	@Override
-	public String visit(ASTPlus plus) throws SemanticException{
-		return "ASTPlus( " + plus.l.accept(this) + " , " + plus.r.accept(this) + " )";
+	public String visit(ASTPlus plus, IEnv e) throws SemanticException{
+		return "ASTPlus( " + plus.l.accept(this, e) + " , " + plus.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTSub sub) throws SemanticException {
-		return "ASTSub( " + sub.l.accept(this) + " , " + sub.r.accept(this) + " )";
+	public String visit(ASTSub sub, IEnv e) throws SemanticException {
+		return "ASTSub( " + sub.l.accept(this, e) + " , " + sub.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTMul mul) throws SemanticException {
-		return "ASTMul( " + mul.l.accept(this) + " , " + mul.r.accept(this) + " )";
+	public String visit(ASTMul mul, IEnv e) throws SemanticException {
+		return "ASTMul( " + mul.l.accept(this, e) + " , " + mul.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTDiv div) throws SemanticException {
-		return "ASTPlus( " + div.l.accept(this) + " , " + div.r.accept(this) + " )";
+	public String visit(ASTDiv div, IEnv e) throws SemanticException {
+		return "ASTPlus( " + div.l.accept(this, e) + " , " + div.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTUnMinus um) throws SemanticException {
-		return "ASTUnMinus( " + um.v.accept(this) + " )";
+	public String visit(ASTUnMinus um, IEnv e) throws SemanticException {
+		return "ASTUnMinus( " + um.v.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTEq eq) throws SemanticException {
-		return "ASTEq( " + eq.l.accept(this) + " , " + eq.r.accept(this) + " )";
+	public String visit(ASTEq eq, IEnv e) throws SemanticException {
+		return "ASTEq( " + eq.l.accept(this, e) + " , " + eq.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTNeq neq) throws SemanticException {
-		return "ASTNeq( " + neq.l.accept(this) + " , " + neq.r.accept(this) + " )";
+	public String visit(ASTNeq neq, IEnv e) throws SemanticException {
+		return "ASTNeq( " + neq.l.accept(this, e) + " , " + neq.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTLs ls) throws SemanticException {
-		return "ASTLs( " + ls.l.accept(this) + " , " + ls.r.accept(this) + " )";
+	public String visit(ASTLs ls, IEnv e) throws SemanticException {
+		return "ASTLs( " + ls.l.accept(this, e) + " , " + ls.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTGr gr) throws SemanticException {
-		return "ASTGr( " + gr.l.accept(this) + " , " + gr.r.accept(this) + " )";
+	public String visit(ASTGr gr, IEnv e) throws SemanticException {
+		return "ASTGr( " + gr.l.accept(this, e) + " , " + gr.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTLseq lseq) throws SemanticException {
-		return "ASTLseq( " + lseq.l.accept(this) + " , " + lseq.r.accept(this) + " )";
+	public String visit(ASTLseq lseq, IEnv e) throws SemanticException {
+		return "ASTLseq( " + lseq.l.accept(this, e) + " , " + lseq.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTGreq greq) throws SemanticException {
-		return "ASTGreq( " + greq.l.accept(this) + " , " + greq.r.accept(this) + " )";
+	public String visit(ASTGreq greq, IEnv e) throws SemanticException {
+		return "ASTGreq( " + greq.l.accept(this, e) + " , " + greq.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTAnd and) throws SemanticException {
-		return "ASTAnd( " + and.l.accept(this) + " , " + and.r.accept(this) + " )";
+	public String visit(ASTAnd and, IEnv e) throws SemanticException {
+		return "ASTAnd( " + and.l.accept(this, e) + " , " + and.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTOr or) throws SemanticException {
-		return "ASTOr( " + or.l.accept(this) + " , " + or.r.accept(this) + " )";
+	public String visit(ASTOr or, IEnv e) throws SemanticException {
+		return "ASTOr( " + or.l.accept(this, e) + " , " + or.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTCond cond) throws SemanticException {
-		return "ASTCond( " + cond.condNode.accept(this) + " , " + cond.thenNode.accept(this) + " , " + cond.elseNode.accept(this) + " )";
+	public String visit(ASTCond cond, IEnv e) throws SemanticException {
+		return "ASTCond( " + cond.condNode.accept(this, e) + " , " + cond.thenNode.accept(this, e) + " , " + cond.elseNode.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTNot n) throws SemanticException {
-		return "ASTUnMinus( " + n.v.accept(this) + " )";
+	public String visit(ASTNot n, IEnv e) throws SemanticException {
+		return "ASTUnMinus( " + n.v.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTId id) throws SemanticException {
+	public String visit(ASTId id, IEnv e) throws SemanticException {
 		return "ASTId( " + id.id + " )";
 	}
 	
 	@Override
-	public String visit(ASTDecl decl) throws SemanticException {
+	public String visit(ASTDecl decl, IEnv e) throws SemanticException {
 		StringBuilder sb = new StringBuilder();
 		for (ASTNode def : decl.defs)
-			sb.append(def.accept(this) + " ");
-		return "ASTDecl( " + decl.ids + " , [ " + sb.toString() + " ] , " + decl.body.accept(this) + " )";
+			sb.append(def.accept(this, e) + " ");
+		return "ASTDecl( " + decl.ids + " , [ " + sb.toString() + " ] , " + decl.body.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTAssign astAssign) throws SemanticException {
-		return "ASTAssign( " + astAssign.l.accept(this) + " , " + astAssign.r.accept(this) + " )";
+	public String visit(ASTAssign astAssign, IEnv e) throws SemanticException {
+		return "ASTAssign( " + astAssign.l.accept(this, e) + " , " + astAssign.r.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTWhile astWhile) throws SemanticException {
-		return "ASTWhile( " + astWhile.c.accept(this) + " , " + astWhile.b.accept(this) + " )";
+	public String visit(ASTWhile astWhile, IEnv e) throws SemanticException {
+		return "ASTWhile( " + astWhile.c.accept(this, e) + " , " + astWhile.b.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTNew astNew) throws SemanticException {
-		return "ASTNew( " + astNew.node.accept(this) + " )";
+	public String visit(ASTNew astNew, IEnv e) throws SemanticException {
+		return "ASTNew( " + astNew.node.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTDeref astDeref) throws SemanticException {
-		return "ASTDeref( " + astDeref.node.accept(this) + " )";
+	public String visit(ASTDeref astDeref, IEnv e) throws SemanticException {
+		return "ASTDeref( " + astDeref.node.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTPrint astPrint) throws SemanticException {
-		return "ASTPrint( " + astPrint.node.accept(this) + " )";
+	public String visit(ASTPrint astPrint, IEnv e) throws SemanticException {
+		return "ASTPrint( " + astPrint.node.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTPrintln astPrintln) throws SemanticException {
-		return "ASTPrintln( " + astPrintln.node.accept(this) + " )";
+	public String visit(ASTPrintln astPrintln, IEnv e) throws SemanticException {
+		return "ASTPrintln( " + astPrintln.node.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTString astString) {
+	public String visit(ASTString astString, IEnv e) {
 		return astString.string.toString();
 	}
 
 	@Override
-	public String visit(ASTSeq astSeq) throws SemanticException {
-		return "ASTSeq( " + astSeq.f.accept(this) + " , " + astSeq.s.accept(this) + " )";
+	public String visit(ASTSeq astSeq, IEnv e) throws SemanticException {
+		return "ASTSeq( " + astSeq.f.accept(this, e) + " , " + astSeq.s.accept(this, e) + " )";
 	}
 
 	@Override
-	public String visit(ASTCall astCall) throws SemanticException {
-		return "ASTCall( " + astCall.fun.accept(this) + " , " + astCall.args.toString() + " )";
+	public String visit(ASTCall astCall, IEnv e) throws SemanticException {
+		return "ASTCall( " + astCall.fun.accept(this, e) + " , " + astCall.args.toString() + " )";
 	}
 
 	@Override
-	public String visit(ASTFun astFun) throws SemanticException {
-		return "ASTFun( " + astFun.body.accept(this) + " , " + astFun.params.toString() + " )";
+	public String visit(ASTFun astFun, IEnv e) throws SemanticException {
+		return "ASTFun( " + astFun.body.accept(this, e) + " , " + astFun.params.toString() + " )";
 	}
 }

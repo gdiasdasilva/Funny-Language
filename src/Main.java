@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import parser.ParseException;
 import parser.Parser;
+import semantics.Env;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.TypeErrorException;
 import semantics.UndefinedIdException;
@@ -52,12 +53,12 @@ public class Main {
 			{
 				ASTNode exp = parser.start();
 				if (interactive) {
-					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
-//					System.out.println("Val: " + exp.accept(new EvalVisitor()));
+//					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
+					System.out.println("Val: " + exp.accept(new EvalVisitor(), new Env()));
 				}
 				else
 				{
-					exp.accept(new EvalVisitor());
+					exp.accept(new EvalVisitor(), new Env());
 				}
 				
 				//cb = exp.accept(new CompilerVisitor());

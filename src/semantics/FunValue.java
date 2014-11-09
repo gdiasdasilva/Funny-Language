@@ -8,11 +8,13 @@ public class FunValue extends IValue {
 
 	public final ASTNode expBody;
 	public final List<String> parameters;
+	public final IEnv e;
 	
-	public FunValue(ASTNode expBody, List<String> parameters)
+	public FunValue(ASTNode expBody, List<String> parameters, IEnv e)
 	{
 		this.expBody = expBody;
 		this.parameters = parameters;
+		this.e = e;
 	}
 	
 	@Override

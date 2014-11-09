@@ -1,5 +1,6 @@
 package ast;
 
+import semantics.IEnv;
 import semantics.SemanticException;
 import semantics.Visitor;
 
@@ -13,7 +14,7 @@ public class ASTSub implements ASTNode{
 	}
 
 	@Override
-	public <T> T accept(Visitor<T> visitor) throws SemanticException {
-		return visitor.visit(this);
+	public <T> T accept(Visitor<T> visitor, IEnv e) throws SemanticException {
+		return visitor.visit(this, e);
 	}
 }
