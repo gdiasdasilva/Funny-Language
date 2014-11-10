@@ -259,11 +259,11 @@ ASTNode Decl():
 ASTNode FunctionDef():
 {
   ASTNode be; /* expression defining the function body */
-  List<String> paramsl = new ArrayList<String >(); /* list of parameter names */
+  List<String> paramsl; /* list of parameter names */
   Token param;
 }
 {
-  ( < FUN > (param = < STRING > { paramsl = new ArrayList<String>(); paramsl.add(param.image); }
+  ( < FUN > { paramsl = new ArrayList<String>(); } (param = < STRING > { paramsl.add(param.image); }
     (
       ( < COMMA > param = < STRING > ) { paramsl.add(param.image); }    )*
   )? < ARROW > be = Exp()
