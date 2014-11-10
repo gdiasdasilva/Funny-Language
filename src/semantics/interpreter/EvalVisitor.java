@@ -399,6 +399,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	public IValue visit(ASTCall astCall, IEnv e) throws SemanticException {
 		IValue vfun = astCall.fun.accept(this, e);
 		List<IValue> vargs = new ArrayList<IValue>();
+		
 		for (ASTNode arg : astCall.args)
 			vargs.add(arg.accept(this, e));
 		
@@ -411,16 +412,17 @@ public class EvalVisitor implements Visitor<IValue> {
 		else
 			throw new TypeErrorException("Wrong type in function.");
 		
-		e = e.beginScope();
+		IEnv e1 = vf.beginScope();
+		
 		Iterator<String> pit = vf.getParameters().iterator();
 		Iterator<IValue> vit = vargs.iterator();
 		
 		while (pit.hasNext())
 			while (vit.hasNext())
-				e.assoc(pit.next(), vit.next());
+				e1.assoc(pit.next(), vit.next());
 		
-		IValue result = vf.getBody().accept(this, e);
-		e.endScope();
+		IValue result = vf.getBody().accept(this, e1);
+		e1.endScope();
 		return result;
 	}
 

@@ -38,4 +38,15 @@ public class FunValue extends IValue {
 	{
 		return expBody;
 	}
+	
+	public IEnv beginScope()
+	{
+		return e.beginScope();
+	}
+	
+	public void endScope()
+	{
+		e.endScope();
+	}
+	
 }

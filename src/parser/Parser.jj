@@ -201,7 +201,7 @@ ASTNode FunctionCall():
     { args = new ArrayList<ASTNode>(); }
     < LPAR >
     (
-      a = Factor() { args.add(a); }
+      a = FunctionCall() { args.add(a); }
       ( < COMMA > a = Factor() { args.add(a); } )* /* case more than one argument */
     )?
     < RPAR >
@@ -259,14 +259,14 @@ ASTNode Decl():
 ASTNode FunctionDef():
 {
   ASTNode be; /* expression defining the function body */
-  List<String> paramsl; /* list of parameter names */
+  List<String> paramsl = new ArrayList<String >(); /* list of parameter names */
   Token param;
 }
 {
   ( < FUN > (param = < STRING > { paramsl = new ArrayList<String>(); paramsl.add(param.image); }
     (
       ( < COMMA > param = < STRING > ) { paramsl.add(param.image); }    )*
-  ) < ARROW > be = Exp()
+  )? < ARROW > be = Exp()
   < END > )
   { return new ASTFun(paramsl, be); }
 }
