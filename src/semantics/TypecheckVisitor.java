@@ -111,7 +111,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 		case INTEGER:
 		case STRING:
 			if (lType.getType() == rType.getType())
-				return lType;
+				return new BoolType();
 		default:
 			break;
 		}
@@ -130,7 +130,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 		case INTEGER:
 		case STRING:
 			if (lType.getType() == rType.getType())
-				return lType;
+				return new BoolType();
 		default:
 			break;
 		}
@@ -140,56 +140,83 @@ public class TypecheckVisitor implements Visitor<IType> {
 
 	@Override
 	public IType visit(ASTLs ls, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType lType = ls.l.accept(this, e);
+		IType rType = ls.r.accept(this, e);
+		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
+			return new BoolType();
+		throw new TypeErrorException("Trying to 'lesser than' " + lType + " and " + rType);
 	}
 
 	@Override
 	public IType visit(ASTGr gr, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType lType = gr.l.accept(this, e);
+		IType rType = gr.r.accept(this, e);
+		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
+			return new BoolType();
+		throw new TypeErrorException("Trying to 'greater than' " + lType + " and " + rType);
 	}
 
 	@Override
 	public IType visit(ASTLseq lseq, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType lType = lseq.l.accept(this, e);
+		IType rType = lseq.r.accept(this, e);
+		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
+			return new BoolType();
+		throw new TypeErrorException("Trying to 'lesser or equal than' " + lType + " and " + rType);
 	}
 
 	@Override
 	public IType visit(ASTGreq greq, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType lType = greq.l.accept(this, e);
+		IType rType = greq.r.accept(this, e);
+		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
+			return new BoolType();
+		throw new TypeErrorException("Trying to 'greater or equal than' " + lType + " and " + rType);
 	}
 
 	@Override
 	public IType visit(ASTAnd and, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType lType = and.l.accept(this, e);
+		IType rType = and.r.accept(this, e);
+		if (lType.getType() == IType.VType.BOOLEAN && rType.getType() == IType.VType.BOOLEAN)
+			return lType;
+		throw new TypeErrorException("Trying to and " + lType + " and " + rType);
 	}
 
 	@Override
 	public IType visit(ASTOr or, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType lType = or.l.accept(this, e);
+		IType rType = or.r.accept(this, e);
+		if (lType.getType() == IType.VType.BOOLEAN && rType.getType() == IType.VType.BOOLEAN)
+			return lType;
+		throw new TypeErrorException("Trying to and " + lType + " and " + rType);
 	}
 
 	@Override
 	public IType visit(ASTCond cond, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType condType = cond.condNode.accept(this, e);
+		IType thenType = cond.thenNode.accept(this, e);
+		IType elseType = cond.elseNode.accept(this, e);
+		
+		if(condType.getType() != IType.VType.BOOLEAN)
+			throw new TypeErrorException("Trying to IF a " + condType + " condition.");
+		
+		if(thenType.getType() == elseType.getType())
+			return thenType;
+		else
+			throw new TypeErrorException("Trying to then and else: " + thenType + " and " + elseType + ", respectively.");
 	}
 
 	@Override
 	public IType visit(ASTId id, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
+		// TODO fazer find e devolver tipo do id. para isso e preciso adaptar ambiente
 		return null;
 	}
 
 	@Override
 	public IType visit(ASTDecl decl, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType bodyType = decl.body.accept(this, e);
+		return bodyType; // TODO rever
 	}
 
 	@Override
@@ -200,8 +227,13 @@ public class TypecheckVisitor implements Visitor<IType> {
 
 	@Override
 	public IType visit(ASTWhile astWhile, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType condType = astWhile.c.accept(this, e);
+		IType bodyType = astWhile.b.accept(this, e);
+		
+		if(condType.getType() == IType.VType.BOOLEAN && bodyType.getType() == IType.VType.CMD)
+			return bodyType;
+		else
+			throw new TypeErrorException("Condition was " + condType + ", body was " + bodyType);
 	}
 
 	@Override
