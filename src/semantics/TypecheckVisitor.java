@@ -299,9 +299,15 @@ public class TypecheckVisitor implements Visitor<IType> {
 	}
 
 	@Override
-	public IType visit(ASTFun astFun, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+	public IType visit(ASTFun astFun, IEnv e) throws SemanticException
+	{
+		IType bodyType = astFun.body.accept(this, e);
+		
+		for(int i = 0; i < astFun.types.size(); i++)
+		{
+			e.assoc(astFun.params.get(i), astFun.types.get(i));
+		}
+		
+		return new FunType(astFun.types, bodyType);	
 	}
-
 }

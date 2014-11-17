@@ -48,12 +48,6 @@ import ast.ASTWhile;
 
 public class EvalVisitor implements Visitor<IValue> {
 	
-//	private IEnv env;
-	
-//	public EvalVisitor() {
-//		this.env = new Env();
-//	}
-
 	@Override
 	public IValue visit(ASTNum num, IEnv e) {
 		return num.integer;
