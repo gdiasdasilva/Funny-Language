@@ -1,13 +1,13 @@
 package semantics;
 
-public class IntType implements IType {
+public class StringType implements IType {
 
 	@Override
 	public VType getType() {
-		return VType.STRING;
+		return VType.INTEGER;
 	}
 	
 	public String toString() {
-		return "String";
+		return "Int";
 	}
 }

@@ -44,8 +44,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 
 	@Override
 	public IType visit(ASTString astString, IEnv e) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StringType();
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 	public IType visit(ASTEq eq, IEnv e) throws SemanticException {
 		IType lType = eq.l.accept(this, e);
 		IType rType = eq.r.accept(this, e);
-		
+
 		switch (lType.getType())
 		{
 		case BOOLEAN:
@@ -115,7 +114,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 		default:
 			break;
 		}
-		
+
 		throw new TypeErrorException("Trying to equal " + lType + " and " + rType);
 	}
 
@@ -123,7 +122,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 	public IType visit(ASTNeq neq, IEnv e) throws SemanticException {
 		IType lType = neq.l.accept(this, e);
 		IType rType = neq.r.accept(this, e);
-		
+
 		switch (lType.getType())
 		{
 		case BOOLEAN:
@@ -134,7 +133,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 		default:
 			break;
 		}
-		
+
 		throw new TypeErrorException("Trying to not equal " + lType + " and " + rType);
 	}
 
@@ -193,14 +192,15 @@ public class TypecheckVisitor implements Visitor<IType> {
 	}
 
 	@Override
-	public IType visit(ASTCond cond, IEnv e) throws SemanticException {
+	public IType visit(ASTCond cond, IEnv e) throws SemanticException
+	{
 		IType condType = cond.condNode.accept(this, e);
 		IType thenType = cond.thenNode.accept(this, e);
 		IType elseType = cond.elseNode.accept(this, e);
-		
+
 		if(condType.getType() != IType.VType.BOOLEAN)
 			throw new TypeErrorException("Trying to IF a " + condType + " condition.");
-		
+
 		if(thenType.getType() == elseType.getType())
 			return thenType;
 		else
@@ -208,28 +208,49 @@ public class TypecheckVisitor implements Visitor<IType> {
 	}
 
 	@Override
-	public IType visit(ASTId id, IEnv e) throws SemanticException {
-		// TODO fazer find e devolver tipo do id. para isso e preciso adaptar ambiente
-		return null;
+	public IType visit(ASTId id, IEnv e) throws SemanticException
+	{
+		return e.find(id.id);
 	}
 
 	@Override
-	public IType visit(ASTDecl decl, IEnv e) throws SemanticException {
-		IType bodyType = decl.body.accept(this, e);
-		return bodyType; // TODO rever
+	public IType visit(ASTDecl decl, IEnv e) throws SemanticException 
+	{
+		e = e.beginScope();
+
+		for (int i = 0; i < decl.ids.size( ); i++)
+		{
+			e.assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+		}
+
+		IType v = decl.body.accept(this, e);
+
+		e.endScope();
+		return v;
 	}
 
 	@Override
-	public IType visit(ASTAssign astAssign, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+	public IType visit(ASTAssign astAssign, IEnv e) throws SemanticException
+	{
+		IType ref = astAssign.l.accept(this, e);
+		IType value = astAssign.r.accept(this, e); // TODO how to?
+		
+		if(ref.getType() == IType.VType.REFERENCE)
+		{
+			if(((RefType)ref).getRefType() == value)
+				return new CmdType();
+			else throw new TypeErrorException("Memory cell was of type " + ((RefType)ref).getRefType() + ", value had type " + value);
+		}	
+		else
+			throw new TypeErrorException("Reference was of type " + ref);
 	}
 
 	@Override
-	public IType visit(ASTWhile astWhile, IEnv e) throws SemanticException {
+	public IType visit(ASTWhile astWhile, IEnv e) throws SemanticException
+	{
 		IType condType = astWhile.c.accept(this, e);
 		IType bodyType = astWhile.b.accept(this, e);
-		
+
 		if(condType.getType() == IType.VType.BOOLEAN && bodyType.getType() == IType.VType.CMD)
 			return bodyType;
 		else
@@ -237,33 +258,38 @@ public class TypecheckVisitor implements Visitor<IType> {
 	}
 
 	@Override
-	public IType visit(ASTNew astNew, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+	public IType visit(ASTNew astNew, IEnv e) throws SemanticException
+	{
+		return new RefType(astNew.node.accept(this, e));
 	}
 
 	@Override
-	public IType visit(ASTDeref astDeref, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+	public IType visit(ASTDeref astDeref, IEnv e) throws SemanticException
+	{
+		IType ref = astDeref.node.accept(this, e);
+		
+		if(ref.getType() == IType.VType.REFERENCE)
+		{
+			return ((RefType) ref).getRefType();
+		}
+		else
+			throw new TypeErrorException("Reference was of type " + ref);
 	}
 
 	@Override
 	public IType visit(ASTPrint astPrint, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		return new CmdType();
 	}
 
 	@Override
 	public IType visit(ASTPrintln astPrintln, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		return new CmdType();
 	}
 
 	@Override
 	public IType visit(ASTSeq astSeq, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		astSeq.f.accept(this, e);
+		return astSeq.s.accept(this, e);
 	}
 
 	@Override
