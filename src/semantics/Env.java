@@ -4,16 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Env implements IEnv {
-
-//	private List<Map<String, IValue>> scopes;
 	
 	private Env upper;
 	private Map<String, IValue> d;
-	
-//	public Env()
-//	{
-//		scopes = new ArrayList<Map<String, IValue>>();
-//	}
 	
 	private Env(Env e)
 	{
@@ -29,7 +22,6 @@ public class Env implements IEnv {
 	@Override
 	public IEnv beginScope()
 	{
-//		scopes.add(new HashMap<String, IValue>());
 		Env e = new Env(this);
 		return e;
 	}
@@ -42,17 +34,6 @@ public class Env implements IEnv {
 		return this;
 	}
 	
-
-//	@Override
-//	public void assoc(String id, IValue val) throws IdentiferDeclaredTwiceException
-//	{
-//		if (!scopes.get(scopes.size()-1).containsKey(id))
-//			scopes.get(scopes.size()-1).put(id, val);
-//		else
-//			throw new IdentiferDeclaredTwiceException();
-//	}
-	
-	@Override
 	public void assoc(String id, IValue val) throws IdentiferDeclaredTwiceException
 	{
 		if (!d.containsKey(id))
@@ -60,17 +41,7 @@ public class Env implements IEnv {
 		else
 			throw new IdentiferDeclaredTwiceException();
 	}
-
-//	@Override
-//	public IValue find(String id) throws UndefinedIdException
-//	{		
-//		for(int i = scopes.size() - 1; i >= 0; i--)
-//			if (scopes.get(i).containsKey(id))
-//				return scopes.get(i).get(id);
-//		throw new UndefinedIdException("Undefined id '" + id + "' in this scope.");
-//	}
 	
-	@Override
 	public IValue find(String id) throws UndefinedIdException
 	{		
 		IValue v = d.get(id);

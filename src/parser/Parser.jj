@@ -64,16 +64,17 @@ TOKEN :
 | < STRING: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
 }
 
-ASTNode start():
+ASTNode Prog():
 { ASTNode t; }
 {
-  	t = Exp() < EL > { return t; } | < EOF > { System.exit(0); }
+  	t = SExp() < EL > { return t; } | < EOF > { System.exit(0); }
 }
 
-ASTNode Exp():
-{ ASTNode e; }
+ASTNode SExp():
+{ ASTNode e1, e2; }
 {
-  (e = CondExp() | e = Seq()) { return e; }
+  e = Assign() (< SEMICOLON > e = Assign())*
+  { return e; }
 }
 
 ASTNode CondExp():

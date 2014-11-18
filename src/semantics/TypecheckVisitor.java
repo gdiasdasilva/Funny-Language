@@ -210,7 +210,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 	@Override
 	public IType visit(ASTId id, IEnv e) throws SemanticException
 	{
-		return e.find(id.id);
+		return ((TyEnv) e).find(id.id);
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 
 		for (int i = 0; i < decl.ids.size( ); i++)
 		{
-			e.assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+			((TyEnv)e).assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
 		}
 
 		IType v = decl.body.accept(this, e);
@@ -233,16 +233,17 @@ public class TypecheckVisitor implements Visitor<IType> {
 	public IType visit(ASTAssign astAssign, IEnv e) throws SemanticException
 	{
 		IType ref = astAssign.l.accept(this, e);
-		IType value = astAssign.r.accept(this, e); // TODO how to?
-		
+		IType value = astAssign.r.accept(this, e);
+
 		if(ref.getType() == IType.VType.REFERENCE)
 		{
-			if(((RefType)ref).getRefType() == value)
+			if(((RefType)ref).getRefType().getType() == value.getType())
 				return new CmdType();
-			else throw new TypeErrorException("Memory cell was of type " + ((RefType)ref).getRefType() + ", value had type " + value);
+
+			throw new TypeErrorException("Memory cell was of type " + ((RefType)ref).getRefType() + ", value had type " + value);
 		}	
-		else
-			throw new TypeErrorException("Reference was of type " + ref);
+
+		throw new TypeErrorException("Reference was of type " + ref);
 	}
 
 	@Override
@@ -267,7 +268,7 @@ public class TypecheckVisitor implements Visitor<IType> {
 	public IType visit(ASTDeref astDeref, IEnv e) throws SemanticException
 	{
 		IType ref = astDeref.node.accept(this, e);
-		
+
 		if(ref.getType() == IType.VType.REFERENCE)
 		{
 			return ((RefType) ref).getRefType();
@@ -302,12 +303,12 @@ public class TypecheckVisitor implements Visitor<IType> {
 	public IType visit(ASTFun astFun, IEnv e) throws SemanticException
 	{
 		IType bodyType = astFun.body.accept(this, e);
-		
+
 		for(int i = 0; i < astFun.types.size(); i++)
 		{
-			e.assoc(astFun.params.get(i), astFun.types.get(i));
+			((TyEnv) e).assoc(astFun.params.get(i), astFun.types.get(i));
 		}
-		
+
 		return new FunType(astFun.types, bodyType);	
 	}
 }

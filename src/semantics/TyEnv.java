@@ -1,30 +1,55 @@
 package semantics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TyEnv implements IEnv {
 
-	@Override
-	public IEnv beginScope() {
-		// TODO Auto-generated method stub
-		return null;
+	private TyEnv upper;
+	private Map<String, IType> d;
+	
+	private TyEnv(TyEnv e)
+	{
+		upper = e;
+		d = new HashMap<String, IType>();
+	}
+	
+	public TyEnv()
+	{
+		this(null);
 	}
 
 	@Override
-	public IEnv endScope() {
-		// TODO Auto-generated method stub
-		return null;
+	public IEnv beginScope()
+	{
+		TyEnv e = new TyEnv(this);
+		return e;
 	}
 
 	@Override
-	public void assoc(String id, IValue val)
-			throws IdentiferDeclaredTwiceException {
-		// TODO Auto-generated method stub
-
+	public IEnv endScope()
+	{
+		if (upper != null)
+			upper = upper.upper;
+		return this;
 	}
-
-	@Override
-	public IValue find(String id) throws UndefinedIdException {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void assoc(String id, IType val) throws IdentiferDeclaredTwiceException
+	{
+		if (!d.containsKey(id))
+			d.put(id, val);
+		else
+			throw new IdentiferDeclaredTwiceException();
+	}
+	
+	public IType find(String id) throws UndefinedIdException
+	{		
+		IType v = d.get(id);
+		if (v != null)
+			return v;
+		else if (upper != null)
+			return upper.find(id);
+		throw new UndefinedIdException("Undefined id '" + id + "' in this scope.");
 	}
 
 }

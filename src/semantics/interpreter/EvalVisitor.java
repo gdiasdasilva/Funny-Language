@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import semantics.BoolValue;
+import semantics.Env;
 import semantics.FunValue;
 import semantics.IEnv;
 import semantics.IValue;
@@ -295,7 +296,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTId id, IEnv e) throws SemanticException {
 		if (e != null)
-			return e.find(id.id);
+			return ((Env) e).find(id.id);
 		throw new UndefinedIdException("Undefined id " + id);
 	}
 
@@ -306,7 +307,7 @@ public class EvalVisitor implements Visitor<IValue> {
 		
 		for (int i = 0; i < decl.ids.size( ); i++)
 		{
-			e.assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+			((Env) e).assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
 		}
 		
 		IValue v = decl.body.accept(this, e);
@@ -413,7 +414,7 @@ public class EvalVisitor implements Visitor<IValue> {
 		
 		while (pit.hasNext())
 			while (vit.hasNext())
-				e1.assoc(pit.next(), vit.next());
+				((Env) e1).assoc(pit.next(), vit.next());
 		
 		IValue result = vf.getBody().accept(this, e1);
 		e1.endScope();
