@@ -26,6 +26,9 @@ TOKEN :
 {
 < Num: (["0"-"9"]) + >
 | < BOOL_LIT: "true" | "false" >
+| < REF_TYPE: "ref" >
+| < INT_TYPE: "int" >
+| < BOOL_TYPE: "bool" >
 | < LPAR : "(" >
 | < RPAR : ")" >
 | < ADD_OP : "+" >
@@ -44,6 +47,8 @@ TOKEN :
 | < AND : "&&" >
 | < OR : "||" >
 | < NOT: "~" >
+| < QUEST: "?" >
+| < COLON: ":" >
 | < SEMICOLON: ";" >
 | < EL: ";;" >
 | < DECL: "decl" >
@@ -65,194 +70,136 @@ TOKEN :
 }
 
 ASTNode Prog():
-{ ASTNode t; }
+{ ASTNode p; }
 {
-  	t = SExp() < EL > { return t; } | < EOF > { System.exit(0); }
+  	p = SExp() < EL > { return p; } | < EOF > { System.exit(0); }
 }
 
 ASTNode SExp():
 { ASTNode e1, e2; }
 {
-  e = Assign() (< SEMICOLON > e = Assign())*
-  { return e; }
-}
-
-ASTNode CondExp():
-{ ASTNode ife, thene, elsee; }
-{
-  < IF_TOK > ife = Exp()
-  < THEN_TOK > thene = Exp()
-  < ELSE_TOK > elsee = Exp() { ife = new ASTCond(ife, thene, elsee); }
-  { return ife; }
-}
-
-ASTNode Seq():
-{ ASTNode e1, e2; }
-{
-  e1 = Assign()
-  (< SEMICOLON > e2 = Assign() { e1 = new ASTSeq(e1, e2); } )*
+  e1 = LAss() (< SEMICOLON > e2 = LAss() { e1 = new ASTSeq(e1, e2); })*
   { return e1; }
 }
 
-ASTNode Assign():
+ASTNode LAss():
 { ASTNode e1, e2; }
 {
-  e1 = LogExp()
-  (< ASSIGN > e2 = LogExp() { e1 = new ASTAssign(e1, e2); })*
-  { return e1; }}
-
-ASTNode LogExp():
-{ ASTNode tl1, tl2; Token op; }
-{
-  tl1 = LogT() ( ( op = < OR >) tl2 = LogT()
-  { tl1 = new ASTOr(tl1, tl2); }
-  )*
-  { return tl1; }
+  e1 = LExp() (< ASSIGN > e2 = LExp() { e1 = new ASTAssign(e1, e2); })?
+  { return e1; }
 }
 
-ASTNode LogT():
+ASTNode LExp():
+{ ASTNode lt1, lt2; }
+{
+  lt1 = LTerm() (< OR > lt2 = LTerm() { lt1 = new ASTOr(lt1, lt2); } )*
+  { return lt1; }
+}
+
+ASTNode LTerm():
 { ASTNode e1, e2; Token op; }
 {
-	e1 = CmpExp0() ( (op = < AND > ) e2 = CmpExp0()
-	{ e1 = new ASTAnd(e1, e2); }
-	)*
+	e1 = LFact() ( (op = < AND > ) e2 = LFact() { e1 = new ASTAnd(e1, e2); } )*
 	{ return e1; }
 }
 
-ASTNode CmpExp0():
-{ ASTNode e1, e2; Token op; }
+ASTNode LFact():
+{ ASTNode f; }
 {
-  e1 = CmpExp() ( ( op = < EQ > | op = < NEQ > ) e2 = CmpExp()
-  {
-    if (op.kind == EQ)
-      e1 = new ASTEq(e1, e2);
-    else
-      e1 = new ASTNeq(e1, e2);
-  }
-  )*
-  { return e1; }
+  (f = LCmp()) | (< NOT > f = LFact() { f = new ASTNot(f); })
+  { return f; }
 }
 
-ASTNode CmpExp():
+ASTNode LCmp():
 { ASTNode e1, e2; Token op; }
 {
-	e1 = ArithExp() ( (op = < GREQ > | op = < LSEQ > | op = < GR > | op = < LS >) e2 = ArithExp()
+	e1 = Exp() ( (op = < EQ > | op = < GREQ > | op = < LSEQ > | op = < GR > | op = < LS >) e2 = Exp()
 	{
-	  if (op.kind == GREQ)
-	  {
-	    e1 = new ASTGreq(e1, e2);
-	  }
-	  else if (op.kind == LSEQ)
-	  {
-	    e1 = new ASTLseq(e1, e2);
-	  }
-	  else if (op.kind == GR)
-	  {
-	    e1 = new ASTGr(e1, e2);
-	  }
-	  else
-	  {
-	    e1 = new ASTLs(e1, e2);
-	  }
+	  switch (op.kind) {	  	case EQ: e1 = new ASTEq(e1, e2); break;
+	  	case GREQ: e1 = new ASTGreq(e1, e2); break;
+	  	case LSEQ: e1 = new ASTLseq(e1, e2); break;
+	  	case GR: e1 = new ASTGr(e1, e2); break;
+	  	default: e1 = new ASTLs(e1, e2); break;	  }
 	}
-	)*
+	)?
 	{ return e1; }
 }
 
-ASTNode ArithExp():
+ASTNode Exp():
 { Token op;
   ASTNode t1, t2; }
 {
       t1 = Term() ( ( op=<ADD_OP> | op=<MINUS> ) t2 = Term() 
-	  {                 
-           if ( op.kind == ADD_OP )
-               t1 = new ASTPlus(t1,t2);
-           else
-               t1 = new ASTSub(t1,t2);
+	  {
+        switch (op.kind) {
+	  	  case ADD_OP: t1 = new ASTEq(t1, t2); break;
+	  	  default: t1 = new ASTSub(t1, t2); break;
+	    }
       }
       )*
- 	{ return t1; }
+	  { return t1; }
 }
 
 ASTNode Term():
 { Token op;
   ASTNode f1, f2; }
 {
-// 	f1 = Factor() ( (op = <MUL_OP> | op = < DIV_OP >) f2 = Factor()
-    f1 = FunctionCall() ( (op = <MUL_OP> | op = < DIV_OP >) f2 = FunctionCall()
+    f1 = Factor() ( (op = <MUL_OP> | op = < DIV_OP >) f2 = Factor()
  	{
- 	  if (op.kind == MUL_OP)
- 	    f1 = new ASTMul(f1, f2);
- 	  else
- 	    f1 = new ASTDiv(f1, f2);
+ 	  switch (op.kind) {
+	    case MUL_OP: f1 = new ASTEq(f1, f2); break;
+	    default: f1 = new ASTSub(f1, f2); break;
+	  }
  	}
  	)*
  	{ return f1; }
 }
 
-ASTNode FunctionCall():
-{
-  ASTNode e; /* an expression which evaluates to a 'fun' value */
-  ASTNode a; /* a single argument (expression) */
-  List<ASTNode> args; /* list of arguments (expressions) to which 'e' is being applied */
-}
-{
-  e = Factor()
-  (
-    { args = new ArrayList<ASTNode>(); }
-    < LPAR >
-    (
-      a = FunctionCall() { args.add(a); }
-      ( < COMMA > a = Factor() { args.add(a); } )* /* case more than one argument */
-    )?
-    < RPAR >
-    { return new ASTCall(e, args); }
-  )?
-  { return e; }
-}
-
 ASTNode Factor():
-{ Token n; ASTNode f; }
+{ ASTNode f, te, ef; List<ASTNode> args; }
 {
   (
-    /* Literals */
-    n = <Num> { f = new ASTNum(Integer.parseInt(n.image)); } |
-    n = < BOOL_LIT > { f = new ASTBool(Boolean.parseBoolean(n.image)); } |
-    < STRING_DEL > n = < STRING > < STRING_DEL > { f = new ASTString(n.image); } |
-	/* Declarations + body */
     f = Decl() |
-	/* Expresions within parenthesis */
-    <LPAR> ( f = Exp() ) <RPAR> |
-	/* Expresions negated or subject to unary minus */
+    f = SFact() (
+      (< QUEST > te = SExp() < COLON > ef = Factor() { f = new ASTCond(f, te, ef); }) |
+      args = Args() { f = new ASTCall(f, args); }
+    )? |
     < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
-    < NOT > f = Factor() { f = new ASTNot(f); } |
-    /* creation of variable */
 	< NEW > f = Factor() { f = new ASTNew(f); } |
-	/* ids (names) */
-    n = < STRING > { f = new ASTId(n.image); } |
-    /* dereference memory-cell (variables) values */
 	< DEREF > f = Factor() { f = new ASTDeref(f); } |
-	/* while loops */
     f = While() |
-	/* definition of functions */
     f = FunctionDef() |
-	/* call of (predefined) print functions */
 	f = Print()
   )
   { return f; }
 }
 
+ASTNode SFact():
+{ Token n; ASTNode sf; }
+{
+  n = < BOOL_LIT > { sf = new ASTBool(Boolean.parseBoolean(n.image)); } |
+  n = < Num > { sf = new ASTNum(Integer.parseInt(n.image)); } |
+  n = < STRING > { sf = new ASTId(n.image); } |
+  <LPAR> ( sf = SExp() ) <RPAR>
+  { return sf; }}
+
+List<ASTNode> Args():
+{ ASTNode a; List<ASTNode> args; }
+{
+  ( < LPAR > { args = new ArrayList<ASTNode>(); } a=SExp() { args.add(a); } (< COMMA > a=SExp() { args.add(a); } )* < RPAR > )
+  { return args; }}
+
 ASTNode Decl():
 {
-  ASTNode d, e;
+  ASTNode e;
   Token n;
   List<String> ids;
   List<ASTNode> defs;
 }
 {
   < DECL > { ids = new ArrayList<String>(); defs = new ArrayList<ASTNode>(); }
-    ( n = < STRING > < ASSOC > d = Exp() { ids.add(n.image); defs.add(d); } )+
-  < IN > e = Exp()
+    ( n = < STRING > < ASSOC > e = SExp() { ids.add(n.image); defs.add(e); } )+
+  < IN > e = SExp()
   < END >
   { return new ASTDecl(ids, defs, e); }
 }
@@ -261,21 +208,39 @@ ASTNode FunctionDef():
 {
   ASTNode be; /* expression defining the function body */
   List<String> paramsl; /* list of parameter names */
-  Token param;
+  List<IType> typesl; /* list of param types */
+  Token param, type;
 }
 {
-  ( < FUN > { paramsl = new ArrayList<String>(); } (param = < STRING > { paramsl.add(param.image); }
+  ( < FUN > { paramsl = new ArrayList<String>(); typesl = new ArrayList<IType>(); }
+    (param = < STRING >
+    < COLON > ( type = < REF_TYPE > | type = < INT_TYPE > | type = < BOOL_TYPE > )
+    { paramsl.add(param.image);
+		switch (type.kind) {
+		  case REF_TYPE: typesl.add(new RefType()); break;
+		  case INT_TYPE: typesl.add(new IntType()); break;
+		  default: typesl.add(new BoolType()); break;
+        }
+    }
     (
-      ( < COMMA > param = < STRING > ) { paramsl.add(param.image); }    )*
-  )? < ARROW > be = Exp()
+      ( < COMMA > param = < STRING > < COLON >
+    ( type = < REF_TYPE > | type = < INT_TYPE > | type = < BOOL_TYPE > ) )
+    { paramsl.add(param.image);
+      switch (type.kind) {
+		  case REF_TYPE: typesl.add(new RefType()); break;
+		  case INT_TYPE: typesl.add(new IntType()); break;
+		  default: typesl.add(new BoolType()); break;
+        }
+    }    )*
+  )? < ARROW > be = SExp()
   < END > )
-  { return new ASTFun(paramsl, be); }
+  { return new ASTFun(paramsl, typesl, be); }
 }
 
 ASTNode While():
 { ASTNode c, b; }
 {
-  ( < WHILE > c = Exp() < DO > b = Exp() { b = new ASTWhile(c, b); } < END > ) { return b; }
+  ( < WHILE > c = SExp() < DO > b = SExp() { b = new ASTWhile(c, b); } < END > ) { return b; }
 }
 
 ASTNode Print():
