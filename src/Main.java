@@ -51,7 +51,7 @@ public class Main {
 		{
 			try
 			{
-				ASTNode exp = parser.start();
+				ASTNode exp = parser.Prog();
 				if (interactive) {
 //					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
 					System.out.println("Val: " + exp.accept(new EvalVisitor(), new Env()));
