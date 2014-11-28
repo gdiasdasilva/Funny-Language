@@ -4,10 +4,10 @@ public class IntType implements IType {
 
 	@Override
 	public VType getType() {
-		return VType.STRING;
+		return VType.INTEGER;
 	}
 	
 	public String toString() {
-		return "String";
+		return "Int";
 	}
 }
