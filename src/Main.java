@@ -6,10 +6,10 @@ import parser.ParseException;
 import parser.Parser;
 import semantics.Env;
 import semantics.IdentiferDeclaredTwiceException;
+import semantics.TyEnv;
 import semantics.TypeErrorException;
 import semantics.TypecheckVisitor;
 import semantics.UndefinedIdException;
-import semantics.UnparseVisitor;
 import semantics.interpreter.EvalVisitor;
 import ast.ASTNode;
 
@@ -56,7 +56,7 @@ public class Main {
 				if (interactive) {
 //					System.out.println("Ok: " + exp.accept(new UnparseVisitor(), null)); // for debug purposes
 //					System.out.println("Val: " + exp.accept(new EvalVisitor(), new Env()));
-					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new Env()));
+					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new TyEnv()));
 				}
 				else
 				{

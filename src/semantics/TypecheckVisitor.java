@@ -315,7 +315,22 @@ public class TypecheckVisitor implements Visitor<IType> {
 
 	@Override
 	public IType visit(ASTIf astIf, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType condType = astIf.condNode.accept(this, e);
+		IType thenType = astIf.thenNode.accept(this, e);
+		
+		if(condType.getType() != IType.VType.BOOLEAN)
+			throw new TypeErrorException("Trying to IF a " + condType + " condition.");
+		
+		if(astIf.elseNode == null)
+		{
+			return thenType;
+		}
+		
+		IType elseType = astIf.elseNode.accept(this, e);		
+
+		if(thenType.getType() == elseType.getType())
+			return thenType;
+		else
+			throw new TypeErrorException("Trying to then and else: " + thenType + " and " + elseType + ", respectively.");
 	}
 }
