@@ -151,4 +151,9 @@ public class UnparseVisitor implements Visitor<String> {
 	public String visit(ASTFun astFun, IEnv e) throws SemanticException {
 		return "ASTFun( " + astFun.body.accept(this, e) + " , " + astFun.params.toString() + " )";
 	}
+
+	@Override
+	public String visit(ASTIf astIf, IEnv e) throws SemanticException {
+		return "ASTIf( " + astIf.condNode.accept(this, null) + " , " +  astIf.thenNode.accept(this, null) + " , " + (astIf.elseNode != null ? astIf.elseNode.accept(this, null) : "no else branch") + " )";
+	}
 }

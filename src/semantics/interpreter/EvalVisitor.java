@@ -29,6 +29,7 @@ import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
 import ast.ASTId;
+import ast.ASTIf;
 import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
@@ -273,12 +274,9 @@ public class EvalVisitor implements Visitor<IValue> {
 		if(c.typeOf() == IValue.VType.BOOLEAN)
 		{
 			BoolValue vc = (BoolValue) c;
-			IValue thenV = cond.thenNode.accept(this, e);
-			IValue elseV = cond.elseNode.accept(this, e);
-			return (vc.getVal() ? thenV : elseV);
+			return (vc.getVal() ? cond.thenNode.accept(this, e) : cond.elseNode.accept(this, e));
 		}
-		else
-			throw new TypeErrorException("If's condition must be a boolean expression.");
+		throw new TypeErrorException("If's condition must be a boolean expression.");
 	}
 
 	@Override
@@ -424,5 +422,14 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTFun astFun, IEnv e) throws SemanticException {
 		return new FunValue(astFun.body, astFun.params, e);
+	}
+
+	@Override
+	public IValue visit(ASTIf astIf, IEnv e) throws SemanticException {
+		if (((BoolValue) astIf.condNode.accept(this, e)).getVal())
+			return astIf.thenNode.accept(this, e);
+		if (astIf.elseNode != null)
+			return astIf.elseNode.accept(this, e);
+		return null;
 	}
 }

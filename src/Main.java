@@ -7,6 +7,7 @@ import parser.Parser;
 import semantics.Env;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.TypeErrorException;
+import semantics.TypecheckVisitor;
 import semantics.UndefinedIdException;
 import semantics.UnparseVisitor;
 import semantics.interpreter.EvalVisitor;
@@ -53,8 +54,9 @@ public class Main {
 			{
 				ASTNode exp = parser.Prog();
 				if (interactive) {
-//					System.out.println("Ok: " + exp.accept(new UnparseVisitor())); // for debug purposes
-					System.out.println("Val: " + exp.accept(new EvalVisitor(), new Env()));
+//					System.out.println("Ok: " + exp.accept(new UnparseVisitor(), null)); // for debug purposes
+//					System.out.println("Val: " + exp.accept(new EvalVisitor(), new Env()));
+					System.out.println("Types: " + exp.accept(new TypecheckVisitor(), new Env()));
 				}
 				else
 				{

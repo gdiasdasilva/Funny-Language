@@ -177,6 +177,7 @@ ASTNode Factor():
     < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
 	< NEW > f = Factor() { f = new ASTNew(f); } |
 	< DEREF > f = Factor() { f = new ASTDeref(f); } |
+	< IF_TOK > { ef = null; } f = SExp() < THEN_TOK > te = SExp() (< ELSE_TOK > ef = SExp())? < END > { f = new ASTIf(f, te, ef); } |
     f = While() |
     f = FunctionDef() |
 	f = Print()
@@ -219,33 +220,25 @@ ASTNode Decl():
 ASTNode FunctionDef():
 {
   ASTNode be; /* expression defining the function body */
+  IType type;
   List<String> paramsl; /* list of parameter names */
   List<IType> typesl; /* list of param types */
-  Token param, type, reftype;
+  Token param, reftype;
 }
 {
   ( < FUN > { paramsl = new ArrayList<String>(); typesl = new ArrayList<IType>(); }
     (
     param = < STRING >
-    < COLON > ( type = < REF_TYPE > | type = < INT_TYPE > | type = < BOOL_TYPE > | type = < CMD_TYPE > )
+    < COLON > ( type = Ty() )
     {
       paramsl.add(param.image);
-	  switch (type.kind)
-	  {
-		  case INT_TYPE: typesl.add(new IntType()); break;
-		  case CMD_TYPE: typesl.add(new CmdType()); break;
-		  default: typesl.add(new BoolType()); break;
-      }
+      typesl.add(type);
     }
-    (
       ( < COMMA > param = < STRING > < COLON >
-    ( type = < REF_TYPE > | type = < INT_TYPE > | type = < BOOL_TYPE > ) | type = < CMD_TYPE > )
-    { paramsl.add(param.image);
-      switch (type.kind) {
-		  case INT_TYPE: typesl.add(new IntType()); break;
-		  case CMD_TYPE: typesl.add(new CmdType()); break;
-		  default: typesl.add(new BoolType()); break;
-        }
+    ( type = Ty() )
+    {
+      paramsl.add(param.image);
+      typesl.add(type);
     }    )*
   )? < ARROW > be = SExp()
   < END > )
@@ -271,3 +264,14 @@ ASTNode Print():
   )
   { return e; }
 }
+
+IType Ty():
+{ IType t; List<IType> tl; }{
+  (
+	  (< INT_TYPE > { t = new IntType(); } ) |
+	  (< BOOL_TYPE > { t = new BoolType(); } ) |
+	  (< CMD_TYPE > { t = new CmdType(); }) |
+	  (< REF_TYPE > t = Ty() { t = new RefType(t); }) |
+	  (< LPAR > { tl=new ArrayList<IType>(); } ( t=Ty() { tl.add(t); } (< COMMA > t=Ty() { tl.add(t); } )* )? < ARROW > t = Ty() { t = new FunType(tl, t); } < RPAR >)
+  )  { return t; }}
+

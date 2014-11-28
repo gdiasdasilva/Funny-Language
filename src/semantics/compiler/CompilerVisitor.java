@@ -13,6 +13,7 @@ import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
 import ast.ASTId;
+import ast.ASTIf;
 import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
@@ -284,6 +285,12 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTFun astFun, IEnv e) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTIf astIf, IEnv e) throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}

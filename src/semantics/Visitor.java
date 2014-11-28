@@ -32,4 +32,5 @@ public interface Visitor<T> {
 	T visit(ASTSeq astSeq, IEnv e) throws SemanticException;
 	T visit(ASTCall astCall, IEnv e) throws SemanticException;
 	T visit(ASTFun astFun, IEnv e) throws SemanticException;
+	T visit(ASTIf astIf, IEnv e) throws SemanticException;
 }

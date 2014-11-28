@@ -13,6 +13,7 @@ import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
 import ast.ASTId;
+import ast.ASTIf;
 import ast.ASTLs;
 import ast.ASTLseq;
 import ast.ASTMul;
@@ -310,5 +311,11 @@ public class TypecheckVisitor implements Visitor<IType> {
 		}
 
 		return new FunType(astFun.types, bodyType);	
+	}
+
+	@Override
+	public IType visit(ASTIf astIf, IEnv e) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
