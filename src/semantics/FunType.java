@@ -4,12 +4,12 @@ import java.util.List;
 
 public class FunType implements IType {
 
-	List<IType> args;
-	IType returnType;
+	final List<IType> params;
+	final IType returnType;
 	
-	public FunType(List<IType> args, IType returnType)
+	public FunType(List<IType> params, IType returnType)
 	{
-		this.args = args;
+		this.params = params;
 		this.returnType = returnType;
 	}
 	

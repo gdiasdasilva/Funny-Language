@@ -1,5 +1,7 @@
 package semantics;
 
+import java.util.Iterator;
+
 import ast.ASTAnd;
 import ast.ASTAssign;
 import ast.ASTBool;
@@ -19,6 +21,7 @@ import ast.ASTLseq;
 import ast.ASTMul;
 import ast.ASTNeq;
 import ast.ASTNew;
+import ast.ASTNode;
 import ast.ASTNot;
 import ast.ASTNum;
 import ast.ASTOr;
@@ -296,8 +299,19 @@ public class TypecheckVisitor implements Visitor<IType> {
 
 	@Override
 	public IType visit(ASTCall astCall, IEnv e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		IType ft = astCall.fun.accept(this, e);
+		if (ft.getType() == IType.VType.FUNCTION) {
+			if (((FunType) ft).params.size() == astCall.args.size()) {
+				Iterator<IType> paramsIt = ((FunType) ft).params.iterator();
+				Iterator<ASTNode> argsIt = astCall.args.iterator();
+				while (paramsIt.hasNext()) {
+					if (paramsIt.next().getType() != argsIt.next().accept(this, e).getType())
+						throw new TypeErrorException("Uncompatible parameter/argument type");
+				}
+			}
+			return ((FunType) ft).returnType;
+		}
+		throw new TypeErrorException("Not a function");
 	}
 
 	@Override
