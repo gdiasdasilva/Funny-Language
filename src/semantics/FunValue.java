@@ -9,9 +9,9 @@ public class FunValue extends IValue {
 
 	public final ASTNode expBody;
 	public final List<Param> parameters;
-	public final Environment e;
+	public final Environment<IValue> e;
 	
-	public FunValue(ASTNode expBody, List<Param> parameters, Environment e)
+	public FunValue(ASTNode expBody, List<Param> parameters, Environment<IValue> e)
 	{
 		this.expBody = expBody;
 		this.parameters = parameters;
@@ -30,17 +30,7 @@ public class FunValue extends IValue {
 		return "Function w/ params " + parameters.toString();
 	}
 	
-	public List<Param> getParameters()
-	{
-		return parameters;	
-	}
-	
-	public ASTNode getBody()
-	{
-		return expBody;
-	}
-	
-	public Environment beginScope()
+	public Environment<IValue> beginScope()
 	{
 		return e.beginScope();
 	}

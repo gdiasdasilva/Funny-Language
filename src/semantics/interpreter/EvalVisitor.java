@@ -294,7 +294,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	@Override
 	public IValue visit(ASTId id, Environment<IValue> e) throws SemanticException {
 		if (e != null)
-			return ((InterpreterEnvironment) e).find(id.id);
+			return e.find(id.id);
 		throw new UndefinedIdException("Undefined id " + id);
 	}
 
@@ -305,7 +305,7 @@ public class EvalVisitor implements Visitor<IValue> {
 		
 		for (int i = 0; i < decl.ids.size( ); i++)
 		{
-			((InterpreterEnvironment) e).assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+			e.assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
 		}
 		
 		IValue v = decl.body.accept(this, e);
@@ -407,14 +407,14 @@ public class EvalVisitor implements Visitor<IValue> {
 		
 		Environment<IValue> e1 = vf.beginScope();
 		
-		Iterator<Param> pit = vf.getParameters().iterator();
+		Iterator<Param> pit = vf.parameters.iterator();
 		Iterator<IValue> vit = vargs.iterator();
 		
 		while (pit.hasNext())
 			while (vit.hasNext())
-				((InterpreterEnvironment) e1).assoc(pit.next().paramName, vit.next());
+				e1.assoc(pit.next().paramName, vit.next());
 		
-		IValue result = vf.getBody().accept(this, e1);
+		IValue result = vf.expBody.accept(this, e1);
 		e1.endScope();
 		return result;
 	}

@@ -28,25 +28,25 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTNum num, Environment e) {
+	public Type visit(ASTNum num, Environment<Type> e) {
 //		return new IntType();
 		return intType;
 	}
 
 	@Override
-	public Type visit(ASTBool truth, Environment e) {
+	public Type visit(ASTBool truth, Environment<Type> e) {
 //		return new BoolType();
 		return boolType;
 	}
 
 	@Override
-	public Type visit(ASTString astString, Environment e) {
+	public Type visit(ASTString astString, Environment<Type> e) {
 //		return new StringType();
 		return stringType;
 	}
 
 	@Override
-	public Type visit(ASTPlus plus, Environment e) throws SemanticException {
+	public Type visit(ASTPlus plus, Environment<Type> e) throws SemanticException {
 		Type lType = plus.l.accept(this, e);
 		Type rType = plus.r.accept(this, e);
 //		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
@@ -56,7 +56,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTSub sub, Environment e) throws SemanticException {
+	public Type visit(ASTSub sub, Environment<Type> e) throws SemanticException {
 		Type lType = sub.l.accept(this, e);
 		Type rType = sub.r.accept(this, e);
 //		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
@@ -66,7 +66,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTMul mul, Environment e) throws SemanticException {
+	public Type visit(ASTMul mul, Environment<Type> e) throws SemanticException {
 		Type lType = mul.l.accept(this, e);
 		Type rType = mul.r.accept(this, e);
 //		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
@@ -76,7 +76,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTDiv div, Environment e) throws SemanticException {
+	public Type visit(ASTDiv div, Environment<Type> e) throws SemanticException {
 		Type lType = div.l.accept(this, e);
 		Type rType = div.r.accept(this, e);
 //		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
@@ -86,7 +86,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTUnMinus um, Environment e) throws SemanticException {
+	public Type visit(ASTUnMinus um, Environment<Type> e) throws SemanticException {
 		Type vType = um.v.accept(this, e);
 //		if (vType.getType() == IType.VType.INTEGER)
 		if (vType == intType)
@@ -95,7 +95,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTNot n, Environment e) throws SemanticException {
+	public Type visit(ASTNot n, Environment<Type> e) throws SemanticException {
 		Type vType = n.v.accept(this, e);
 //		if (vType.getType() == IType.VType.BOOLEAN)
 		if (vType == boolType)
@@ -104,7 +104,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTEq eq, Environment e) throws SemanticException {
+	public Type visit(ASTEq eq, Environment<Type> e) throws SemanticException {
 		Type lType = eq.l.accept(this, e);
 		Type rType = eq.r.accept(this, e);
 		if (lType == rType)
@@ -114,7 +114,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTNeq neq, Environment e) throws SemanticException {
+	public Type visit(ASTNeq neq, Environment<Type> e) throws SemanticException {
 		Type lType = neq.l.accept(this, e);
 		Type rType = neq.r.accept(this, e);
 		if (lType == rType)
@@ -124,7 +124,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTLs ls, Environment e) throws SemanticException {
+	public Type visit(ASTLs ls, Environment<Type> e) throws SemanticException {
 		Type lType = ls.l.accept(this, e);
 		Type rType = ls.r.accept(this, e);
 		if (lType == rType)
@@ -134,7 +134,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTGr gr, Environment e) throws SemanticException {
+	public Type visit(ASTGr gr, Environment<Type> e) throws SemanticException {
 		Type lType = gr.l.accept(this, e);
 		Type rType = gr.r.accept(this, e);
 		if (lType == rType)
@@ -144,7 +144,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTLseq lseq, Environment e) throws SemanticException {
+	public Type visit(ASTLseq lseq, Environment<Type> e) throws SemanticException {
 		Type lType = lseq.l.accept(this, e);
 		Type rType = lseq.r.accept(this, e);
 		if (lType == rType)
@@ -154,7 +154,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTGreq greq, Environment e) throws SemanticException {
+	public Type visit(ASTGreq greq, Environment<Type> e) throws SemanticException {
 		Type lType = greq.l.accept(this, e);
 		Type rType = greq.r.accept(this, e);
 		if (lType == rType)
@@ -164,7 +164,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTAnd and, Environment e) throws SemanticException {
+	public Type visit(ASTAnd and, Environment<Type> e) throws SemanticException {
 		Type lType = and.l.accept(this, e);
 		Type rType = and.r.accept(this, e);
 //		if (lType.getType() == IType.VType.BOOLEAN && rType.getType() == IType.VType.BOOLEAN)
@@ -174,7 +174,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTOr or, Environment e) throws SemanticException {
+	public Type visit(ASTOr or, Environment<Type> e) throws SemanticException {
 		Type lType = or.l.accept(this, e);
 		Type rType = or.r.accept(this, e);
 //		if (lType.getType() == IType.VType.BOOLEAN && rType.getType() == IType.VType.BOOLEAN)
@@ -184,7 +184,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTCond cond, Environment e) throws SemanticException
+	public Type visit(ASTCond cond, Environment<Type> e) throws SemanticException
 	{
 		Type condType = cond.condNode.accept(this, e);
 		Type thenType = cond.thenNode.accept(this, e);
@@ -202,18 +202,18 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTId id, Environment e) throws SemanticException {
-		return ((TypeEnvironment) e).find(id.id);
+	public Type visit(ASTId id, Environment<Type> e) throws SemanticException {
+		return e.find(id.id);
 	}
 
 	@Override
-	public Type visit(ASTDecl decl, Environment e) throws SemanticException 
+	public Type visit(ASTDecl decl, Environment<Type> e) throws SemanticException 
 	{
 		e = e.beginScope();
 
 		for (int i = 0; i < decl.ids.size( ); i++)
 		{
-			((TypeEnvironment) e).assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+			e.assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
 		}
 
 		Type v = decl.body.accept(this, e);
@@ -223,7 +223,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTAssign astAssign, Environment e) throws SemanticException
+	public Type visit(ASTAssign astAssign, Environment<Type> e) throws SemanticException
 	{
 		Type ref = astAssign.l.accept(this, e);
 		Type value = astAssign.r.accept(this, e);
@@ -238,7 +238,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTWhile astWhile, Environment e) throws SemanticException
+	public Type visit(ASTWhile astWhile, Environment<Type> e) throws SemanticException
 	{
 		Type condType = astWhile.c.accept(this, e);
 		Type bodyType = astWhile.b.accept(this, e);
@@ -250,13 +250,13 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTNew astNew, Environment e) throws SemanticException
+	public Type visit(ASTNew astNew, Environment<Type> e) throws SemanticException
 	{
 		return new RefType(astNew.node.accept(this, e));
 	}
 
 	@Override
-	public Type visit(ASTDeref astDeref, Environment e) throws SemanticException {
+	public Type visit(ASTDeref astDeref, Environment<Type> e) throws SemanticException {
 		Type refType = astDeref.node.accept(this, e);
 		if (refType.getType() == Type.VType.REFERENCE)
 			return ((RefType) refType).type;
@@ -264,21 +264,21 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTPrint astPrint, Environment e) throws SemanticException {
+	public Type visit(ASTPrint astPrint, Environment<Type> e) throws SemanticException {
 		if (!astPrint.node.accept(this, e).equals(cmdType))
 			return cmdType;
 		throw new TypeErrorException("Can't print a command");
 	}
 
 	@Override
-	public Type visit(ASTPrintln astPrintln, Environment e) throws SemanticException {
+	public Type visit(ASTPrintln astPrintln, Environment<Type> e) throws SemanticException {
 		if (!astPrintln.node.accept(this, e).equals(cmdType))
 			return cmdType;
 		throw new TypeErrorException("Can't print a command");
 	}
 
 	@Override
-	public Type visit(ASTSeq astSeq, Environment e) throws SemanticException {
+	public Type visit(ASTSeq astSeq, Environment<Type> e) throws SemanticException {
 		Type fType = astSeq.f.accept(this, e);
 		Type sType = astSeq.s.accept(this, e);
 		if (fType == cmdType || sType == cmdType)
@@ -287,7 +287,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 	}
 
 	@Override
-	public Type visit(ASTCall astCall, Environment e) throws SemanticException {
+	public Type visit(ASTCall astCall, Environment<Type> e) throws SemanticException {
 		Type ft = astCall.fun.accept(this, e);
 		if (ft.getType() == Type.VType.FUNCTION) {
 			if (((FunType) ft).paramTypes.size() == astCall.args.size()) {
@@ -303,7 +303,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 		throw new TypeErrorException("Not a function");
 	}
 
-	private Type getTypeForTypeTag(TypeTag tt) {
+	private Type getTypeForTypeTag(TypeTag tt, Environment<Type> e) {
 		if (tt == TypeTag.getIntTypeTag())
 			return intType;
 		else if (tt == TypeTag.getBooleanTypeTag())
@@ -314,30 +314,30 @@ public class TypecheckVisitor implements Visitor<Type> {
 			return cmdType;
 		else if (tt.getTypeTagId() == TypeTag.TypeT.FUNCTION) {
 			List<Type> paramTypes = new ArrayList<Type>();
-			Type returnType = getTypeForTypeTag(((FunTypeTag) tt).returnTypeTag);
+			Type returnType = getTypeForTypeTag(((FunTypeTag) tt).returnTypeTag, e);
 			for (TypeTag ptt : ((FunTypeTag) tt).paramTypeTags)
-				paramTypes.add(getTypeForTypeTag(ptt));
+				paramTypes.add(getTypeForTypeTag(ptt, e));
 			return new FunType(paramTypes, returnType);
 		}
 		else
-			return new RefType(getTypeForTypeTag(((RefTypeTag) tt).referenceToTypeTag));
+			return new RefType(getTypeForTypeTag(((RefTypeTag) tt).referenceToTypeTag, e));
 	}
 	
 	@Override
-	public Type visit(ASTFun astFun, Environment e) throws SemanticException
+	public Type visit(ASTFun astFun, Environment<Type> e) throws SemanticException
 	{
 		Type bodyType = astFun.body.accept(this, e);
 		List<Type> paramTypes = new ArrayList<Type>();
 		for (Param param : astFun.params) {
-			Type pt = getTypeForTypeTag(param.paramTypeTag);
-			((TypeEnvironment) e).assoc(param.paramName, pt);
+			Type pt = getTypeForTypeTag(param.paramTypeTag, e);
+			e.assoc(param.paramName, pt);
 			paramTypes.add(pt);
 		}
-		return new FunType(paramTypes, bodyType);	
+		return new FunType(paramTypes, bodyType, e);	
 	}
 
 	@Override
-	public Type visit(ASTIf astIf, Environment e) throws SemanticException {
+	public Type visit(ASTIf astIf, Environment<Type> e) throws SemanticException {
 		Type condType = astIf.condNode.accept(this, e);
 		Type thenType = astIf.thenNode.accept(this, e);
 		if (condType == boolType) {

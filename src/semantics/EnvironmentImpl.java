@@ -37,6 +37,7 @@ public class EnvironmentImpl<T> implements Environment<T> {
 		return this;
 	}
 	
+	@Override
 	public void assoc(String id, T val) throws IdentiferDeclaredTwiceException
 	{
 		if (!d.containsKey(id))
@@ -45,6 +46,7 @@ public class EnvironmentImpl<T> implements Environment<T> {
 			throw new IdentiferDeclaredTwiceException();
 	}
 	
+	@Override
 	public T find(String id) throws UndefinedIdException
 	{		
 		T v = d.get(id);
