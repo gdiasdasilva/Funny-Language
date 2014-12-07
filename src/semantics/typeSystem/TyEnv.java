@@ -1,7 +1,11 @@
-package semantics;
+package semantics.typeSystem;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import semantics.IEnv;
+import semantics.IdentiferDeclaredTwiceException;
+import semantics.UndefinedIdException;
 
 public class TyEnv implements IEnv {
 

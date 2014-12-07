@@ -1,4 +1,4 @@
-package semantics;
+package semantics.typeSystem;
 
 public class CmdType implements IType {
 

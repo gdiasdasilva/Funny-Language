@@ -3,14 +3,15 @@ package semantics;
 import java.util.List;
 
 import ast.ASTNode;
+import ast.Param;
 
 public class FunValue extends IValue {
 
 	public final ASTNode expBody;
-	public final List<String> parameters;
+	public final List<Param> parameters;
 	public final IEnv e;
 	
-	public FunValue(ASTNode expBody, List<String> parameters, IEnv e)
+	public FunValue(ASTNode expBody, List<Param> parameters, IEnv e)
 	{
 		this.expBody = expBody;
 		this.parameters = parameters;
@@ -29,7 +30,7 @@ public class FunValue extends IValue {
 		return "Function w/ params " + parameters.toString();
 	}
 	
-	public List<String> getParameters()
+	public List<Param> getParameters()
 	{
 		return parameters;	
 	}

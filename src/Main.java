@@ -6,11 +6,11 @@ import parser.ParseException;
 import parser.Parser;
 import semantics.Env;
 import semantics.IdentiferDeclaredTwiceException;
-import semantics.TyEnv;
 import semantics.TypeErrorException;
-import semantics.TypecheckVisitor;
 import semantics.UndefinedIdException;
 import semantics.interpreter.EvalVisitor;
+import semantics.typeSystem.TyEnv;
+import semantics.typeSystem.TypecheckVisitor;
 import ast.ASTNode;
 
 public class Main {

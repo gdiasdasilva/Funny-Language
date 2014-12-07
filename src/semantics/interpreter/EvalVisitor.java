@@ -47,6 +47,7 @@ import ast.ASTString;
 import ast.ASTSub;
 import ast.ASTUnMinus;
 import ast.ASTWhile;
+import ast.Param;
 
 public class EvalVisitor implements Visitor<IValue> {
 	
@@ -407,12 +408,12 @@ public class EvalVisitor implements Visitor<IValue> {
 		
 		IEnv e1 = vf.beginScope();
 		
-		Iterator<String> pit = vf.getParameters().iterator();
+		Iterator<Param> pit = vf.getParameters().iterator();
 		Iterator<IValue> vit = vargs.iterator();
 		
 		while (pit.hasNext())
 			while (vit.hasNext())
-				((Env) e1).assoc(pit.next(), vit.next());
+				((Env) e1).assoc(pit.next().paramName, vit.next());
 		
 		IValue result = vf.getBody().accept(this, e1);
 		e1.endScope();

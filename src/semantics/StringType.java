@@ -1,5 +1,7 @@
 package semantics;
 
+import semantics.typeSystem.IType;
+
 public class StringType implements IType {
 
 	@Override
