@@ -1,6 +1,6 @@
 package semantics.typeSystem;
 
-public class IntType implements IType {
+public class IntType implements Type {
 
 	@Override
 	public VType getType() {

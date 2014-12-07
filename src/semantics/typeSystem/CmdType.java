@@ -1,6 +1,6 @@
 package semantics.typeSystem;
 
-public class CmdType implements IType {
+public class CmdType implements Type {
 
 	@Override
 	public VType getType() {

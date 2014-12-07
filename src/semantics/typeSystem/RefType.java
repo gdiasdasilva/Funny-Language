@@ -1,11 +1,11 @@
 package semantics.typeSystem;
 
 
-public class RefType implements IType {
+public class RefType implements Type {
 
-	final IType type;
+	final Type type;
 	
-	public RefType(IType type)
+	public RefType(Type type)
 	{
 		this.type = type;
 	}

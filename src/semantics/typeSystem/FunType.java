@@ -2,12 +2,12 @@ package semantics.typeSystem;
 
 import java.util.List;
 
-public final class FunType implements IType {
+public final class FunType implements Type {
 
-	final List<IType> paramTypes;
-	final IType returnType;
+	final List<Type> paramTypes;
+	final Type returnType;
 	
-	public FunType(List<IType> paramTypes, IType returnType)
+	public FunType(List<Type> paramTypes, Type returnType)
 	{
 		this.paramTypes = paramTypes;
 		this.returnType = returnType;

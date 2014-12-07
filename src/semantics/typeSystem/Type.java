@@ -1,6 +1,6 @@
 package semantics.typeSystem;
 
-public interface IType
+public interface Type
 {
 	public enum VType {
 		INTEGER, BOOLEAN, REFERENCE, STRING, FUNCTION, CMD

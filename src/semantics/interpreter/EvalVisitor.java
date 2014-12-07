@@ -5,9 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import semantics.BoolValue;
-import semantics.Env;
 import semantics.FunValue;
-import semantics.IEnv;
+import semantics.Environment;
 import semantics.IValue;
 import semantics.IntValue;
 import semantics.RefValue;
@@ -52,22 +51,22 @@ import ast.Param;
 public class EvalVisitor implements Visitor<IValue> {
 	
 	@Override
-	public IValue visit(ASTNum num, IEnv e) {
+	public IValue visit(ASTNum num, Environment<IValue> e) {
 		return num.integer;
 	}
 	
 	@Override
-	public IValue visit(ASTBool truth, IEnv e) {
+	public IValue visit(ASTBool truth, Environment<IValue> e) {
 		return truth.bool;
 	}
 	
 	@Override
-	public IValue visit(ASTString astString, IEnv e) {
+	public IValue visit(ASTString astString, Environment<IValue> e) {
 		return astString.string;
 	}
 
 	@Override
-	public IValue visit(ASTPlus plus, IEnv e) throws SemanticException {
+	public IValue visit(ASTPlus plus, Environment<IValue> e) throws SemanticException {
 		IValue l = plus.l.accept(this, e);
 		IValue r = plus.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -86,7 +85,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTSub sub, IEnv e) throws SemanticException {
+	public IValue visit(ASTSub sub, Environment<IValue> e) throws SemanticException {
 		IValue l = sub.l.accept(this, e);
 		IValue r = sub.r.accept(this, e);		
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -99,7 +98,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTMul mul, IEnv e) throws SemanticException {
+	public IValue visit(ASTMul mul, Environment<IValue> e) throws SemanticException {
 		IValue l = mul.l.accept(this, e);
 		IValue r = mul.r.accept(this, e);
 		
@@ -113,7 +112,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTDiv div, IEnv e) throws SemanticException {
+	public IValue visit(ASTDiv div, Environment<IValue> e) throws SemanticException {
 		IValue l = div.l.accept(this, e);
 		IValue r = div.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -126,7 +125,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTUnMinus um, IEnv e) throws SemanticException {
+	public IValue visit(ASTUnMinus um, Environment<IValue> e) throws SemanticException {
 		IntValue v = (IntValue) um.v.accept(this, e);
 		if(v.typeOf() == IValue.VType.INTEGER)
 		{
@@ -138,7 +137,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 	
 	@Override
-	public IValue visit(ASTEq eq, IEnv e) throws SemanticException {
+	public IValue visit(ASTEq eq, Environment<IValue> e) throws SemanticException {
 		IValue lval = eq.l.accept(this, e);
 		IValue rval = eq.r.accept(this, e);
 		if (lval.typeOf() == rval.typeOf()) {
@@ -165,7 +164,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTAnd and, IEnv e) throws SemanticException{
+	public IValue visit(ASTAnd and, Environment<IValue> e) throws SemanticException{
 		IValue l = and.l.accept(this, e);
 		IValue r = and.r.accept(this, e);		
 		if (l.typeOf() == IValue.VType.BOOLEAN && r.typeOf() == IValue.VType.BOOLEAN) {
@@ -178,7 +177,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTOr or, IEnv e) throws SemanticException {
+	public IValue visit(ASTOr or, Environment<IValue> e) throws SemanticException {
 		IValue l = or.l.accept(this, e);
 		IValue r = or.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.BOOLEAN && r.typeOf() == IValue.VType.BOOLEAN) {
@@ -191,7 +190,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTNeq neq, IEnv e) throws SemanticException {
+	public IValue visit(ASTNeq neq, Environment<IValue> e) throws SemanticException {
 		IValue lval = neq.l.accept(this, e);
 		IValue rval = neq.r.accept(this, e);
 		if (lval.typeOf() == rval.typeOf()) {
@@ -218,7 +217,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTLseq lseq, IEnv e) throws SemanticException {
+	public IValue visit(ASTLseq lseq, Environment<IValue> e) throws SemanticException {
 		IValue l = lseq.l.accept(this, e);
 		IValue r = lseq.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -231,7 +230,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTGreq greq, IEnv e) throws SemanticException{
+	public IValue visit(ASTGreq greq, Environment<IValue> e) throws SemanticException{
 		IValue l = greq.l.accept(this, e);
 		IValue r = greq.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -244,7 +243,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTLs ls, IEnv e) throws SemanticException {
+	public IValue visit(ASTLs ls, Environment<IValue> e) throws SemanticException {
 		IValue l = ls.l.accept(this, e);
 		IValue r = ls.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -257,7 +256,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTGr gr, IEnv e) throws SemanticException{
+	public IValue visit(ASTGr gr, Environment<IValue> e) throws SemanticException{
 		IValue l = gr.l.accept(this, e);
 		IValue r = gr.r.accept(this, e);
 		if (l.typeOf() == IValue.VType.INTEGER && r.typeOf() == IValue.VType.INTEGER) {
@@ -270,7 +269,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTCond cond, IEnv e) throws SemanticException{
+	public IValue visit(ASTCond cond, Environment<IValue> e) throws SemanticException{
 		IValue c = cond.condNode.accept(this, e);
 		if(c.typeOf() == IValue.VType.BOOLEAN)
 		{
@@ -281,7 +280,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTNot n, IEnv e) throws SemanticException {
+	public IValue visit(ASTNot n, Environment<IValue> e) throws SemanticException {
 		IValue v = n.v.accept(this, e);
 		if(v.typeOf() == IValue.VType.BOOLEAN)
 		{
@@ -293,20 +292,20 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 	
 	@Override
-	public IValue visit(ASTId id, IEnv e) throws SemanticException {
+	public IValue visit(ASTId id, Environment<IValue> e) throws SemanticException {
 		if (e != null)
-			return ((Env) e).find(id.id);
+			return ((InterpreterEnvironment) e).find(id.id);
 		throw new UndefinedIdException("Undefined id " + id);
 	}
 
 	@Override
-	public IValue visit(ASTDecl decl, IEnv e) throws SemanticException
+	public IValue visit(ASTDecl decl, Environment<IValue> e) throws SemanticException
 	{		
 		e = e.beginScope();
 		
 		for (int i = 0; i < decl.ids.size( ); i++)
 		{
-			((Env) e).assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+			((InterpreterEnvironment) e).assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
 		}
 		
 		IValue v = decl.body.accept(this, e);
@@ -316,7 +315,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTAssign astAssign, IEnv e) throws SemanticException {
+	public IValue visit(ASTAssign astAssign, Environment<IValue> e) throws SemanticException {
 		IValue lval = astAssign.l.accept(this, e);
 		IValue rval = astAssign.r.accept(this, e);
 		if (lval.typeOf() == IValue.VType.REFERENCE) {
@@ -328,7 +327,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTDeref astDeref, IEnv e) throws SemanticException {
+	public IValue visit(ASTDeref astDeref, Environment<IValue> e) throws SemanticException {
 		IValue v = astDeref.node.accept(this, e);
 		if (v.typeOf() == IValue.VType.REFERENCE) {
 			return ((RefValue) v).getVal();
@@ -338,7 +337,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 	
 	@Override
-	public IValue visit(ASTWhile astWhile, IEnv e) throws SemanticException {
+	public IValue visit(ASTWhile astWhile, Environment<IValue> e) throws SemanticException {
 		IValue c = astWhile.c.accept(this, e);
 		if (c.typeOf() == IValue.VType.BOOLEAN) {
 			BoolValue boolc = (BoolValue) c;
@@ -362,7 +361,7 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 	
 	@Override
-	public IValue visit(ASTNew astNew, IEnv e) throws SemanticException {
+	public IValue visit(ASTNew astNew, Environment<IValue> e) throws SemanticException {
 		IValue v0 = astNew.node.accept(this, e);
 		RefValue ref = new RefValue();
 		ref.setVal(v0);
@@ -370,27 +369,27 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 	
 	@Override
-	public IValue visit(ASTPrint astPrint, IEnv e) throws SemanticException {
+	public IValue visit(ASTPrint astPrint, Environment<IValue> e) throws SemanticException {
 		IValue val = astPrint.node.accept(this, e);
 		System.out.print(val);
 		return val;
 	}
 
 	@Override
-	public IValue visit(ASTPrintln astPrintln, IEnv e) throws SemanticException {
+	public IValue visit(ASTPrintln astPrintln, Environment<IValue> e) throws SemanticException {
 		IValue val = astPrintln.node.accept(this, e);
 		System.out.println(val);
 		return val;
 	}
 
 	@Override
-	public IValue visit(ASTSeq astSeq, IEnv e) throws SemanticException {
+	public IValue visit(ASTSeq astSeq, Environment<IValue> e) throws SemanticException {
 		astSeq.f.accept(this, e);
 		return astSeq.s.accept(this, e);
 	}
 
 	@Override
-	public IValue visit(ASTCall astCall, IEnv e) throws SemanticException {
+	public IValue visit(ASTCall astCall, Environment<IValue> e) throws SemanticException {
 		IValue vfun = astCall.fun.accept(this, e);
 		List<IValue> vargs = new ArrayList<IValue>();
 		
@@ -406,14 +405,14 @@ public class EvalVisitor implements Visitor<IValue> {
 		else
 			throw new TypeErrorException("Wrong type in function.");
 		
-		IEnv e1 = vf.beginScope();
+		Environment<IValue> e1 = vf.beginScope();
 		
 		Iterator<Param> pit = vf.getParameters().iterator();
 		Iterator<IValue> vit = vargs.iterator();
 		
 		while (pit.hasNext())
 			while (vit.hasNext())
-				((Env) e1).assoc(pit.next().paramName, vit.next());
+				((InterpreterEnvironment) e1).assoc(pit.next().paramName, vit.next());
 		
 		IValue result = vf.getBody().accept(this, e1);
 		e1.endScope();
@@ -421,12 +420,12 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTFun astFun, IEnv e) throws SemanticException {
+	public IValue visit(ASTFun astFun, Environment<IValue> e) throws SemanticException {
 		return new FunValue(astFun.body, astFun.params, e);
 	}
 
 	@Override
-	public IValue visit(ASTIf astIf, IEnv e) throws SemanticException {
+	public IValue visit(ASTIf astIf, Environment<IValue> e) throws SemanticException {
 		if (((BoolValue) astIf.condNode.accept(this, e)).getVal())
 			return astIf.thenNode.accept(this, e);
 		if (astIf.elseNode != null)

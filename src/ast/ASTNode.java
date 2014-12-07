@@ -1,9 +1,9 @@
 package ast;
 
-import semantics.IEnv;
+import semantics.Environment;
 import semantics.SemanticException;
 import semantics.Visitor;
 
 public interface ASTNode {
-	<T> T accept(Visitor<T> visitor, IEnv e) throws SemanticException;
+	<T> T accept(Visitor<T> visitor, Environment<T> e) throws SemanticException;
 }

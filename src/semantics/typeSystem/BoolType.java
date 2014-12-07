@@ -1,6 +1,6 @@
 package semantics.typeSystem;
 
-public class BoolType implements IType {
+public class BoolType implements Type {
 
 	@Override
 	public VType getType() {

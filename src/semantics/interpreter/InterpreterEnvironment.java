@@ -1,33 +1,38 @@
-package semantics;
+package semantics.interpreter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Env implements IEnv {
+import semantics.Environment;
+import semantics.IValue;
+import semantics.IdentiferDeclaredTwiceException;
+import semantics.UndefinedIdException;
+
+public class InterpreterEnvironment implements Environment {
 	
-	private Env upper;
+	private InterpreterEnvironment upper;
 	private Map<String, IValue> d;
 	
-	private Env(Env e)
+	private InterpreterEnvironment(InterpreterEnvironment e)
 	{
 		upper = e;
 		d = new HashMap<String, IValue>();
 	}
 	
-	public Env()
+	public InterpreterEnvironment()
 	{
 		this(null);
 	}
 
 	@Override
-	public IEnv beginScope()
+	public Environment beginScope()
 	{
-		Env e = new Env(this);
+		InterpreterEnvironment e = new InterpreterEnvironment(this);
 		return e;
 	}
 
 	@Override
-	public IEnv endScope()
+	public Environment endScope()
 	{
 		if (upper != null)
 			upper = upper.upper;

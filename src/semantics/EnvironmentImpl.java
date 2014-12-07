@@ -1,44 +1,43 @@
-package semantics.typeSystem;
+package semantics;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import semantics.IEnv;
+import semantics.Environment;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.UndefinedIdException;
 
-public class TyEnv implements IEnv {
-
-	private TyEnv upper;
-	private Map<String, IType> d;
+public class EnvironmentImpl<T> implements Environment<T> {
 	
-	private TyEnv(TyEnv e)
+	private EnvironmentImpl<T> upper;
+	private Map<String, T> d;
+	
+	private EnvironmentImpl(EnvironmentImpl<T> e)
 	{
 		upper = e;
-		d = new HashMap<String, IType>();
+		d = new HashMap<String, T>();
 	}
 	
-	public TyEnv()
+	public EnvironmentImpl()
 	{
 		this(null);
 	}
 
 	@Override
-	public IEnv beginScope()
+	public Environment<T> beginScope()
 	{
-		TyEnv e = new TyEnv(this);
+		EnvironmentImpl<T> e = new EnvironmentImpl<T>(this);
 		return e;
 	}
 
 	@Override
-	public IEnv endScope()
+	public Environment<T> endScope()
 	{
 		if (upper != null)
 			upper = upper.upper;
 		return this;
 	}
 	
-	public void assoc(String id, IType val) throws IdentiferDeclaredTwiceException
+	public void assoc(String id, T val) throws IdentiferDeclaredTwiceException
 	{
 		if (!d.containsKey(id))
 			d.put(id, val);
@@ -46,14 +45,13 @@ public class TyEnv implements IEnv {
 			throw new IdentiferDeclaredTwiceException();
 	}
 	
-	public IType find(String id) throws UndefinedIdException
+	public T find(String id) throws UndefinedIdException
 	{		
-		IType v = d.get(id);
+		T v = d.get(id);
 		if (v != null)
 			return v;
 		else if (upper != null)
 			return upper.find(id);
 		throw new UndefinedIdException("Undefined id '" + id + "' in this scope.");
 	}
-
 }
