@@ -1,16 +1,15 @@
 package ast;
 
-import semantics.BoolValue;
 import semantics.Environment;
 import semantics.SemanticException;
 import semantics.Visitor;
 
 public class ASTBool implements ASTNode {
 	
-	public final BoolValue bool;
+	public final boolean bool;
 
 	public ASTBool(boolean bool) {
-		this.bool = new BoolValue(bool);
+		this.bool = bool;
 	}
 
 	@Override

@@ -8,12 +8,13 @@ import semantics.Visitor;
 
 public class ASTFun implements ASTNode {
 	
-	public final List<Param> params;
+	public final List<String> paramNames;
+	public final List<TypeTag> paramTypeTags;
 	public final ASTNode body;
 	
-	public ASTFun(List<Param> params, ASTNode body) 
-	{
-		this.params = params;
+	public ASTFun(List<String> paramNames, List<TypeTag> paramTypeTags, ASTNode body)  {
+		this.paramNames = paramNames;
+		this.paramTypeTags = paramTypeTags;
 		this.body = body;
 	}
 	

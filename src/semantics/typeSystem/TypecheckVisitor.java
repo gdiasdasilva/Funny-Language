@@ -1,25 +1,29 @@
 package semantics.typeSystem;
 
+import java.awt.print.Printable;
+import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import semantics.Environment;
 import semantics.SemanticException;
 import semantics.StringType;
-import semantics.TypeErrorException;
 import semantics.Visitor;
+import semantics.interpreter.FunValue;
+import semantics.interpreter.IValue;
 import semantics.typeSystem.Type.VType;
 import ast.*;
 import ast.TypeTag.FunTypeTag;
 import ast.TypeTag.RefTypeTag;
 
 public class TypecheckVisitor implements Visitor<Type> {
-	
+
 	private final IntType intType;
 	private final BoolType boolType;
 	private final CmdType cmdType;
 	private final StringType stringType;
-	
+
 	public TypecheckVisitor() {
 		intType = new IntType();
 		boolType = new BoolType();
@@ -29,19 +33,16 @@ public class TypecheckVisitor implements Visitor<Type> {
 
 	@Override
 	public Type visit(ASTNum num, Environment<Type> e) {
-//		return new IntType();
 		return intType;
 	}
 
 	@Override
 	public Type visit(ASTBool truth, Environment<Type> e) {
-//		return new BoolType();
 		return boolType;
 	}
 
 	@Override
 	public Type visit(ASTString astString, Environment<Type> e) {
-//		return new StringType();
 		return stringType;
 	}
 
@@ -49,7 +50,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTPlus plus, Environment<Type> e) throws SemanticException {
 		Type lType = plus.l.accept(this, e);
 		Type rType = plus.r.accept(this, e);
-//		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
 		if (lType == intType && rType == intType)
 			return intType;
 		throw new TypeErrorException("Can't add " + lType + " and " + rType);
@@ -59,7 +59,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTSub sub, Environment<Type> e) throws SemanticException {
 		Type lType = sub.l.accept(this, e);
 		Type rType = sub.r.accept(this, e);
-//		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
 		if (lType == intType && rType == intType)
 			return intType;
 		throw new TypeErrorException("Can't subtract " + lType + " and " + rType);
@@ -69,7 +68,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTMul mul, Environment<Type> e) throws SemanticException {
 		Type lType = mul.l.accept(this, e);
 		Type rType = mul.r.accept(this, e);
-//		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
 		if (lType == intType && rType == intType)
 			return intType;
 		throw new TypeErrorException("Can't multiply " + lType + " and " + rType);
@@ -79,7 +77,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTDiv div, Environment<Type> e) throws SemanticException {
 		Type lType = div.l.accept(this, e);
 		Type rType = div.r.accept(this, e);
-//		if (lType.getType() == IType.VType.INTEGER && rType.getType() == IType.VType.INTEGER)
 		if (lType == intType && rType == intType)
 			return intType;
 		throw new TypeErrorException("Can't divide " + lType + " and " + rType);
@@ -88,7 +85,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	@Override
 	public Type visit(ASTUnMinus um, Environment<Type> e) throws SemanticException {
 		Type vType = um.v.accept(this, e);
-//		if (vType.getType() == IType.VType.INTEGER)
 		if (vType == intType)
 			return intType;
 		throw new TypeErrorException("Trying to unminus " + vType);
@@ -97,7 +93,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	@Override
 	public Type visit(ASTNot n, Environment<Type> e) throws SemanticException {
 		Type vType = n.v.accept(this, e);
-//		if (vType.getType() == IType.VType.BOOLEAN)
 		if (vType == boolType)
 			return boolType;
 		throw new TypeErrorException("Trying to not " + vType);
@@ -167,7 +162,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTAnd and, Environment<Type> e) throws SemanticException {
 		Type lType = and.l.accept(this, e);
 		Type rType = and.r.accept(this, e);
-//		if (lType.getType() == IType.VType.BOOLEAN && rType.getType() == IType.VType.BOOLEAN)
 		if (lType == boolType && rType == boolType)
 			return boolType;
 		throw new TypeErrorException("Can't AND " + lType + " and " + rType);
@@ -177,7 +171,6 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTOr or, Environment<Type> e) throws SemanticException {
 		Type lType = or.l.accept(this, e);
 		Type rType = or.r.accept(this, e);
-//		if (lType.getType() == IType.VType.BOOLEAN && rType.getType() == IType.VType.BOOLEAN)
 		if (lType == boolType && rType == boolType)
 			return boolType;
 		throw new TypeErrorException("Can't OR " + lType + " and " + rType);
@@ -228,9 +221,8 @@ public class TypecheckVisitor implements Visitor<Type> {
 		Type ref = astAssign.l.accept(this, e);
 		Type value = astAssign.r.accept(this, e);
 
-		if (ref.getType() == Type.VType.REFERENCE)
-		{
-			if (((RefType) ref).type.equals(value.getType()))
+		if (ref.getType() == Type.VType.REFERENCE) {
+			if (((RefType) ref).type.equals(value))
 				return new CmdType();
 			throw new TypeErrorException("Memory cell was of type " + ((RefType)ref).type + ", value had type " + value);
 		}
@@ -242,16 +234,13 @@ public class TypecheckVisitor implements Visitor<Type> {
 	{
 		Type condType = astWhile.c.accept(this, e);
 		Type bodyType = astWhile.b.accept(this, e);
-
-		if(condType.getType() == Type.VType.BOOLEAN && bodyType.getType() == Type.VType.CMD)
-			return bodyType;
-		else
-			throw new TypeErrorException("Condition was " + condType + ", body was " + bodyType);
+		if (condType == boolType && bodyType == cmdType)
+			return cmdType;
+		throw new TypeErrorException("Condition was " + condType + ", body was " + bodyType);
 	}
 
 	@Override
-	public Type visit(ASTNew astNew, Environment<Type> e) throws SemanticException
-	{
+	public Type visit(ASTNew astNew, Environment<Type> e) throws SemanticException {
 		return new RefType(astNew.node.accept(this, e));
 	}
 
@@ -262,7 +251,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 			return ((RefType) refType).type;
 		throw new TypeErrorException("Expression to deref was of (illegal) type " + refType);
 	}
-
+	
 	@Override
 	public Type visit(ASTPrint astPrint, Environment<Type> e) throws SemanticException {
 		if (!astPrint.node.accept(this, e).equals(cmdType))
@@ -290,13 +279,17 @@ public class TypecheckVisitor implements Visitor<Type> {
 	public Type visit(ASTCall astCall, Environment<Type> e) throws SemanticException {
 		Type ft = astCall.fun.accept(this, e);
 		if (ft.getType() == Type.VType.FUNCTION) {
-			if (((FunType) ft).paramTypes.size() == astCall.args.size()) {
-				Iterator<Type> paramTypesIt = ((FunType) ft).paramTypes.iterator();
-				Iterator<ASTNode> argsIt = astCall.args.iterator();
-				while (paramTypesIt.hasNext())
-					if (!paramTypesIt.next().equals(argsIt.next().accept(this, e)))
-						throw new TypeErrorException("Incompatible parameter/argument type");
-				return ((FunType) ft).returnType;
+			FunType closureType = (FunType) ft;
+			if (astCall.args.size() == closureType.paramTypeTags.size()) {
+				List<Type> targs = new ArrayList<Type>();
+				for (ASTNode arg : astCall.args)
+					targs.add(arg.accept(this, e));
+				Iterator<TypeTag> pit = closureType.paramTypeTags.iterator();
+				Iterator<Type> tit = targs.iterator();
+				Environment<Type> e1 = closureType.beginScope();
+				while (pit.hasNext())
+					while (tit.hasNext())
+						e1.assoc(pit.next(), tit.next());
 			}
 			throw new TypeErrorException("Incompatible parameter/argument type");
 		}
@@ -317,23 +310,16 @@ public class TypecheckVisitor implements Visitor<Type> {
 			Type returnType = getTypeForTypeTag(((FunTypeTag) tt).returnTypeTag, e);
 			for (TypeTag ptt : ((FunTypeTag) tt).paramTypeTags)
 				paramTypes.add(getTypeForTypeTag(ptt, e));
-			return new FunType(paramTypes, returnType);
+//			return new FunType(paramTypes, returnType);
+			return null; // TODO right implementation
 		}
 		else
 			return new RefType(getTypeForTypeTag(((RefTypeTag) tt).referenceToTypeTag, e));
 	}
 	
 	@Override
-	public Type visit(ASTFun astFun, Environment<Type> e) throws SemanticException
-	{
-		Type bodyType = astFun.body.accept(this, e);
-		List<Type> paramTypes = new ArrayList<Type>();
-		for (Param param : astFun.params) {
-			Type pt = getTypeForTypeTag(param.paramTypeTag, e);
-			e.assoc(param.paramName, pt);
-			paramTypes.add(pt);
-		}
-		return new FunType(paramTypes, bodyType, e);	
+	public Type visit(ASTFun astFun, Environment<Type> e) throws SemanticException {
+		return new FunType(astFun.body, astFun.paramTypeTags, astFun.paramNames, e);
 	}
 
 	@Override

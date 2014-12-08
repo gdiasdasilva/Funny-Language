@@ -1,4 +1,6 @@
-package semantics;
+package semantics.typeSystem;
+
+import semantics.SemanticException;
 
 public class TypeErrorException extends SemanticException {
 

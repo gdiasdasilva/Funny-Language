@@ -220,25 +220,28 @@ ASTNode FunctionDef():
 {
   ASTNode be; /* expression defining the function body */
   TypeTag typeTag;
-  List<Param> paramsl; /* list of parameters ( '(name, typetag)' pairs) */
+  List<String> paramNamesl; /* list of parameters names */
+  List<TypeTag> paramTypesl; /* list of parameters TypeTags */
   Token param;
 }
 {
-  ( < FUN > { paramsl = new ArrayList<Param>(); }
+  ( < FUN > { paramNamesl = new ArrayList<String>(); paramTypesl = new ArrayList<TypeTag>(); }
     (
     param = < STRING >
     < COLON > ( typeTag = Ty() )
     {
-      paramsl.add(new Param(param.image, typeTag));
+      paramNamesl.add(param.image);
+      paramTypesl.add(typeTag);
     }
       ( < COMMA > param = < STRING > < COLON >
     ( typeTag = Ty() )
     {
-      paramsl.add(new Param(param.image, typeTag));
+      paramNamesl.add(param.image);
+      paramTypesl.add(typeTag);
     }    )*
   )? < ARROW > be = SExp()
   < END > )
-  { return new ASTFun(paramsl, be); }
+  { return new ASTFun(paramNamesl, paramTypesl, be); }
 }
 
 ASTNode While():

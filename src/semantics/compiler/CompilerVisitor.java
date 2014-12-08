@@ -1,6 +1,8 @@
 package semantics.compiler;
 
 import semantics.*;
+import semantics.interpreter.BoolValue;
+import semantics.interpreter.IntValue;
 import ast.ASTAnd;
 import ast.ASTAssign;
 import ast.ASTCall;

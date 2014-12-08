@@ -5,8 +5,7 @@ public class RefType implements Type {
 
 	final Type type;
 	
-	public RefType(Type type)
-	{
+	public RefType(Type type) {
 		this.type = type;
 	}
 	

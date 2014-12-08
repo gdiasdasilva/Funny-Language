@@ -1,16 +1,15 @@
 package ast;
 
 import semantics.Environment;
-import semantics.IntValue;
 import semantics.SemanticException;
 import semantics.Visitor;
 
 public class ASTNum implements ASTNode {
 	
-	public final IntValue integer;
+	public final int integer;
 
 	public ASTNum(int integer) {
-		this.integer = new IntValue(integer);
+		this.integer = integer;
 	}
 
 	@Override
