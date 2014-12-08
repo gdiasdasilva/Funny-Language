@@ -1,10 +1,10 @@
-package semantics.interpreter;
+package semantics.values;
 
 import semantics.typeSystem.Type.VType;
 
 public class StringValue implements IValue {
 
-	final String s;
+	public final String s;
 	
 	public StringValue(String s)
 	{

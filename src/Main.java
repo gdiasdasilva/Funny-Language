@@ -8,10 +8,8 @@ import semantics.EnvironmentImpl;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.UndefinedIdException;
 import semantics.interpreter.EvalVisitor;
-import semantics.interpreter.IValue;
-import semantics.typeSystem.Type;
 import semantics.typeSystem.TypeErrorException;
-import semantics.typeSystem.TypecheckVisitor;
+import semantics.values.IValue;
 import ast.ASTNode;
 
 public class Main {

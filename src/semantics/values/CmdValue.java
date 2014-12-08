@@ -1,4 +1,4 @@
-package semantics.interpreter;
+package semantics.values;
 
 import semantics.typeSystem.Type.VType;
 

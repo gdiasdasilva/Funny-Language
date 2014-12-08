@@ -1,10 +1,10 @@
-package semantics.interpreter;
+package semantics.values;
 
 import semantics.typeSystem.Type.VType;
 
 public class IntValue implements IValue {
 
-	final int val;
+	public final int val;
 
 	public IntValue(int intVal)
 	{

@@ -1,4 +1,4 @@
-package semantics.interpreter;
+package semantics.values;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import ast.ASTNode;
 
 public class FunValue implements IValue {
 
-	final ASTNode expBody;
-	final List<String> parameters;
-	final Environment<IValue> e;
+	public final ASTNode expBody;
+	public final List<String> parameters;
+	public final Environment<IValue> e;
 	
 	public FunValue(ASTNode expBody, List<String> parameters, Environment<IValue> e) {
 		this.expBody = expBody;

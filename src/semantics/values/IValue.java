@@ -1,8 +1,7 @@
-package semantics.interpreter;
+package semantics.values;
 
 import semantics.typeSystem.Type.VType;
 
 public interface IValue {
-	String toString();
 	VType getType();
 }

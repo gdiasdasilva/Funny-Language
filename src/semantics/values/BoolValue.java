@@ -1,17 +1,17 @@
-package semantics.interpreter;
+package semantics.values;
 
 import semantics.typeSystem.Type.VType;
 
 public class BoolValue implements IValue {
 
-	final boolean b;
+	public final boolean b;
 
 	public BoolValue(boolean b) {
 		this.b = b;
 	}
 
 	public String toString() {
-		return "boolean value " + b;
+		return Boolean.toString(b);
 	}
 
 	@Override
