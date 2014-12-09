@@ -1,15 +1,14 @@
-package semantics;
+package semantics.typeSystem;
 
-import semantics.typeSystem.Type;
 
 public class StringType implements Type {
 
 	@Override
 	public VType getType() {
-		return VType.INTEGER;
+		return VType.STRING;
 	}
 	
 	public String toString() {
-		return "Int";
+		return "String Type";
 	}
 }

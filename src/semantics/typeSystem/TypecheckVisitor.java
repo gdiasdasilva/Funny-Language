@@ -8,7 +8,6 @@ import java.util.List;
 
 import semantics.Environment;
 import semantics.SemanticException;
-import semantics.StringType;
 import semantics.Visitor;
 import semantics.typeSystem.Type.VType;
 import semantics.values.FunValue;
