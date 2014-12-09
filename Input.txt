@@ -42,3 +42,26 @@ in
 end end;
   print !i
 end;;
+
+decl
+  addBoth = new (fun x:int, y:int => x+y end)
+in
+  (!addBoth)((!(addBoth)(10,10)),5)
+end;;
+
+decl
+  addBoth = new (fun x:int, y:int => x+y end)
+  var = new(0)
+  x = 6
+  y = 100
+in
+  decl
+    apply = fun f:(int, int => int), x:int, y:int => f(x, y) end
+    x = 200
+    y = 500
+  in
+    var := apply((!addBoth), 150, 170);
+    println(!var)
+  end
+end
+;;

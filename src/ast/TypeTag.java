@@ -57,6 +57,7 @@ public class TypeTag {
 		public FunTypeTag(List<TypeTag> paramTypeTags, TypeTag returnTypeTag) {
 			this.paramTypeTags = paramTypeTags;
 			this.returnTypeTag = returnTypeTag;
+			typeTagId = TypeT.FUNCTION;
 		}
 	}
 	

@@ -1,7 +1,5 @@
 package semantics.typeSystem;
 
-import java.awt.print.Printable;
-import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,9 +8,38 @@ import semantics.Environment;
 import semantics.SemanticException;
 import semantics.Visitor;
 import semantics.typeSystem.Type.VType;
-import semantics.values.FunValue;
-import semantics.values.IValue;
-import ast.*;
+import ast.ASTAnd;
+import ast.ASTAssign;
+import ast.ASTBool;
+import ast.ASTCall;
+import ast.ASTCond;
+import ast.ASTDecl;
+import ast.ASTDeref;
+import ast.ASTDiv;
+import ast.ASTEq;
+import ast.ASTFun;
+import ast.ASTGr;
+import ast.ASTGreq;
+import ast.ASTId;
+import ast.ASTIf;
+import ast.ASTLs;
+import ast.ASTLseq;
+import ast.ASTMul;
+import ast.ASTNeq;
+import ast.ASTNew;
+import ast.ASTNode;
+import ast.ASTNot;
+import ast.ASTNum;
+import ast.ASTOr;
+import ast.ASTPlus;
+import ast.ASTPrint;
+import ast.ASTPrintln;
+import ast.ASTSeq;
+import ast.ASTString;
+import ast.ASTSub;
+import ast.ASTUnMinus;
+import ast.ASTWhile;
+import ast.TypeTag;
 import ast.TypeTag.FunTypeTag;
 import ast.TypeTag.RefTypeTag;
 
@@ -279,23 +306,19 @@ public class TypecheckVisitor implements Visitor<Type> {
 		Type ft = astCall.fun.accept(this, e);
 		if (ft.getType() == Type.VType.FUNCTION) {
 			FunType closureType = (FunType) ft;
-			if (astCall.args.size() == closureType.paramTypeTags.size()) {
-				List<Type> targs = new ArrayList<Type>();
-				for (ASTNode arg : astCall.args)
-					targs.add(arg.accept(this, e));
-				Iterator<TypeTag> pit = closureType.paramTypeTags.iterator();
-				Iterator<Type> tit = targs.iterator();
-				Environment<Type> e1 = closureType.beginScope();
-				while (pit.hasNext())
-					while (tit.hasNext())
-						e1.assoc(pit.next(), tit.next());
+			if (astCall.args.size() == closureType.paramTypes.size()) {
+				Iterator<Type> ptit = closureType.paramTypes.iterator();
+				Iterator<ASTNode> argit = astCall.args.iterator();
+				while (ptit.hasNext())
+					if (!(ptit.next() == argit.next().accept(this, e)))
+						throw new TypeErrorException("Incompatible parameter/argument type");
+				return closureType.returnType;
 			}
-			throw new TypeErrorException("Incompatible parameter/argument type");
 		}
 		throw new TypeErrorException("Not a function");
 	}
 
-	private Type getTypeForTypeTag(TypeTag tt, Environment<Type> e) {
+	private Type getTypeForTypeTag(TypeTag tt) {
 		if (tt == TypeTag.getIntTypeTag())
 			return intType;
 		else if (tt == TypeTag.getBooleanTypeTag())
@@ -306,19 +329,28 @@ public class TypecheckVisitor implements Visitor<Type> {
 			return cmdType;
 		else if (tt.getTypeTagId() == TypeTag.TypeT.FUNCTION) {
 			List<Type> paramTypes = new ArrayList<Type>();
-			Type returnType = getTypeForTypeTag(((FunTypeTag) tt).returnTypeTag, e);
+			Type returnType = getTypeForTypeTag(((FunTypeTag) tt).returnTypeTag);
 			for (TypeTag ptt : ((FunTypeTag) tt).paramTypeTags)
-				paramTypes.add(getTypeForTypeTag(ptt, e));
-//			return new FunType(paramTypes, returnType);
-			return null; // TODO right implementation
+				paramTypes.add(getTypeForTypeTag(ptt));
+			return new FunType(returnType, paramTypes);
 		}
 		else
-			return new RefType(getTypeForTypeTag(((RefTypeTag) tt).referenceToTypeTag, e));
+			return new RefType(getTypeForTypeTag(((RefTypeTag) tt).referenceToTypeTag));
 	}
 	
 	@Override
-	public Type visit(ASTFun astFun, Environment<Type> e) throws SemanticException {
-		return new FunType(astFun.body, astFun.paramTypeTags, astFun.paramNames, e);
+	public Type visit(ASTFun astFun, Environment<Type> e) throws SemanticException {		
+		Environment<Type> e1 = e.beginScope();
+		
+		for (int i = 0; i < astFun.paramNames.size(); i++)
+			e1.assoc(astFun.paramNames.get(i), getTypeForTypeTag(astFun.paramTypeTags.get(i)));
+		
+		List<Type> typeList = new ArrayList<Type>();
+		
+		for (TypeTag tt : astFun.paramTypeTags)
+			typeList.add(getTypeForTypeTag(tt));
+
+		return new FunType(astFun.body.accept(this, e1), typeList);
 	}
 
 	@Override
