@@ -310,7 +310,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 				Iterator<Type> ptit = closureType.paramTypes.iterator();
 				Iterator<ASTNode> argit = astCall.args.iterator();
 				while (ptit.hasNext())
-					if (!(ptit.next() == argit.next().accept(this, e)))
+					if (!(ptit.next().equals(argit.next().accept(this, e))))
 						throw new TypeErrorException("Incompatible parameter/argument type");
 				return closureType.returnType;
 			}

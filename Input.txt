@@ -65,3 +65,12 @@ in
   end
 end
 ;;
+
+
+
+ && returnType.equals((FunType) returnType)
+ 
+ 
+ 
+ 
+return (paramTypes.equals(((FunType) obj).paramTypes) && returnType.equals(((FunType) obj).returnType));

@@ -213,6 +213,7 @@ public class EvalVisitor implements Visitor<IValue> {
 		return new FunValue(astFun.body, astFun.paramNames, e);
 	}
 
+	// TODO correct
 	@Override
 	public IValue visit(ASTIf astIf, Environment<IValue> e) throws SemanticException {
 		if (((BoolValue) astIf.condNode.accept(this, e)).b)

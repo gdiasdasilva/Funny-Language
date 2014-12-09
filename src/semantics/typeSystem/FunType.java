@@ -5,9 +5,7 @@ import java.util.List;
 public final class FunType implements Type {
 
 	final List<Type> paramTypes;
-//	final ASTNode body;
 	final Type returnType;
-//	final Environment<Type> e;
 	
 	public FunType(Type returnType, List<Type> paramTypes) {
 		this.paramTypes = paramTypes;
@@ -22,7 +20,7 @@ public final class FunType implements Type {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof FunType)
-			return (paramTypes.equals(((FunType) obj).paramTypes)) && returnType.equals((FunType) returnType);
+			return (paramTypes.equals(((FunType) obj).paramTypes) && returnType.equals(((FunType) obj).returnType));
 		return false;
 	}
 
