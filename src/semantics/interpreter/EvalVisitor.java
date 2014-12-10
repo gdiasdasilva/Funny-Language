@@ -118,7 +118,8 @@ public class EvalVisitor implements Visitor<IValue> {
 	}
 
 	@Override
-	public IValue visit(ASTCond cond, Environment<IValue> e) throws SemanticException{
+	public IValue visit(ASTCond cond, Environment<IValue> e) throws SemanticException
+	{
 		return (((BoolValue) cond.condNode.accept(this, e)).b ? cond.thenNode.accept(this, e) : cond.elseNode.accept(this, e));
 	}
 
@@ -195,7 +196,7 @@ public class EvalVisitor implements Visitor<IValue> {
 			vargs.add(arg.accept(this, e));
 		
 		Environment<IValue> e1 = closure.beginScope();
-		
+			
 		Iterator<String> pit = closure.parameters.iterator();
 		Iterator<IValue> vit = vargs.iterator();
 		

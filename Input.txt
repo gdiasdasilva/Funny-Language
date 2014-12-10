@@ -46,7 +46,7 @@ end;;
 decl
   addBoth = new (fun x:int, y:int => x+y end)
 in
-  (!addBoth)((!(addBoth)(10,10)),5)
+  println((!addBoth)(((!addBoth)(10,10)),5))
 end;;
 
 decl
@@ -66,11 +66,20 @@ in
 end
 ;;
 
+decl
+  hook = new (fun x:int => x end)
+in
+  decl 
+    f = fun x:int => (x==0) ? 1 : (x*(!hook)(x-1)) end
+  in
+    hook := f;
+    println f(5)
+  end
+end;;
 
-
- && returnType.equals((FunType) returnType)
- 
- 
- 
- 
-return (paramTypes.equals(((FunType) obj).paramTypes) && returnType.equals(((FunType) obj).returnType));
+decl
+  addBoth = new (fun x:int, y:int => x+y end)
+  inc = new (fun x:int => x+1 end)
+in
+  println( (!addBoth) ( (!inc)(10),5 ) )
+end;;

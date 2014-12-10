@@ -304,7 +304,9 @@ public class TypecheckVisitor implements Visitor<Type> {
 	@Override
 	public Type visit(ASTCall astCall, Environment<Type> e) throws SemanticException {
 		Type ft = astCall.fun.accept(this, e);
-		if (ft.getType() == Type.VType.FUNCTION) {
+		
+		if (ft.getType() == Type.VType.FUNCTION)
+		{
 			FunType closureType = (FunType) ft;
 			if (astCall.args.size() == closureType.paramTypes.size()) {
 				Iterator<Type> ptit = closureType.paramTypes.iterator();
@@ -315,6 +317,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 				return closureType.returnType;
 			}
 		}
+		
 		throw new TypeErrorException("Not a function");
 	}
 
