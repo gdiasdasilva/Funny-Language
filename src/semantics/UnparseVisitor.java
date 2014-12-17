@@ -9,6 +9,7 @@ import ast.ASTDecl;
 import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
+import ast.ASTField;
 import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
@@ -26,6 +27,7 @@ import ast.ASTOr;
 import ast.ASTPlus;
 import ast.ASTPrint;
 import ast.ASTPrintln;
+import ast.ASTRecord;
 import ast.ASTSeq;
 import ast.ASTString;
 import ast.ASTSub;
@@ -185,5 +187,19 @@ public class UnparseVisitor implements Visitor<String> {
 	@Override
 	public String visit(ASTIf astIf, Environment<String> e) throws SemanticException {
 		return "ASTIf( " + astIf.condNode.accept(this, null) + " , " +  astIf.thenNode.accept(this, null) + " , " + (astIf.elseNode != null ? astIf.elseNode.accept(this, null) : "no else branch") + " )";
+	}
+
+	@Override
+	public String visit(ASTField astField, Environment<String> e)
+			throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visit(ASTRecord astRecord, Environment<String> e)
+			throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

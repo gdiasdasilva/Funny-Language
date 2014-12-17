@@ -33,4 +33,6 @@ public interface Visitor<T> {
 	T visit(ASTCall astCall, Environment<T> e) throws SemanticException;
 	T visit(ASTFun astFun, Environment<T> e) throws SemanticException;
 	T visit(ASTIf astIf, Environment<T> e) throws SemanticException;
+	T visit(ASTField astField, Environment<T> e) throws SemanticException;
+	T visit(ASTRecord astRecord, Environment<T> e) throws SemanticException;
 }

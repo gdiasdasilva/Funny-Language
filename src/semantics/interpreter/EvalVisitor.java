@@ -1,8 +1,10 @@
 package semantics.interpreter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import semantics.Environment;
 import semantics.SemanticException;
@@ -214,13 +216,29 @@ public class EvalVisitor implements Visitor<IValue> {
 		return new FunValue(astFun.body, astFun.paramNames, e);
 	}
 
-	// TODO correct
 	@Override
 	public IValue visit(ASTIf astIf, Environment<IValue> e) throws SemanticException {
 		if (((BoolValue) astIf.condNode.accept(this, e)).b)
 			return astIf.thenNode.accept(this, e);
 		if (astIf.elseNode != null)
 			return astIf.elseNode.accept(this, e);
-		return null;
+		return cmdValue;
+	}
+
+	@Override
+	public IValue visit(ASTField astField, Environment<IValue> e)
+			throws SemanticException {
+		return ((RecValue) astField.record.accept(this, e)).getValueForField(astField.fieldId);
+	}
+
+	@Override
+	public IValue visit(ASTRecord astRecord, Environment<IValue> e)
+			throws SemanticException {
+		Map<String, IValue> r = new HashMap<String, IValue>();
+		Iterator<ASTNode> fit = astRecord.getFieldsIterator();
+		Iterator<String> fnit = astRecord.getFieldNamesIterator();
+		while (fit.hasNext())
+			r.put(fnit.next(), fit.next().accept(this, e));
+		return new RecValue(r);
 	}
 }

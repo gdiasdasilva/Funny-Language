@@ -62,6 +62,7 @@ TOKEN :
 | < PRINT: "print" >
 | < PRINTLN: "println" >
 | < DEREF: "!" >
+| < DOT: "." >
 | < STRING_DEL: "\"" >
 | < FUN: "fun" >
 | < ARROW: "=>" >
@@ -166,14 +167,15 @@ ASTNode Term():
 }
 
 ASTNode Factor():
-{ ASTNode f, te, ef; List<ASTNode> args; }
+{ ASTNode f, te, ef; List<ASTNode> args; Token field; }
 {
   (
     f = Decl() |
     f = SFact() (
       (< QUEST > te = SExp() < COLON > ef = Factor() { f = new ASTCond(f, te, ef); }) |
-      args = Args() { f = new ASTCall(f, args); } )? |
+      args = Args() { f = new ASTCall(f, args); } | ( < DOT > field = < STRING > { f = new ASTField(f, field.image); }) )? |
     < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
+    < LBRACE >  |
 	< NEW > f = Factor() { f = new ASTNew(f); } |
 	< DEREF > f = Factor() { f = new ASTDeref(f); } |
 	< IF_TOK > { ef = null; } f = SExp() < THEN_TOK > te = SExp() (< ELSE_TOK > ef = SExp())? < END > { f = new ASTIf(f, te, ef); } |

@@ -12,6 +12,7 @@ import ast.ASTDecl;
 import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
+import ast.ASTField;
 import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
@@ -28,6 +29,7 @@ import ast.ASTOr;
 import ast.ASTPlus;
 import ast.ASTPrint;
 import ast.ASTPrintln;
+import ast.ASTRecord;
 import ast.ASTSeq;
 import ast.ASTString;
 import ast.ASTSub;
@@ -293,6 +295,20 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTIf astIf, Environment<CodeBlock> e) throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTField astField, Environment<CodeBlock> e)
+			throws SemanticException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeBlock visit(ASTRecord astRecord, Environment<CodeBlock> e)
+			throws SemanticException {
 		// TODO Auto-generated method stub
 		return null;
 	}

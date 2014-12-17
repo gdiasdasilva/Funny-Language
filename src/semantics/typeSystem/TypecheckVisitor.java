@@ -1,8 +1,10 @@
 package semantics.typeSystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import semantics.Environment;
 import semantics.SemanticException;
@@ -17,6 +19,7 @@ import ast.ASTDecl;
 import ast.ASTDeref;
 import ast.ASTDiv;
 import ast.ASTEq;
+import ast.ASTField;
 import ast.ASTFun;
 import ast.ASTGr;
 import ast.ASTGreq;
@@ -34,6 +37,7 @@ import ast.ASTOr;
 import ast.ASTPlus;
 import ast.ASTPrint;
 import ast.ASTPrintln;
+import ast.ASTRecord;
 import ast.ASTSeq;
 import ast.ASTString;
 import ast.ASTSub;
@@ -249,7 +253,7 @@ public class TypecheckVisitor implements Visitor<Type> {
 
 		if (ref.getType() == Type.VType.REFERENCE) {
 			if (((RefType) ref).type.equals(value))
-				return new CmdType();
+				return cmdType;
 			throw new TypeErrorException("Memory cell was of type " + ((RefType)ref).type + ", value had type " + value);
 		}
 		throw new TypeErrorException("Reference was of type " + ref);
@@ -375,5 +379,22 @@ public class TypecheckVisitor implements Visitor<Type> {
 				throw new TypeErrorException("then branch is of type " + thenType + ". Should be a COMMAND.");
 		}
 		throw new TypeErrorException("Condition must be of type BOOLEAN. It is of type " + condType);
+	}
+
+	@Override
+	public Type visit(ASTField astField, Environment<Type> e)
+			throws SemanticException {
+		return ((RecType) astField.record.accept(this, e)).getTypeForField(astField.fieldId);
+	}
+
+	@Override
+	public Type visit(ASTRecord astRecord, Environment<Type> e)
+			throws SemanticException {
+		Map<String, Type> r = new HashMap<String, Type>();
+		Iterator<ASTNode> fit = astRecord.getFieldsIterator();
+		Iterator<String> fnit = astRecord.getFieldNamesIterator();
+		while (fit.hasNext())
+			r.put(fnit.next(), fit.next().accept(this, e));
+		return new RecType(r);
 	}
 }
