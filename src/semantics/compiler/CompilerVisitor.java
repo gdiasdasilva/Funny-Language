@@ -64,7 +64,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTPlus plus, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = plus.l.accept(this, e);
-		cb.merge(plus.r .accept(this, e));
+		cb.append(plus.r .accept(this, e));
 		cb.insertOp(Op.ADD);
 		return cb;
 	}
@@ -72,7 +72,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTSub sub, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = sub.l.accept(this, e);
-		cb.merge(sub.r.accept(this, e));
+		cb.append(sub.r.accept(this, e));
 		cb.insertOp(Op.SUB);
 		return cb;
 	}
@@ -80,7 +80,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTMul mul, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = mul.l.accept(this, e);
-		cb.merge(mul.r.accept(this, e));
+		cb.append(mul.r.accept(this, e));
 		cb.insertOp(Op.MUL);
 		return cb;
 	}
@@ -88,7 +88,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTDiv div, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = div.l.accept(this, e);
-		cb.merge(div.r.accept(this, e));
+		cb.append(div.r.accept(this, e));
 		cb.insertOp(Op.DIV);
 		return cb;
 	}
@@ -97,7 +97,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	public CodeBlock visit(ASTUnMinus um, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(0);
-		cb.merge(um.v.accept(this, e));
+		cb.append(um.v.accept(this, e));
 		cb.insertOp(Op.SUB);
 		return cb;
 	}
@@ -124,7 +124,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		int label = this.label++;
 		CodeBlock cb = eq.l.accept(this, e);
 		this.label++;
-		cb.merge(eq.r.accept(this, e));
+		cb.append(eq.r.accept(this, e));
 		cb.insertCondBranching(Cond.EQ, label);
 		return this.addBI(cb, label);
 	}
@@ -134,7 +134,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		int label = this.label++;
 		CodeBlock cb = neq.l.accept(this, e);
 		this.label++;
-		cb.merge(neq.r.accept(this, e));
+		cb.append(neq.r.accept(this, e));
 		cb.insertCondBranching(Cond.NEQ, label);
 		return this.addBI(cb, label);
 	}
@@ -146,11 +146,11 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		cb.insertIntArgument(FALSE);
 		cb.insertCondBranching(Cond.NEQ, label);
 		this.label++;
-		cb.merge(cond.elseNode.accept(this, e));
+		cb.append(cond.elseNode.accept(this, e));
 		cb.insertGotoContinue(label);
 		cb.insertThenLabel(label);
 		this.label++;
-		cb.merge(cond.thenNode.accept(this, e));
+		cb.append(cond.thenNode.accept(this, e));
 		cb.insertContinueLabel(label);
 		this.label++;
 		return cb;
@@ -161,7 +161,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		int label = this.label++;
 		CodeBlock cb = ls.l.accept(this, e);
 		this.label++;
-		cb.merge(ls.r.accept(this, e));
+		cb.append(ls.r.accept(this, e));
 		cb.insertCondBranching(Cond.LS, label);
 		return this.addBI(cb, label);
 	}
@@ -171,7 +171,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		int label = this.label++;
 		CodeBlock cb = gr.l.accept(this, e);
 		this.label++;
-		cb.merge(gr.r.accept(this, e));
+		cb.append(gr.r.accept(this, e));
 		cb.insertCondBranching(Cond.GR, label);
 		return this.addBI(cb, label);
 	}
@@ -181,7 +181,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		int label = this.label++;
 		CodeBlock cb = lseq.l.accept(this, e);
 		this.label++;
-		cb.merge(lseq.r.accept(this, e));
+		cb.append(lseq.r.accept(this, e));
 		cb.insertCondBranching(Cond.LSEQ, label);
 		return this.addBI(cb, label);
 	}
@@ -191,7 +191,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 		int label = this.label++;
 		CodeBlock cb = greq.l.accept(this, e);
 		this.label++;
-		cb.merge(greq.r.accept(this, e));
+		cb.append(greq.r.accept(this, e));
 		cb.insertCondBranching(Cond.GREQ, label);
 		return this.addBI(cb, label);
 	}
@@ -199,7 +199,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTAnd and, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = and.l.accept(this, e);
-		cb.merge(and.r .accept(this, e));
+		cb.append(and.r .accept(this, e));
 		cb.insertOp(Op.AND);
 		return cb;
 	}
@@ -207,7 +207,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	@Override
 	public CodeBlock visit(ASTOr or, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = or.l.accept(this, e);
-		cb.merge(or.r .accept(this, e));
+		cb.append(or.r .accept(this, e));
 		cb.insertOp(Op.OR);
 		return cb;
 	}
@@ -216,7 +216,7 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 	public CodeBlock visit(ASTNot n, Environment<CodeBlock> e) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		cb.insertIntArgument(1);
-		cb.merge(n.v.accept(this, e));
+		cb.append(n.v.accept(this, e));
 		cb.insertOp(Op.SUB);
 		return cb;
 	}

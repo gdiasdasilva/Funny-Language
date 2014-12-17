@@ -116,7 +116,7 @@ public class EvalVisitor implements Visitor<IValue> {
 
 	@Override
 	public IValue visit(ASTGr gr, Environment<IValue> e) throws SemanticException{
-		return new BoolValue(((IntValue) gr.l.accept(this, e)).val <= ((IntValue) gr.r.accept(this, e)).val);
+		return new BoolValue(((IntValue) gr.l.accept(this, e)).val > ((IntValue) gr.r.accept(this, e)).val);
 	}
 
 	@Override

@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -8,10 +9,12 @@ import semantics.EnvironmentImpl;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.UndefinedIdException;
 import semantics.UnparseVisitor;
+import semantics.compiler.CodeBlock;
+import semantics.compiler.CompilerVisitor;
 import semantics.interpreter.EvalVisitor;
+import semantics.typeSystem.Type;
 import semantics.typeSystem.TypeErrorException;
 import semantics.typeSystem.TypecheckVisitor;
-import semantics.typeSystem.Type;
 import semantics.values.IValue;
 import ast.ASTNode;
 
@@ -19,25 +22,19 @@ public class Main {
 	
 	@SuppressWarnings("static-access")
 	public static void main(String args[]) throws Exception {
-		
-//		CodeBlock cb;
-		
+				
 		boolean interactive = false;
-		InputStream stream = null;
+		InputStream inputStream = null;
 		
 		if (args.length == 0) { // interactive mode
-			System.out.println("Welcome to the interactive mode.");
-			System.out.println("You can start typing expressions and their result will be printed in this terminal.");
-			System.out.println("'print(ln)' expressions will also print their arguments as side-effect");
+			System.out.println("Tnteractive mode.");
 			System.out.println("To read the program from 'filename' run 'java Main filename' from your shell");
 			System.out.println();
 			interactive = true;
-//			parser = new Parser(System.in);
-			stream = System.in;
-		} else if (args.length == 1) { // read from file named like the argument
+			inputStream = System.in;
+		} else if (args.length == 1) { // read from file named the same as the argument
 			try {
-//				parser = new Parser(new FileInputStream(args[0]));
-				stream = new FileInputStream(args[0]);
+				inputStream = new FileInputStream(args[0]);
 			} catch (FileNotFoundException e) {
 				System.err.println("The file you specified does not exist.");
 				System.exit(-1);
@@ -48,50 +45,33 @@ public class Main {
 			System.exit(0);
 		}
 		
-		Parser parser = new Parser(stream);
+		Parser parser = new Parser(inputStream);
 		
-		while (true)
-		{
-			try
-			{
+		while (true) {
+			try {
 				ASTNode exp = parser.Prog();
 				if (interactive) {
 					System.out.println("Ok: " + exp.accept(new UnparseVisitor(), null)); // for debug purposes
 					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>()));
 					System.out.println("Val: " + exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>()));
 				}
-				else
-				{
+				else {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
-				
-				//cb = exp.accept(new CompilerVisitor());
-				//cb.writeToFile(new File("Code.j"));
-				//System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
+				CodeBlock cb;
+				cb = exp.accept(new CompilerVisitor(), null);
+				cb.writeToFile(new File("Code.j"));
+				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
 			}
-//			catch (Error e)
-//			{
-//				System.err.println("Parsing error");
-//				System.err.println(e.getMessage());
-////				e.printStackTrace();
-////				break;
-//				parser.ReInit(stream);
-//			}
-			catch(UndefinedIdException e)
-			{
+			catch(UndefinedIdException e) {
 				System.err.println(e.getMessage());
-			}
-			catch (IdentiferDeclaredTwiceException e)
-			{
+			} catch (IdentiferDeclaredTwiceException e) {
 				System.err.println(e.getMessage());
-			}
-			catch (TypeErrorException e) {
+			} catch (TypeErrorException e) {
 				System.err.println(e.getMessage());
-			}
-			catch (ParseException e)
-			{
+			} catch (ParseException e) {
 				System.err.println(e.getMessage());
-				parser.ReInit(stream);
+				parser.ReInit(inputStream);
 			}
 		}
 	}

@@ -22,9 +22,23 @@
        ; place your bytecodes here
 
        ; START
-sipush 2
-sipush 2
-iadd
+sipush 2342
+sipush 3364
+if_icmplt Then2
+sipush 0
+goto Continue2
+Then2:
+sipush 1
+Continue2:
+sipush 0
+iand
+sipush 0
+if_icmpne Then1
+sipush 200
+goto Continue1
+Then1:
+sipush 100
+Continue1:
        ; END
 
 
