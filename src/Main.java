@@ -59,7 +59,7 @@ public class Main {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
 				CodeBlock cb;
-				cb = exp.accept(new CompilerVisitor(), null);
+				cb = exp.accept(new CompilerVisitor(), null); // requires previous TypeChecking to tag the tree
 				cb.writeToFile(new File("Code.j"));
 				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
 			}

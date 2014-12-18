@@ -226,21 +226,25 @@ public class TypecheckVisitor implements Visitor<Type> {
 
 	@Override
 	public Type visit(ASTId id, Environment<Type> e) throws SemanticException {
-		return e.find(id.id);
+		Type t = e.find(id.id);
+		id.setIdType(t);
+		return t;
 	}
 
 	@Override
 	public Type visit(ASTDecl decl, Environment<Type> e) throws SemanticException 
 	{
 		e = e.beginScope();
-
+		List<Type> idTypes = new ArrayList<Type>();
 		for (int i = 0; i < decl.ids.size( ); i++)
 		{
-			e.assoc(decl.ids.get(i), decl.defs.get(i).accept(this, e));
+			Type t = decl.defs.get(i).accept(this, e);
+			idTypes.add(t);
+			e.assoc(decl.ids.get(i), t);
 		}
-
+		
 		Type v = decl.body.accept(this, e);
-
+		decl.setIdTypes(idTypes);
 		e.endScope();
 		return v;
 	}

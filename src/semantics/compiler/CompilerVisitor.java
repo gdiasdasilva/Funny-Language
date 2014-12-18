@@ -1,5 +1,8 @@
 package semantics.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import semantics.Environment;
 import semantics.SemanticException;
 import semantics.Visitor;
@@ -229,7 +232,13 @@ public class CompilerVisitor implements Visitor<CodeBlock> {
 
 	@Override
 	public CodeBlock visit(ASTDecl decl, Environment<CodeBlock> e) throws SemanticException {
+		CodeBlock cb = new CodeBlock();
+		e = e.beginScope();
+		int upperId = e.getUpperId();
+		List<Id> ids = new ArrayList<Id>(decl.defs.size());
 		
+		cb.insertFrame(new FrameClass(upperId + 1, upperId, ids));
+		e.endScope();
 		return null;
 	}
 
