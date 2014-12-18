@@ -13,12 +13,20 @@ import java.util.List;
 
 public class CodeBlock {
 	
-//    if_icmpeq  <label>
-//    if_icmpge  <label>
-//    if_icmpgt  <label>
-//    if_icmple  <label>
-//    if_icmplt  <label>
-//    if_icmpne  <label>
+	static final String CLASS_NAME_LINE =             ".class                   ";
+	static final String SUPER_LINE =                  ".super                   java/lang/Object";
+	static final String INIT =                        ".method public <init>()V";
+	static final String ALOAD_0 =                     "   aload_0";
+	static final String INVOKE_OBJECT_INIT =          "   invokenonvirtual java/lang/Object/<init>()V";
+	static final String RETURN =                      "return";
+	static final String END_METHOD =                  ".end method\n";
+	static final String MAIN =                        ".method public static main([Ljava/lang/String;)V";
+	static final String LIMITS =                      ".limit locals 32\n.limit stack 256";
+	static final String GET_PRINT_STREAM =            "getstatic java/lang/System/out Ljava/io/PrintStream;";
+	static final String INVOKE_STRING_FROM_INT =      "invokestatic java/lang/String/valueOf(I)Ljava/lang/String;";
+	static final String NEW_INST =                    "new ";
+	static final String DUP =                         "dup";
+	static final String FRAME =                       "frame_";
 	
 	// arithmetic/integer operations
 	private static final String ADD_OP = "iadd";
@@ -42,11 +50,32 @@ public class CodeBlock {
 	private static final String GREQ_OP = "if_icmpge ";
 	
 	private List<String> codeBlock;
-
-	public CodeBlock() {
-		codeBlock = new LinkedList<String>();
+	private List<FrameClass> frames;
+	
+	static void appendPreamble(List<String> cb) {
+		cb.add(CLASS_NAME_LINE);
+		cb.add(SUPER_LINE + "\n");
+		cb.add(INIT);
+		cb.add(ALOAD_0);
+		cb.add(INVOKE_OBJECT_INIT);
+		cb.add("   " + RETURN);
+		cb.add(END_METHOD);
+		cb.add(MAIN);
+		cb.add(LIMITS + "\n");
+		cb.add(GET_PRINT_STREAM);
 	}
 	
+	static void appendEnding(List<String> cb) {
+		cb.add(INVOKE_STRING_FROM_INT);
+		cb.add(RETURN);
+		cb.add(END_METHOD);
+	}
+	
+	public CodeBlock() {
+		codeBlock = new LinkedList<String>();
+		appendPreamble(codeBlock);
+	}
+		
 	public void writeToFile(File f) throws IOException {
 		Files.delete(f.toPath());
 		BufferedReader[] files = {
@@ -142,11 +171,15 @@ public class CodeBlock {
 		codeBlock.add("Continue" + labelId + ":");
 	}
 	
+	public void insertFrame(FrameClass f) {
+		frames.add(f);
+	}
+	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (String s : codeBlock) {
 			sb.append(s);
-			sb.append(System.lineSeparator());
+			sb.append('\n');
 		}
 		return sb.toString();
 	}
