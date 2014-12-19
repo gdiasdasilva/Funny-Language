@@ -39,7 +39,7 @@ public class Main {
 				System.err.println("The file you specified does not exist.");
 				System.exit(-1);
 			}
-		} else if (args.length ==2 ) {
+		} else if (args.length == 2) {
 			if (args[0].equals("--compiler")) {
 				try {
 					inputStream = new FileInputStream(args[0]);
