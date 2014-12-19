@@ -1,7 +1,3 @@
 .DS_Store
-bin/Main.class
-bin/ast
-bin/parser
-bin/semantics
-bin/Code.j
+bin
 *.class
