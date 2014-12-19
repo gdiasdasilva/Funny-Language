@@ -4,20 +4,24 @@ Interpretação e Compilação
 Entrega final - Dezembro 2014
 
 Gonçalo Dias da Silva, nº 41831
-Rui Carvalho, nº 41787
+Rui Carvalho, nº 41767
 
 ————————————————————————————————————
 
 Utilização:
 
-Interpretador
+- Interpretador
 
     Modo normal: ./funny file
     Modo interactivo: ./funny
 
-Compilador
+- Compilador
     
     ./funnyc file
+
+1. Este comando pressupõe que o executável do jasmin se encontra no PATH.
+
+2. Irá criar uma nova directoria, “code”, na directoria actual, com os ficheiros “*.j” e “*.class”, na qual se deverá executar o ficheiro “Code.class”.
 
 ————————————————————————————————————
 
