@@ -63,9 +63,6 @@ public class Main {
 				if (interactive) {
 					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>()));
 					System.out.println("Val: " + exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>()));
-					// TODO remove following lines NOW
-					CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
-					cb.writeToFile();
 				}
 				else if (compiler) {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
