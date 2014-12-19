@@ -1,10 +1,8 @@
 package semantics.compiler;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -21,12 +19,15 @@ public class CodeBlock {
 	static final String RETURN =                      "return";
 	static final String END_METHOD =                  ".end method\n";
 	static final String MAIN =                        ".method public static main([Ljava/lang/String;)V";
+	static final String INVOKE_PRINTLN =              "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V";
 	static final String LIMITS =                      ".limit locals 32\n.limit stack 256";
 	static final String GET_PRINT_STREAM =            "getstatic java/lang/System/out Ljava/io/PrintStream;";
 	static final String INVOKE_STRING_FROM_INT =      "invokestatic java/lang/String/valueOf(I)Ljava/lang/String;";
 	static final String NEW_INST =                    "new ";
 	static final String DUP =                         "dup";
 	static final String FRAME =                       "frame_";
+	static final String ALOAD_SL =                    "aload 2";
+	static final String ASTORE_SL =                   "astore 2";
 	
 	// arithmetic/integer operations
 	private static final String ADD_OP = "iadd";
@@ -52,45 +53,54 @@ public class CodeBlock {
 	private List<String> codeBlock;
 	private List<FrameClass> frames;
 	
-	static void appendPreamble(List<String> cb) {
-		cb.add(CLASS_NAME_LINE);
-		cb.add(SUPER_LINE + "\n");
-		cb.add(INIT);
-		cb.add(ALOAD_0);
-		cb.add(INVOKE_OBJECT_INIT);
-		cb.add("   " + RETURN);
-		cb.add(END_METHOD);
-		cb.add(MAIN);
-		cb.add(LIMITS + "\n");
-		cb.add(GET_PRINT_STREAM);
+	static List<String> getPreamble() {
+		List<String> p = new LinkedList<String>();
+		p.add(CLASS_NAME_LINE + "Code");
+		p.add(SUPER_LINE + "\n");
+		p.add(INIT);
+		p.add(ALOAD_0);
+		p.add(INVOKE_OBJECT_INIT);
+		p.add("   " + RETURN);
+		p.add(END_METHOD);
+		p.add(MAIN);
+		p.add(LIMITS + "\n");
+		p.add(GET_PRINT_STREAM);
+		return p;
 	}
 	
-	static void appendEnding(List<String> cb) {
-		cb.add(INVOKE_STRING_FROM_INT);
-		cb.add(RETURN);
-		cb.add(END_METHOD);
+	static List<String> getEnding() {
+		List<String> e = new LinkedList<String>();
+		e.add(INVOKE_STRING_FROM_INT);
+		e.add(INVOKE_PRINTLN);
+		e.add(RETURN);
+		e.add(END_METHOD);
+		return e;
 	}
 	
 	public CodeBlock() {
 		codeBlock = new LinkedList<String>();
-		appendPreamble(codeBlock);
+		frames = new LinkedList<FrameClass>();
 	}
 		
 	public void writeToFile(File f) throws IOException {
 		Files.delete(f.toPath());
-		BufferedReader[] files = {
-				new BufferedReader(new FileReader(new File("Header.j"))),
-				new BufferedReader(new FileReader(new File("Footer.j")))
-		};
+//		BufferedReader[] files = {
+//				new BufferedReader(new FileReader(new File("Header.j"))),
+//				new BufferedReader(new FileReader(new File("Footer.j")))
+//		};
 		List<String> sl = new LinkedList<String>();
-		for (int i = 0; i < 2; i++) {
-			while (files[i].ready()) {
-				sl.add(files[i].readLine());
-			}
-			files[i].close();
-			if (i == 0)
-				sl.addAll(codeBlock);
-		}
+//		for (int i = 0; i < 2; i++) {
+//			while (files[i].ready()) {
+//				sl.add(files[i].readLine());
+//			}
+//			files[i].close();
+//			if (i == 0)
+//				sl.addAll(codeBlock);
+//		}
+		
+		sl.addAll(getPreamble());
+		sl.addAll(codeBlock);
+		sl.addAll(getEnding());
 
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
 
@@ -173,18 +183,64 @@ public class CodeBlock {
 	
 	public void insertFrame(FrameClass f) {
 		frames.add(f);
+		codeBlock.add(NEW_INST + f.frameId);
+		codeBlock.add(DUP);
+		codeBlock.add("invokespecial " + f.frameId + "/<init>()V");
+		if (f.ancestorFrameId.length() > 0) {
+			codeBlock.add(DUP);
+			codeBlock.add(ALOAD_SL);
+			putFieldId(f.frameId, "sl", "L" + f.ancestorFrameId + ";");
+		}
+		codeBlock.add(ASTORE_SL);
+	}
+	
+	public void insertGetAncestorFrame(String currentFrameId, String ancestorFrameId) {
+		codeBlock.add("getfield " + currentFrameId + "/sl " + "L" + ancestorFrameId + ";");
+	}
+	
+	public void insertGetFieldValue(String frameId, String fieldName, String fieldType) {
+		codeBlock.add("getfield " + frameId + "/" + fieldName + " " + fieldType);
 	}
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		for (String s : getPreamble()) {
+			sb.append(s);
+			sb.append('\n');
+		}
 		for (String s : codeBlock) {
 			sb.append(s);
 			sb.append('\n');
+		}
+		for (String s : getEnding()) {
+			sb.append(s);
+			sb.append('\n');
+		}
+		
+		// For development, print the frame class too
+		sb.append('\n');
+		sb.append("FRAME CLASS\n\n");
+		for (FrameClass frame : frames) {
+			sb.append(frame.toString());
+			sb.append("\n\n");
 		}
 		return sb.toString();
 	}
 
 	public void append(CodeBlock cb) {
 		codeBlock.addAll(cb.codeBlock);
+		frames.addAll(cb.frames);
+	}
+
+	public void insertLoadSL() {
+		codeBlock.add(ALOAD_SL);
+	}
+	
+	public void insertStoreSL() {
+		codeBlock.add(ASTORE_SL);
+	}
+
+	public void putFieldId(String frameId, String field, String type) {
+		codeBlock.add("putfield " + frameId + "/" + field + " " + type);
 	}
 }

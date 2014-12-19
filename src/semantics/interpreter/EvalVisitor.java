@@ -13,7 +13,7 @@ import semantics.Visitor;
 import semantics.values.*;
 import ast.*;
 
-public class EvalVisitor implements Visitor<IValue> {
+public class EvalVisitor implements Visitor<IValue, IValue> {
 	
 	private final CmdValue cmdValue;
 	

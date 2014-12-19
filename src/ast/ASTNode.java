@@ -5,5 +5,5 @@ import semantics.SemanticException;
 import semantics.Visitor;
 
 public interface ASTNode {
-	<T> T accept(Visitor<T> visitor, Environment<T> e) throws SemanticException;
+	<T, S> T accept(Visitor<T, S> visitor, Environment<S> e) throws SemanticException;
 }

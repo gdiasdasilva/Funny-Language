@@ -34,7 +34,7 @@ import ast.ASTSub;
 import ast.ASTUnMinus;
 import ast.ASTWhile;
 
-public class UnparseVisitor implements Visitor<String> {
+public class UnparseVisitor implements Visitor<String, String> {
 
 	@Override
 	public String visit(ASTNum num, Environment<String> e) {

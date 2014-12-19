@@ -23,7 +23,8 @@ public class ASTId implements ASTNode {
 	}
 
 	@Override
-	public <T> T accept(Visitor<T> visitor, Environment<T> e) throws SemanticException {
+	public <T, S> T accept(Visitor<T, S> visitor, Environment<S>
+ e) throws SemanticException {
 		return visitor.visit(this, e);
 	}
 

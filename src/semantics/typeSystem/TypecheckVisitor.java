@@ -47,7 +47,7 @@ import ast.TypeTag;
 import ast.TypeTag.FunTypeTag;
 import ast.TypeTag.RefTypeTag;
 
-public class TypecheckVisitor implements Visitor<Type> {
+public class TypecheckVisitor implements Visitor<Type, Type> {
 
 	private final IntType intType;
 	private final BoolType boolType;

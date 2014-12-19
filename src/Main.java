@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -10,6 +9,7 @@ import semantics.IdentiferDeclaredTwiceException;
 import semantics.UndefinedIdException;
 import semantics.UnparseVisitor;
 import semantics.compiler.CodeBlock;
+import semantics.compiler.CompilerEnvironment;
 import semantics.compiler.CompilerVisitor;
 import semantics.interpreter.EvalVisitor;
 import semantics.typeSystem.Type;
@@ -58,10 +58,10 @@ public class Main {
 				else {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
-				CodeBlock cb;
-				cb = exp.accept(new CompilerVisitor(), null); // requires previous TypeChecking to tag the tree
-				cb.writeToFile(new File("Code.j"));
-				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
+				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
+//				cb.writeToFile(new File("Code.j"));
+//				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
+				System.out.println(cb.toString());
 			}
 			catch(UndefinedIdException e) {
 				System.err.println(e.getMessage());
