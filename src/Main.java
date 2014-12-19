@@ -23,6 +23,7 @@ public class Main {
 	public static void main(String args[]) throws Exception {
 				
 		boolean interactive = false;
+		boolean compiler = false;
 		InputStream inputStream = null;
 		
 		if (args.length == 0) { // interactive mode
@@ -38,6 +39,16 @@ public class Main {
 				System.err.println("The file you specified does not exist.");
 				System.exit(-1);
 			}
+		} else if (args.length ==2 ) {
+			if (args[0].equals("--compiler")) {
+				try {
+					inputStream = new FileInputStream(args[0]);
+				} catch (FileNotFoundException e) {
+					System.err.println("The file you specified does not exist.");
+					System.exit(-1);
+				}
+				compiler = true;
+			}
 		} else { // print usage
 			System.out.println("Usage: java Main [filename]");
 			System.out.println("No filename means entering the interactive mode");
@@ -50,17 +61,20 @@ public class Main {
 			try {
 				ASTNode exp = parser.Prog();
 				if (interactive) {
-//					System.out.println("Ok: " + exp.accept(new UnparseVisitor(), null)); // for debug purposes
 					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>()));
 					System.out.println("Val: " + exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>()));
+					// TODO remove following lines NOW
+					CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
+					cb.writeToFile();
 				}
-				else {
+				else if (compiler) {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
+				} else { // compiler
+					exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>());
+					CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
+					cb.writeToFile();
+					System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
 				}
-				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
-				cb.writeToFile();
-				System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
-//				System.out.println(cb.toString()); // only for debug purposes
 			}
 			catch(UndefinedIdException e) {
 				System.err.println(e.getMessage());

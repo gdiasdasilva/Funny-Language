@@ -161,6 +161,20 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 		this.label++;
 		return cb;
 	}
+	
+	@Override
+	public CodeBlock visit(ASTWhile astWhile, Environment<Id> e) throws SemanticException {
+		int condLabel = this.label++;
+		int restLabel = this.label++;
+		CodeBlock cb = new CodeBlock();
+		cb.insertOtherInstruction("L" + condLabel + ":");
+		cb.append(astWhile.c.accept(this, e));
+		cb.insertOtherInstruction("ifeq L" + restLabel);
+		cb.append(astWhile.b.accept(this, e));
+		cb.insertOtherInstruction("goto L" + condLabel);
+		cb.insertOtherInstruction("L" + restLabel + ":");
+		return cb;
+	}
 
 	@Override
 	public CodeBlock visit(ASTLs ls, Environment<Id> e) throws SemanticException {
@@ -302,12 +316,6 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 	}
 
 	@Override
-	public CodeBlock visit(ASTWhile astWhile, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public CodeBlock visit(ASTNew astNew, Environment<Id> e) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
 		switch (astNew.getType().getType()) {
@@ -345,15 +353,21 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 
 	@Override
 	public CodeBlock visit(ASTPrint astPrint, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
 		CodeBlock cb = new CodeBlock();
+		cb.insertOtherInstruction(CodeBlock.GET_PRINT_STREAM);
+		cb.append(astPrint.node.accept(this, e));
+		cb.insertOtherInstruction(CodeBlock.INVOKE_STRING_FROM_INT);
+		cb.insertOtherInstruction(CodeBlock.INVOKE_PRINT);
 		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTPrintln astPrintln, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
 		CodeBlock cb = new CodeBlock();
+		cb.insertOtherInstruction(CodeBlock.GET_PRINT_STREAM);
+		cb.append(astPrintln.node.accept(this, e));
+		cb.insertOtherInstruction(CodeBlock.INVOKE_STRING_FROM_INT);
+		cb.insertOtherInstruction(CodeBlock.INVOKE_PRINTLN);
 		return cb;
 	}
 

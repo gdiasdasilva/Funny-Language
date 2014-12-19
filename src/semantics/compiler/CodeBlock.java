@@ -21,6 +21,7 @@ public class CodeBlock {
 	static final String END_METHOD =                  ".end method\n";
 	static final String MAIN =                        ".method public static main([Ljava/lang/String;)V";
 	static final String INVOKE_PRINTLN =              "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V";
+	static final String INVOKE_PRINT =                "invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V";
 	static final String LIMITS =                      ".limit locals 32\n.limit stack 256";
 	static final String GET_PRINT_STREAM =            "getstatic java/lang/System/out Ljava/io/PrintStream;";
 	static final String INVOKE_STRING_FROM_INT =      "invokestatic java/lang/String/valueOf(I)Ljava/lang/String;";
@@ -29,7 +30,8 @@ public class CodeBlock {
 	static final String FRAME =                       "frame_";
 	static final String ALOAD_SL =                    "aload 2";
 	static final String ASTORE_SL =                   "astore 2";
-	public static final String MAIN_CLASS_NAME =             "Code";
+	public static final String MAIN_CLASS_NAME =      "Code";
+	public static final String CODE_DIR =             "code/";
 	
 	// arithmetic/integer operations
 	private static final String ADD_OP = "iadd";
@@ -74,14 +76,11 @@ public class CodeBlock {
 		p.add(END_METHOD);
 		p.add(MAIN);
 		p.add(LIMITS + "\n");
-		p.add(GET_PRINT_STREAM);
 		return p;
 	}
 	
 	static List<String> getEnding() {
 		List<String> e = new LinkedList<String>();
-		e.add(INVOKE_STRING_FROM_INT);
-		e.add(INVOKE_PRINTLN);
 		e.add(RETURN);
 		e.add(END_METHOD);
 		return e;
@@ -93,7 +92,8 @@ public class CodeBlock {
 	}
 		
 	public void writeToFile() throws IOException {
-		File mainCode = new File(MAIN_CLASS_NAME + ".j");
+		File mainCode = new File(CODE_DIR + MAIN_CLASS_NAME + ".j");
+		mainCode.mkdirs();
 		try {
 			Files.delete(mainCode.toPath());
 		} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
@@ -114,7 +114,7 @@ public class CodeBlock {
 		
 		// write each frame class
 		for (FrameClass f : frames) {
-			String frameFileName = f.frameId + ".j";
+			String frameFileName = CODE_DIR + f.frameId + ".j";
 			try {
 				Files.delete((new File(frameFileName)).toPath());
 			} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
@@ -123,7 +123,7 @@ public class CodeBlock {
 			bw.close();
 		}
 		
-		String refToInt = "refToInt.j";
+		String refToInt = CODE_DIR + "refToInt.j";
 		try {
 			Files.delete((new File(refToInt)).toPath());
 		} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
@@ -131,7 +131,7 @@ public class CodeBlock {
 		bw.write(getRefToInt().toString());
 		bw.close();
 		
-		String refToRef = "refToRef.j";
+		String refToRef = CODE_DIR + "refToRef.j";
 		try {
 			Files.delete((new File(refToRef)).toPath());
 		} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
@@ -192,6 +192,10 @@ public class CodeBlock {
 		default:
 			break;
 		}
+	}
+	
+	public void insertOtherInstruction(String instruction) {
+		codeBlock.add(instruction);
 	}
 
 	public void insertGotoContinue(int labelId) {

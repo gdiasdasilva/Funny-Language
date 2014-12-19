@@ -1,0 +1,4 @@
+#!/bin/bash
+rm *.j ; rm *.class ;
+java Main --compiler;
+jasmin *.j
