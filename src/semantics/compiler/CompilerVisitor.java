@@ -48,11 +48,9 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 	static final int TRUE = 1;
 	
 	private int label;
-	private int refCounter;
 	
 	public CompilerVisitor() {
 		label = 1;
-		refCounter = 0;
 	}
 	
 	@Override
@@ -243,7 +241,7 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 		return cb;
 	}
 	
-	private String getStringForType(Type t) {
+	private static String getStringForType(Type t) {
 		switch (t.getType()) {
 		case INTEGER:
 		case BOOLEAN:
@@ -295,23 +293,21 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	private int getRefNumber() {
-		return refCounter++;
-	}
 
 	@Override
 	public CodeBlock visit(ASTNew astNew, Environment<Id> e) throws SemanticException {
 		CodeBlock cb = new CodeBlock();
-		String refId = "ref_" + getRefNumber();
 		switch (astNew.getType().getType()) {
 		case INTEGER:
 		case BOOLEAN:
-			cb.insertIntRef(new RefToIntClass(refId));
+			cb.insertIntRef();
 			cb.append(astNew.node.accept(this, e));
-			cb.putFieldId(refId, "v", "I");
+			cb.putFieldId("refToInt", "v", "I");
 			break;
 		default:
+			cb.insertRefRef();
+			cb.append(astNew.node.accept(this, e));
+			cb.putFieldId("refToRef", "v", "Ljava/lang/Object;");
 			break;
 		}
 		return cb;
@@ -319,7 +315,18 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 
 	@Override
 	public CodeBlock visit(ASTDeref astDeref, Environment<Id> e) throws SemanticException {
-		CodeBlock cb = new CodeBlock();
+		CodeBlock cb = astDeref.node.accept(this, e);
+		switch (astDeref.getType().getType()) {
+		case INTEGER:
+		case BOOLEAN:
+			cb.insertCheckcastRefInt();
+			cb.insertGetFieldValue("refToInt", "v", "I");
+			break;
+		default:
+			cb.insertCheckcastRefRef();
+			cb.insertGetFieldValue("refToRef", "v", "Ljava/lang/Object;");
+			break;
+		}
 		return cb;
 	}
 

@@ -4,15 +4,9 @@ class RefToIntClass {
 	
 	static final String VALUE_FIELD =         ".field                   public v I";
 	
-	final String refId;
-	
-	RefToIntClass(String id) {
-		refId = id;
-	}
-	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(CodeBlock.CLASS_NAME_LINE + refId + "\n");
+		sb.append(CodeBlock.CLASS_NAME_LINE + "refToInt" + "\n");
 		sb.append(CodeBlock.SUPER_LINE + "\n");
 		sb.append(VALUE_FIELD + "\n");
 		sb.append(CodeBlock.INIT + "\n");

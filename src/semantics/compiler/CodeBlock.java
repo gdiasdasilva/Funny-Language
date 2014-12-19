@@ -54,8 +54,14 @@ public class CodeBlock {
 	
 	private List<String> codeBlock;
 	private List<FrameClass> frames;
-	private List<RefToIntClass> refsToInt;
-	private List<RefToRefClass> refsToRef;
+	
+	private RefToIntClass getRefToInt() {
+		return new RefToIntClass();
+	}
+	
+	private RefToRefClass getRefToRef() {
+		return new RefToRefClass();
+	}
 	
 	static List<String> getPreamble() {
 		List<String> p = new LinkedList<String>();
@@ -84,8 +90,6 @@ public class CodeBlock {
 	public CodeBlock() {
 		codeBlock = new LinkedList<String>();
 		frames = new LinkedList<FrameClass>();
-		refsToInt = new LinkedList<RefToIntClass>();
-		refsToRef = new LinkedList<RefToRefClass>();
 	}
 		
 	public void writeToFile() throws IOException {
@@ -119,16 +123,21 @@ public class CodeBlock {
 			bw.close();
 		}
 		
-		// write each reference class
-		for (RefToIntClass r : refsToInt) {
-			String refFileName = r.refId + ".j";
-			try {
-				Files.delete((new File(refFileName)).toPath());
-			} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(refFileName)));
-			bw.write(r.toString());
-			bw.close();
-		}
+		String refToInt = "refToInt.j";
+		try {
+			Files.delete((new File(refToInt)).toPath());
+		} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
+		bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(refToInt)));
+		bw.write(getRefToInt().toString());
+		bw.close();
+		
+		String refToRef = "refToRef.j";
+		try {
+			Files.delete((new File(refToRef)).toPath());
+		} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
+		bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(refToRef)));
+		bw.write(getRefToRef().toString());
+		bw.close();
 	}
 
 	public void insertOp(Op op) {
@@ -151,9 +160,6 @@ public class CodeBlock {
 		case OR:
 			codeBlock.add(OR_OP);
 			break;
-//		case NOT:
-//			codeBlock.add(NOT_OP);
-//			break;
 		default:
 			break;
 		}
@@ -213,11 +219,17 @@ public class CodeBlock {
 		codeBlock.add(ASTORE_SL);
 	}
 	
-	public void insertIntRef(RefToIntClass ref) {
-		refsToInt.add(ref);
-		codeBlock.add(NEW_INST + ref.refId);
+	public void insertIntRef() {
+		codeBlock.add(NEW_INST + "refToInt");
 		codeBlock.add(DUP);
-		codeBlock.add("invokespecial " + ref.refId + "/<init>()V");
+		codeBlock.add("invokespecial refToInt/<init>()V");
+		codeBlock.add(DUP);
+	}
+	
+	public void insertRefRef() {
+		codeBlock.add(NEW_INST + "refToRef");
+		codeBlock.add(DUP);
+		codeBlock.add("invokespecial refToRef/<init>()V");
 		codeBlock.add(DUP);
 	}
 	
@@ -227,6 +239,14 @@ public class CodeBlock {
 	
 	public void insertGetFieldValue(String frameId, String fieldName, String fieldType) {
 		codeBlock.add("getfield " + frameId + "/" + fieldName + " " + fieldType);
+	}
+	
+	public void insertCheckcastRefInt() {
+		codeBlock.add("checkcast refToInt");
+	}
+	
+	public void insertCheckcastRefRef() {
+		codeBlock.add("checkcast refToRef");
 	}
 	
 	public String toString() {
@@ -257,8 +277,6 @@ public class CodeBlock {
 	public void append(CodeBlock cb) {
 		codeBlock.addAll(cb.codeBlock);
 		frames.addAll(cb.frames);
-		refsToInt.addAll(cb.refsToInt);
-		refsToRef.addAll(cb.refsToRef);
 	}
 
 	public void insertLoadSL() {
