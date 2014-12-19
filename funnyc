@@ -1,4 +1,4 @@
 #!/bin/bash
 rm *.j ; rm *.class ;
-java Main --compiler;
-jasmin *.j
+java -classpath bin  Main --compiler $1;
+cd code && jasmin *.j

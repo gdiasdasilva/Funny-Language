@@ -42,7 +42,7 @@ public class Main {
 		} else if (args.length == 2) {
 			if (args[0].equals("--compiler")) {
 				try {
-					inputStream = new FileInputStream(args[0]);
+					inputStream = new FileInputStream(args[1]);
 				} catch (FileNotFoundException e) {
 					System.err.println("The file you specified does not exist.");
 					System.exit(-1);
@@ -64,13 +64,14 @@ public class Main {
 					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>()));
 					System.out.println("Val: " + exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>()));
 				}
-				else if (compiler) {
-					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
-				} else { // compiler
+				else if (compiler)
+				{
 					exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>());
 					CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
 					cb.writeToFile();
 					System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
+				} else { // compiler
+					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
 			}
 			catch(UndefinedIdException e) {
