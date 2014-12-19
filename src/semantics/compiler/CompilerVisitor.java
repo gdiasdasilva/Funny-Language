@@ -284,8 +284,21 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 
 	@Override
 	public CodeBlock visit(ASTAssign astAssign, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = astAssign.l.accept(this, e);
+		switch (astAssign.getRType().getType()) {
+		case BOOLEAN:
+		case INTEGER:
+			cb.insertCheckcastRefInt();
+			cb.append(astAssign.r.accept(this, e));
+			cb.putFieldId("refToInt", "v", "I");
+			return cb;
+		case REFERENCE:
+			cb.insertCheckcastRefRef();
+			cb.append(astAssign.r.accept(this, e));
+			cb.putFieldId("refToRef", "v", "Ljava/lang/Object;");
+		default:
+			return cb;
+		}
 	}
 
 	@Override
@@ -353,8 +366,8 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 
 	@Override
 	public CodeBlock visit(ASTSeq astSeq, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
-		CodeBlock cb = new CodeBlock();
+		CodeBlock cb = astSeq.f.accept(this, e);
+		cb.append(astSeq.s.accept(this, e));
 		return cb;
 	}
 

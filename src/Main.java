@@ -7,7 +7,6 @@ import parser.Parser;
 import semantics.EnvironmentImpl;
 import semantics.IdentiferDeclaredTwiceException;
 import semantics.UndefinedIdException;
-import semantics.UnparseVisitor;
 import semantics.compiler.CodeBlock;
 import semantics.compiler.CompilerEnvironment;
 import semantics.compiler.CompilerVisitor;
@@ -58,9 +57,9 @@ public class Main {
 				else {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
-//				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
-//				cb.writeToFile();
-//				System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
+				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
+				cb.writeToFile();
+				System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
 //				System.out.println(cb.toString()); // only for debug purposes
 			}
 			catch(UndefinedIdException e) {

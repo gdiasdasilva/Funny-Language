@@ -254,7 +254,7 @@ public class TypecheckVisitor implements Visitor<Type, Type> {
 	{
 		Type ref = astAssign.l.accept(this, e);
 		Type value = astAssign.r.accept(this, e);
-
+		astAssign.setRType(value);
 		if (ref.getType() == Type.VType.REFERENCE) {
 			if (((RefType) ref).type.equals(value))
 				return cmdType;
