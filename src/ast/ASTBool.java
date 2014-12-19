@@ -13,8 +13,7 @@ public class ASTBool implements ASTNode {
 	}
 
 	@Override
-	public <T, S> T accept(Visitor<T, S> visitor, Environment<S>
- e) throws SemanticException {
+	public <T, S> T accept(Visitor<T, S> visitor, Environment<S> e) throws SemanticException {
 		return visitor.visit(this, e);
 	}
 

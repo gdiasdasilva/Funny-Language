@@ -38,12 +38,12 @@ public class UnparseVisitor implements Visitor<String, String> {
 
 	@Override
 	public String visit(ASTNum num, Environment<String> e) {
-		return num.toString();
+		return String.valueOf(num.integer);
 	}
 
 	@Override
 	public String visit(ASTBool bool, Environment<String> e) {
-		return bool.toString();
+		return String.valueOf(bool.bool);
 	}
 
 	@Override

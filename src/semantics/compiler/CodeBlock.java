@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class CodeBlock {
 	static final String FRAME =                       "frame_";
 	static final String ALOAD_SL =                    "aload 2";
 	static final String ASTORE_SL =                   "astore 2";
+	public static final String MAIN_CLASS_NAME =             "Code";
 	
 	// arithmetic/integer operations
 	private static final String ADD_OP = "iadd";
@@ -55,7 +57,7 @@ public class CodeBlock {
 	
 	static List<String> getPreamble() {
 		List<String> p = new LinkedList<String>();
-		p.add(CLASS_NAME_LINE + "Code");
+		p.add(CLASS_NAME_LINE + MAIN_CLASS_NAME);
 		p.add(SUPER_LINE + "\n");
 		p.add(INIT);
 		p.add(ALOAD_0);
@@ -82,34 +84,36 @@ public class CodeBlock {
 		frames = new LinkedList<FrameClass>();
 	}
 		
-	public void writeToFile(File f) throws IOException {
-		Files.delete(f.toPath());
-//		BufferedReader[] files = {
-//				new BufferedReader(new FileReader(new File("Header.j"))),
-//				new BufferedReader(new FileReader(new File("Footer.j")))
-//		};
+	public void writeToFile() throws IOException {
+		File mainCode = new File(MAIN_CLASS_NAME + ".j");
+		try {
+			Files.delete(mainCode.toPath());
+		} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
+		
 		List<String> sl = new LinkedList<String>();
-//		for (int i = 0; i < 2; i++) {
-//			while (files[i].ready()) {
-//				sl.add(files[i].readLine());
-//			}
-//			files[i].close();
-//			if (i == 0)
-//				sl.addAll(codeBlock);
-//		}
 		
 		sl.addAll(getPreamble());
 		sl.addAll(codeBlock);
 		sl.addAll(getEnding());
 
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
-
+		// write main code
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(mainCode)));
 		for (String s : sl) {
 			bw.write(s);
 			bw.newLine();
 		}
-		
 		bw.close();
+		
+		// write each frame class
+		for (FrameClass f : frames) {
+			String frameFileName = f.frameId + ".j";
+			try {
+				Files.delete((new File(frameFileName)).toPath());
+			} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(frameFileName)));
+			bw.write(f.toString());
+			bw.close();
+		}
 	}
 
 	public void insertOp(Op op) {
@@ -217,12 +221,12 @@ public class CodeBlock {
 			sb.append('\n');
 		}
 		
-		// For development, print the frame class too
+		// For development purposes, print the frame classes too
 		sb.append('\n');
 		sb.append("FRAME CLASS\n\n");
 		for (FrameClass frame : frames) {
 			sb.append(frame.toString());
-			sb.append("\n\n");
+			sb.append('\n');
 		}
 		return sb.toString();
 	}
