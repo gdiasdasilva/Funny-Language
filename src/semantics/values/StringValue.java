@@ -12,7 +12,7 @@ public class StringValue implements IValue {
 	}
 
 	public String toString() {
-		return "string with value " + s;
+		return s;
 	}
 
 	@Override

@@ -309,7 +309,7 @@ public class TypecheckVisitor implements Visitor<Type, Type> {
 		Type fType = astSeq.f.accept(this, e);
 		Type sType = astSeq.s.accept(this, e);
 		if (fType == cmdType || sType == cmdType)
-			return cmdType;
+			return sType;
 		throw new TypeErrorException("Can't sequentiate (not COMMAND) " + fType + " and " + sType + " expressions.");
 	}
 

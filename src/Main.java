@@ -51,16 +51,16 @@ public class Main {
 			try {
 				ASTNode exp = parser.Prog();
 				if (interactive) {
-					System.out.println("Ok: " + exp.accept(new UnparseVisitor(), null)); // for debug purposes
+//					System.out.println("Ok: " + exp.accept(new UnparseVisitor(), null)); // for debug purposes
 					System.out.println("Expression type: " + exp.accept(new TypecheckVisitor(), new EnvironmentImpl<Type>()));
 					System.out.println("Val: " + exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>()));
 				}
 				else {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
-				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
-				cb.writeToFile();
-				System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
+//				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
+//				cb.writeToFile();
+//				System.out.println("Code written to file \"" + CodeBlock.MAIN_CLASS_NAME + ".j\" in the project or bin directory.");
 //				System.out.println(cb.toString()); // only for debug purposes
 			}
 			catch(UndefinedIdException e) {

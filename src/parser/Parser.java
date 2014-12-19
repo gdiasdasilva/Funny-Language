@@ -23,6 +23,7 @@ public class Parser implements ParserConstants {
     case PRINT:
     case PRINTLN:
     case DEREF:
+    case STRING_DEL:
     case FUN:
     case STRING:
       p = SExp();
@@ -136,6 +137,7 @@ public class Parser implements ParserConstants {
     case PRINT:
     case PRINTLN:
     case DEREF:
+    case STRING_DEL:
     case FUN:
     case STRING:
       f = LCmp();
@@ -286,6 +288,7 @@ public class Parser implements ParserConstants {
     case Num:
     case BOOL_LIT:
     case LPAR:
+    case STRING_DEL:
     case STRING:
       f = SFact();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -418,6 +421,12 @@ public class Parser implements ParserConstants {
       n = jj_consume_token(STRING);
                            sf = new ASTId(n.image);
       break;
+    case STRING_DEL:
+      jj_consume_token(STRING_DEL);
+      n = jj_consume_token(STRING);
+      jj_consume_token(STRING_DEL);
+                                                     sf = new ASTString(n.image);
+      break;
     case LPAR:
       jj_consume_token(LPAR);
       sf = SExp();
@@ -450,6 +459,7 @@ public class Parser implements ParserConstants {
     case PRINT:
     case PRINTLN:
     case DEREF:
+    case STRING_DEL:
     case FUN:
     case STRING:
       a = SExp();
@@ -671,7 +681,7 @@ public class Parser implements ParserConstants {
       jj_la1_0 = new int[] {0x40112861,0x0,0x0,0x20000000,0x10000000,0x40112860,0x7880000,0x7880000,0x18000,0x18000,0x60000,0x60000,0x80000800,0x80000800,0x400000,0x112860,0x0,0x860,0x0,0x40112860,0x0,0x0,0x0,0x0,0x0,0xf80,0xf80,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x93a88,0x2,0x100,0x0,0x0,0x93a88,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x4000,0x0,0x93a88,0x40000,0x80000,0x40000,0x93a88,0x80000,0x40000,0x80000,0x1800,0x40000,0x0,0x0,};
+      jj_la1_1 = new int[] {0x9ba88,0x2,0x100,0x0,0x0,0x9ba88,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x4000,0x0,0x9ba88,0x40000,0x88000,0x40000,0x9ba88,0x80000,0x40000,0x80000,0x1800,0x40000,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */

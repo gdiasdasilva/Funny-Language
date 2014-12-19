@@ -203,6 +203,7 @@ ASTNode SFact():
   (	  n = < BOOL_LIT > { sf = new ASTBool(Boolean.parseBoolean(n.image)); } |
 	  n = < Num > { sf = new ASTNum(Integer.parseInt(n.image)); } |
 	  n = < STRING > { sf = new ASTId(n.image); } |
+      < STRING_DEL > n = < STRING > < STRING_DEL > { sf = new ASTString(n.image); } |  
 	  <LPAR> ( sf = SExp() ) <RPAR>
   )
   { return sf; }}
