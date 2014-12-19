@@ -58,10 +58,10 @@ public class Main {
 				else {
 					exp.accept(new EvalVisitor(), new EnvironmentImpl<IValue>());
 				}
-				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
+//				CodeBlock cb = exp.accept(new CompilerVisitor(), new CompilerEnvironment()); // requires previous TypeChecking to tag the tree
 //				cb.writeToFile(new File("Code.j"));
 //				System.out.println("Code written to file \"Code.j\" in the project or bin directory.");
-				System.out.println(cb.toString());
+//				System.out.println(cb.toString());
 			}
 			catch(UndefinedIdException e) {
 				System.err.println(e.getMessage());

@@ -31,6 +31,8 @@ TOKEN :
 | < CMD_TYPE: "cmd" >
 | < LPAR : "(" >
 | < RPAR : ")" >
+| < LBRACE : "{" >
+| < RBRACE : "}" >
 | < ADD_OP : "+" >
 | < MINUS : "-" >
 | < MUL_OP : "*" >
@@ -175,7 +177,7 @@ ASTNode Factor():
       (< QUEST > te = SExp() < COLON > ef = Factor() { f = new ASTCond(f, te, ef); }) |
       args = Args() { f = new ASTCall(f, args); } | ( < DOT > field = < STRING > { f = new ASTField(f, field.image); }) )? |
     < MINUS > f = Factor() { f = new ASTUnMinus(f); } |
-    < LBRACE >  |
+    f = Record() | 
 	< NEW > f = Factor() { f = new ASTNew(f); } |
 	< DEREF > f = Factor() { f = new ASTDeref(f); } |
 	< IF_TOK > { ef = null; } f = SExp() < THEN_TOK > te = SExp() (< ELSE_TOK > ef = SExp())? < END > { f = new ASTIf(f, te, ef); } |
@@ -185,6 +187,15 @@ ASTNode Factor():
   )
   { return f; }
 }
+
+ASTNode Record():
+{ List<ASTNode> el; List<String> fl; ASTNode e; Token f; }
+{
+  ( < LBRACE > f = < STRING > < ASSOC > e = Factor()
+    { el = new ArrayList<ASTNode>(); fl = new ArrayList<String>(); fl.add(f.image); el.add(e); }
+    ( < COMMA >  f = < STRING > < ASSOC > e = Factor() { fl.add(f.image); el.add(e); } )*
+    < RBRACE > )
+  { return new ASTRecord(el, fl); }}
 
 ASTNode SFact():
 { Token n; ASTNode sf; }
@@ -199,7 +210,7 @@ ASTNode SFact():
 List<ASTNode> Args():
 { ASTNode a; List<ASTNode> args; }
 {
-  ( < LPAR > { args = new ArrayList<ASTNode>(); } a=SExp() { args.add(a); } (< COMMA > a=SExp() { args.add(a); } )* < RPAR > )
+  ( < LPAR > { args = new ArrayList<ASTNode>(); } ( a=SExp() { args.add(a); } (< COMMA > a=SExp() { args.add(a); } )* )? < RPAR > )
   { return args; }}
 
 ASTNode Decl():
