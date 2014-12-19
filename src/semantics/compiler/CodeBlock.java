@@ -54,6 +54,8 @@ public class CodeBlock {
 	
 	private List<String> codeBlock;
 	private List<FrameClass> frames;
+	private List<RefToIntClass> refsToInt;
+	private List<RefToRefClass> refsToRef;
 	
 	static List<String> getPreamble() {
 		List<String> p = new LinkedList<String>();
@@ -82,6 +84,8 @@ public class CodeBlock {
 	public CodeBlock() {
 		codeBlock = new LinkedList<String>();
 		frames = new LinkedList<FrameClass>();
+		refsToInt = new LinkedList<RefToIntClass>();
+		refsToRef = new LinkedList<RefToRefClass>();
 	}
 		
 	public void writeToFile() throws IOException {
@@ -112,6 +116,17 @@ public class CodeBlock {
 			} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
 			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(frameFileName)));
 			bw.write(f.toString());
+			bw.close();
+		}
+		
+		// write each reference class
+		for (RefToIntClass r : refsToInt) {
+			String refFileName = r.refId + ".j";
+			try {
+				Files.delete((new File(refFileName)).toPath());
+			} catch (NoSuchFileException e) { /* nothing to delete, proceed */ }
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(refFileName)));
+			bw.write(r.toString());
 			bw.close();
 		}
 	}
@@ -198,6 +213,14 @@ public class CodeBlock {
 		codeBlock.add(ASTORE_SL);
 	}
 	
+	public void insertIntRef(RefToIntClass ref) {
+		refsToInt.add(ref);
+		codeBlock.add(NEW_INST + ref.refId);
+		codeBlock.add(DUP);
+		codeBlock.add("invokespecial " + ref.refId + "/<init>()V");
+		codeBlock.add(DUP);
+	}
+	
 	public void insertGetAncestorFrame(String currentFrameId, String ancestorFrameId) {
 		codeBlock.add("getfield " + currentFrameId + "/sl " + "L" + ancestorFrameId + ";");
 	}
@@ -234,6 +257,8 @@ public class CodeBlock {
 	public void append(CodeBlock cb) {
 		codeBlock.addAll(cb.codeBlock);
 		frames.addAll(cb.frames);
+		refsToInt.addAll(cb.refsToInt);
+		refsToRef.addAll(cb.refsToRef);
 	}
 
 	public void insertLoadSL() {

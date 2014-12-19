@@ -275,14 +275,18 @@ public class TypecheckVisitor implements Visitor<Type, Type> {
 
 	@Override
 	public Type visit(ASTNew astNew, Environment<Type> e) throws SemanticException {
-		return new RefType(astNew.node.accept(this, e));
+		Type t = astNew.node.accept(this, e);
+		astNew.setType(t);
+		return new RefType(t);
 	}
 
 	@Override
 	public Type visit(ASTDeref astDeref, Environment<Type> e) throws SemanticException {
 		Type refType = astDeref.node.accept(this, e);
-		if (refType.getType() == Type.VType.REFERENCE)
+		if (refType.getType() == Type.VType.REFERENCE) {
+			astDeref.setType(((RefType) refType).type);
 			return ((RefType) refType).type;
+		}
 		throw new TypeErrorException("Expression to deref was of (illegal) type " + refType);
 	}
 	

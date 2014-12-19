@@ -48,11 +48,13 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 	static final int TRUE = 1;
 	
 	private int label;
+	private int refCounter;
 	
 	public CompilerVisitor() {
 		label = 1;
+		refCounter = 0;
 	}
-
+	
 	@Override
 	public CodeBlock visit(ASTNum num, Environment<Id> e) {
 		CodeBlock cb = new CodeBlock();
@@ -244,9 +246,10 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 	private String getStringForType(Type t) {
 		switch (t.getType()) {
 		case INTEGER:
-			return "I";
 		case BOOLEAN:
 			return "I";
+		case REFERENCE:
+			return "Ljava/lang/Object;";
 		default:
 			return null;
 		}
@@ -292,72 +295,96 @@ public class CompilerVisitor implements Visitor<CodeBlock, Id> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private int getRefNumber() {
+		return refCounter++;
+	}
 
 	@Override
 	public CodeBlock visit(ASTNew astNew, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		String refId = "ref_" + getRefNumber();
+		switch (astNew.getType().getType()) {
+		case INTEGER:
+		case BOOLEAN:
+			cb.insertIntRef(new RefToIntClass(refId));
+			cb.append(astNew.node.accept(this, e));
+			cb.putFieldId(refId, "v", "I");
+			break;
+		default:
+			break;
+		}
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTDeref astDeref, Environment<Id> e) throws SemanticException {
-		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTPrint astPrint, Environment<Id> e) throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTPrintln astPrintln, Environment<Id> e) throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTString astString, Environment<Id> e) {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTSeq astSeq, Environment<Id> e) throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTCall astCall, Environment<Id> e) throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTFun astFun, Environment<Id> e) throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTIf astIf, Environment<Id> e) throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTField astField, Environment<Id> e)
 			throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 
 	@Override
 	public CodeBlock visit(ASTRecord astRecord, Environment<Id> e)
 			throws SemanticException {
 		// TODO Auto-generated method stub
-		return null;
+		CodeBlock cb = new CodeBlock();
+		return cb;
 	}
 }
