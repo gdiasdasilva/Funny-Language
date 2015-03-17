@@ -1,6 +1,6 @@
 
 
-#Interpretation and Compilation Project
+#IC Project
 
 ##General Info
 
