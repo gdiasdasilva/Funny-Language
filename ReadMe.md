@@ -8,15 +8,15 @@ Project for Interpretation and Compilation course @ FCT-UNL, 14/15.
 
 #####Authors
 
-*Gonçalo Dias da Silva
-*Rui Carvalho
+* Gonçalo Dias da Silva
+* Rui Carvalho
 
 ##Usage
 
 #####Interpreter
 
-*Normal mode: `./funny file`
-*Interactive mode: `./funny`
+* Normal mode: `./funny file`
+* Interactive mode: `./funny`
 
 #####Compiler
     
@@ -26,5 +26,5 @@ This instruction requires jasmin’s executable file to be in PATH. It will crea
 
 ##Implementation
 
-*Interpreter and typechecker for the full Funny language.
-*Compiler for the Funny language without functions.
+* Interpreter and typechecker for the full Funny language.
+* Compiler for the Funny language without functions.
