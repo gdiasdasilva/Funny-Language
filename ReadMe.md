@@ -8,8 +8,8 @@ Project for Interpretation and Compilation course @ FCT-UNL, 14/15.
 
 #####Authors
 
-* Gonçalo Dias da Silva
-* Rui Carvalho
+* [Gonçalo Dias da Silva](https://github.com/gdiasdasilva)
+* [Rui Carvalho](https://github.com/ruiccarvalho)
 
 ##Usage
 
