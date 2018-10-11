@@ -1,30 +1,30 @@
 
 
-#IC Project
+# IC Project
 
-##General Info
+## General Info
 
 Project for Interpretation and Compilation course @ FCT-UNL, 14/15.
 
-#####Authors
+##### Authors
 
 * [Gonçalo Dias da Silva](https://github.com/gdiasdasilva)
 * [Rui Carvalho](https://github.com/ruiccarvalho)
 
-##Usage
+## Usage
 
-#####Interpreter
+##### Interpreter
 
 * Normal mode: `./funny file`
 * Interactive mode: `./funny`
 
-#####Compiler
+##### Compiler
     
 `./funnyc file`
 
 This instruction requires jasmin’s executable file to be in PATH. It will create a new directory named *code* in the current directory, with the `*.j` and `*.class` files, in which you will need to run the file `Code.class`.
 
-##Implementation
+## Implementation
 
 * Interpreter and typechecker for the full Funny language.
 * Compiler for the Funny language without functions.
